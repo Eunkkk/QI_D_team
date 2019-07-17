@@ -29,7 +29,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textView12"
+                android:id="@+id/New_label"
                 android:layout_width="120dp"
                 android:layout_height="30dp"
                 android:background="@color/main_box_color"
@@ -39,27 +39,28 @@
                 android:textSize="22dp" />
 
             <EditText
-                android:id="@+id/editText"
+                android:id="@+id/current_edit"
                 android:layout_width="280dp"
                 android:layout_height="40dp"
                 android:background="@color/main_text_color"
                 android:inputType="textEmailAddress"
-                android:textSize="22dp" />
+                android:textSize="22dp"
+                android:textColor="@color/black"/>
 
         </LinearLayout>
 
         <Button
             android:id="@+id/button4"
-            android:layout_width="40dp"
-            android:layout_height="50dp"
+            android:layout_width="30dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="25dp"
             android:layout_marginRight="10dp"
             android:layout_weight="1"
             android:background="@color/main_box_color"
             android:text="Check"
             android:textColor="@color/main_text_color"
-            android:textSize="22dp" />
+            android:textSize="18dp" />
 
     </LinearLayout>
 
@@ -69,10 +70,10 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textView15"
+            android:id="@+id/textView25"
             android:layout_width="120dp"
             android:layout_height="30dp"
-            android:layout_marginLeft="20dp"
+            android:layout_marginStart="20dp"
             android:background="@color/main_box_color"
             android:text="Password"
             android:textAlignment="center"
@@ -86,7 +87,8 @@
             android:layout_marginLeft="20dp"
             android:background="@color/main_text_color"
             android:inputType="textPassword"
-            android:textSize="22dp" />
+            android:textSize="22dp"
+            android:textColor="@color/black"/>
 
     </LinearLayout>
 
@@ -96,14 +98,14 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textView17"
+            android:id="@+id/textView8"
             android:layout_width="120dp"
             android:layout_height="30dp"
             android:layout_marginLeft="20dp"
             android:background="@color/main_box_color"
             android:text="First Name"
-            android:textAlignment="center"
             android:textColor="@color/main_text_color"
+            android:textAlignment="center"
             android:textSize="22dp" />
 
         <EditText
@@ -113,7 +115,7 @@
             android:layout_marginLeft="20dp"
             android:background="@color/main_text_color"
             android:inputType="text"
-            android:textColor="@color/main_text_color"
+            android:textColor="@color/black"
             android:textSize="22dp" />
 
     </LinearLayout>
@@ -141,7 +143,8 @@
             android:layout_marginLeft="20dp"
             android:background="@color/main_text_color"
             android:inputType="text"
-            android:textSize="22dp" />
+            android:textSize="22dp"
+            android:textColor="@color/black"/>
 
     </LinearLayout>
 
@@ -168,7 +171,8 @@
             android:layout_marginLeft="20dp"
             android:background="@color/main_text_color"
             android:inputType="date"
-            android:textSize="22dp" />
+            android:textSize="22dp"
+            android:textColor="@color/black"/>
 
     </LinearLayout>
 
@@ -201,10 +205,12 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginRight="20dp"
                 android:layout_weight="1"
+                android:checked="true"
                 android:background="@color/main_text_color"
                 android:text="male"
                 android:textAlignment="center"
-                android:textSize="22sp" />
+                android:textSize="22sp"
+                android:textColor="@color/black"/>
 
             <RadioButton
                 android:id="@+id/radioButton2"
@@ -215,6 +221,7 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="30dp"
                 android:text="female"
+                android:textColor="@color/black"
                 android:textAlignment="center"
                 android:layout_weight="1"
                 android:textSize="22sp" />
@@ -232,6 +239,7 @@
             android:layout_width="80dp"
             android:layout_height="60dp"
             android:layout_marginLeft="40dp"
+            android:layout_marginTop="15dp"
             android:layout_marginRight="20dp"
             android:layout_weight="1"
             android:background="@color/main_box_color"
@@ -244,6 +252,7 @@
             android:layout_width="80dp"
             android:layout_height="60dp"
             android:layout_marginLeft="20dp"
+            android:layout_marginTop="15dp"
             android:layout_marginRight="40dp"
             android:layout_weight="1"
             android:background="@color/main_box_color"
