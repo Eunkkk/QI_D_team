@@ -32,14 +32,13 @@
             android:textSize="22dp" />
 
         <EditText
-            android:id="@+id/editText5"
+            android:id="@+id/W_pass_Edit"
             android:layout_width="280dp"
             android:layout_height="40dp"
             android:layout_marginLeft="40dp"
             android:background="@color/main_text_color"
             android:inputType="textPassword"
-            android:textColor="@color/black"
-            android:textSize="22dp" />
+            android:textColor="@color/black" />
 
     </LinearLayout>
 
@@ -50,7 +49,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/button9"
+            android:id="@+id/W_complete_button"
             android:layout_width="80dp"
             android:layout_height="60dp"
             android:layout_marginLeft="40dp"
@@ -58,20 +57,19 @@
             android:layout_weight="1"
             android:background="@color/main_box_color"
             android:text="Complete"
-            android:textColor="@color/main_text_color"
             android:textSize="22dp" />
 
         <Button
-            android:id="@+id/button10"
+            android:id="@+id/W_cancel_button"
             android:layout_width="80dp"
             android:layout_height="60dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="40dp"
-            android:layout_weight="1"
             android:background="@color/main_box_color"
-            android:text="cancel"
-            android:textColor="@color/main_text_color"
+            android:layout_weight="1"
+            android:text="Cancel"
             android:textSize="22dp" />
+
     </LinearLayout>
 
 </LinearLayout>
