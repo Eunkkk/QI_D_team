@@ -4,11 +4,4 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:background="@color/main_background_color"
-    android:layout_height="match_parent">
-
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/mapView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-</LinearLayout>
+    android:layout_height="match_parent"/>

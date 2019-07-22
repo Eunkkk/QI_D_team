@@ -1,23 +1,22 @@
 package com.example.design;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-public class LoginActivity extends AppCompatActivity {
-
+public class ForgotActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.forgot_password_update);
 
-        Button sign_up_button = (Button)findViewById(R.id.A_signup_button);
-        Button forgot_button = (Button)findViewById(R.id.A_forgot_button);
+        Button compelte_button = (Button)findViewById(R.id.F_complete_button);
+        Button cancel_button = (Button)findViewById(R.id.F_cancel_button);
 
-        sign_up_button.setOnClickListener(new View.OnClickListener() {
+        /*
+        compelte_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(
@@ -26,14 +25,12 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        */
 
-        forgot_button.setOnClickListener(new View.OnClickListener() {
+        cancel_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(
-                        getApplicationContext(),
-                        ForgotActivity.class);
-                startActivity(intent);
+                finish();
             }
         });
     }
