@@ -54,7 +54,7 @@
             android:layout_marginLeft="40dp"
             android:layout_marginRight="20dp"
             android:layout_weight="1"
-            android:background="@color/main_box_color"
+            android:background="@drawable/round_button"
             android:text="Complete"
             android:textSize="22dp" />
 
@@ -64,8 +64,8 @@
             android:layout_height="60dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="40dp"
-            android:background="@color/main_box_color"
             android:layout_weight="1"
+            android:background="@drawable/round_button"
             android:text="Cancel"
             android:textSize="22dp" />
 

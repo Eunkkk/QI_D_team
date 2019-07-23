@@ -56,7 +56,7 @@
             android:layout_marginTop="25dp"
             android:layout_marginRight="10dp"
             android:layout_weight="1"
-            android:background="@color/main_box_color"
+            android:background="@drawable/round_button"
             android:text="Check"
             android:textColor="@color/main_text_color"
             android:textSize="18dp" />
@@ -225,7 +225,7 @@
             android:layout_marginRight="20dp"
             android:layout_marginBottom="30dp"
             android:layout_weight="1"
-            android:background="@color/main_box_color"
+            android:background="@drawable/round_button"
             android:text="Complete"
             android:textColor="@color/main_text_color"
             android:textSize="22dp" />
@@ -238,7 +238,7 @@
             android:layout_marginRight="40dp"
             android:layout_marginBottom="30dp"
             android:layout_weight="1"
-            android:background="@color/main_box_color"
+            android:background="@drawable/round_button"
             android:text="cancel"
             android:textColor="@color/main_text_color"
             android:textSize="22dp" />
