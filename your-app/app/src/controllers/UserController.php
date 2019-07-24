@@ -83,6 +83,16 @@ final class UserController extends BaseController
 
       public function account_activate(Request $request, Response $response, $args)
     {
+      
+      //===============================================================================
+      // 클릭 뒤에 nonce 값으로 DB 찾아서 temp -> User 테이블로 옮기기
+      // active = 1 , auth_code = 0
+      //======================================================================
+
+      //===============================================================================
+      // temp 에서 삭제
+      //======================================================================
+
       echo ' this is activate..';
 
     }
@@ -109,8 +119,9 @@ final class UserController extends BaseController
             $user['last_name'] =  $_POST['last_name'];
             $user['birth_date'] =  $_POST['birth_date'];
             $user['timestamp'] =  date("Y-m-d H:i:s");
-            $user['hashed_pwd'] =  password_hash($_POST['password'],PASSWORD_DEFAULT);
-            $user['auth_code'] =  password_hash(strval(mt_rand()),PASSWORD_DEFAULT);
+            $user['password'] = password_hash($_POST['password'],PASSWORD_DEFAULT);
+            $temp =  password_hash(strval(mt_rand()),PASSWORD_DEFAULT);
+            $user['auth_code'] = str_replace("/","\\",$temp); // replace  '/' to '\'
 
           // $query_results =  $this->UserModel->insert_user_into_temp_table($user);
 
@@ -120,7 +131,7 @@ final class UserController extends BaseController
     $mail = new PHPMailer(true);                              // Passing `true` enables exceptions
         try {
             //Server settings
-            $mail->SMTPDebug = 2;                                 // Enable verbose debug output
+            // $mail->SMTPDebug = 2;                                 // Enable verbose debug output
             $mail->isSMTP();                                      // Set mailer to use SMTP
             $mail->Host = 'smtp.gmail.com';  // Specify main and backup SMTP servers
             $mail->SMTPAuth = true;                               // Enable SMTP authentication
@@ -132,49 +143,29 @@ final class UserController extends BaseController
             //Recipients
             $mail->setFrom('dmsrb1595@gmail.com', 'Team D');
             $mail->addAddress($user['e_mail'], 'Team D');     // Add a recipient
-    //        $mail->addAddress('ellen@example.com');               // Name is optional
-    //        $mail->addReplyTo('info@example.com', 'Information');
-    //        $mail->addCC('cc@example.com');
-    //        $mail->addBCC('bcc@example.com');
+            //        $mail->addAddress('ellen@example.com');               // Name is optional
+            //        $mail->addReplyTo('info@example.com', 'Information');
+            //        $mail->addCC('cc@example.com');
+            //        $mail->addBCC('bcc@example.com');
 
             //Attachments
-      //            $mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
-      //            $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
-
+            //$mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
+            //$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
             //Content
             $mail->isHTML(true);                                  // Set email format to HTML
             $mail->Subject = 'Here is the subject';
-            $mail->Body    = 'The Auth link is http://teamd-iot.calit2.net/user/account/activate/'.$user['auth_code'];
-            $mail->AltBody = 'The alt body link is http://teamd-iot.calit2.net/user/account/activate/';
+            $mail->Body    = 'The Auth link is http://teamd-iot.calit2.net/user/signin/activate/'.$user['auth_code'];
+            $mail->AltBody = 'The alt body link is http://teamd-iot.calit2.net/user/signin/activate/'.$user['auth_code'];
 
             $mail->send();
-            echo 'Message has been sent';
+            echo 'Message has been sent'; // 팝업 으로보여주기 
         } catch (Exception $e) {
             echo 'Message could not be sent.';
             echo 'Mailer Error: ' . $mail->ErrorInfo;
         }
-
- //======================================================================
-
-
-//===============================================================================
-
-// 클릭 뒤에 nonce 값으로 DB 찾아서 temp -> User 테이블로 옮기기
-// active = 1 , auth_code = 0
-
-//======================================================================
-
-//===============================================================================
-
-// temp 에서 삭제
-
-//======================================================================
-
-
           return $response->withHeader('Content-type','application/json')
           ->withStatus(200)
           ->write(json_encode($json));
-
           }
 
       } catch (PDOException $e) {

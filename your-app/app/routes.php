@@ -5,7 +5,7 @@ $app->get('/', 'App\Controller\HomeController:dispatch')
     ->setName('homepage');
 
 //코멘트 달기
-$app->get('/user/account/activate/{nonce}', 'App\Controller\UserController:account_activate')
+$app->get('/user/signin/activate/{nonce}', 'App\Controller\UserController:account_activate')
     ->setName('useraccountactivate');
 
 $app->post('/user/signin/request', 'App\Controller\UserController:sign_in_request')
