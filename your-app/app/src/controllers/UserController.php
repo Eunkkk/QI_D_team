@@ -4,6 +4,9 @@ namespace App\Controller;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 final class UserController extends BaseController
 {
       protected $logger;
@@ -15,6 +18,52 @@ final class UserController extends BaseController
           $this->logger = $logger;
           $this->UserModel = $UserModel;
           $this->view = $view;
+      }
+
+      public function send_mail(Request $request, Response $response, $args) {
+        // $this->getApp()->contentType('text/html');
+        $mail = new PHPMailer(true);                              // Passing `true` enables exceptions
+        try {
+            //Server settings
+            $mail->SMTPDebug = 2;                                 // Enable verbose debug output
+            $mail->isSMTP();                                      // Set mailer to use SMTP
+            $mail->Host = 'smtp.gmail.com';  // Specify main and backup SMTP servers
+            $mail->SMTPAuth = true;                               // Enable SMTP authentication
+            $mail->Username = 'dmsrb1595@gmail.com';                 // SMTP username
+            $mail->Password = 'znjfzja1!';                           // SMTP password
+            $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+            $mail->Port = 587;                                    // TCP port to connect to
+            $user['e_mail'] = $_POST['e_mail'];
+            $user['auth_code']=$_POST['auth_code'];
+            //Recipients
+            $mail->setFrom('dmsrb1595@gmail.com', 'Team D');
+            $mail->addAddress('dmsrb1595@gmail.com', 'Team D');     // Add a recipient
+    //        $mail->addAddress('ellen@example.com');               // Name is optional
+    //        $mail->addReplyTo('info@example.com', 'Information');
+    //        $mail->addCC('cc@example.com');
+    //        $mail->addBCC('bcc@example.com');
+
+            //Attachments
+      //            $mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
+      //            $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
+
+            //Content
+            $mail->isHTML(true);                                  // Set email format to HTML
+            $mail->Subject = 'Here is the subject';
+            $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
+            $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+
+            $mail->send();
+            echo 'Message has been sent';
+        } catch (Exception $e) {
+            echo 'Message could not be sent.';
+            echo 'Mailer Error: ' . $mail->ErrorInfo;
+        }
+      //        $this->render("index/mail.phtml");
+      exit;
+
+        return $response;
+
       }
 
       public function sign_up(Request $request, Response $response, $args)
@@ -31,6 +80,12 @@ final class UserController extends BaseController
           // The account could not be activated, Please check your link
       }
 
+
+      public function account_activate(Request $request, Response $response, $args)
+    {
+      echo ' this is activate..';
+
+    }
     public function sign_up_request(Request $request, Response $response, $args)
     {
       try {
@@ -57,14 +112,49 @@ final class UserController extends BaseController
             $user['hashed_pwd'] =  password_hash($_POST['password'],PASSWORD_DEFAULT);
             $user['auth_code'] =  password_hash(strval(mt_rand()),PASSWORD_DEFAULT);
 
-
-          $query_results =  $this->UserModel->insert_user_into_temp_table($user);
+          // $query_results =  $this->UserModel->insert_user_into_temp_table($user);
 
 //===============================================================================
+    //유저한테 메일보내기
 
-// 지금 클라이언트에게 메일보내기
+    $mail = new PHPMailer(true);                              // Passing `true` enables exceptions
+        try {
+            //Server settings
+            $mail->SMTPDebug = 2;                                 // Enable verbose debug output
+            $mail->isSMTP();                                      // Set mailer to use SMTP
+            $mail->Host = 'smtp.gmail.com';  // Specify main and backup SMTP servers
+            $mail->SMTPAuth = true;                               // Enable SMTP authentication
+            $mail->Username = 'dmsrb1595@gmail.com';                 // SMTP username
+            $mail->Password = 'znjfzja1!';                           // SMTP password
+            $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+            $mail->Port = 587;                                    // TCP port to connect to
 
-//======================================================================
+            //Recipients
+            $mail->setFrom('dmsrb1595@gmail.com', 'Team D');
+            $mail->addAddress($user['e_mail'], 'Team D');     // Add a recipient
+    //        $mail->addAddress('ellen@example.com');               // Name is optional
+    //        $mail->addReplyTo('info@example.com', 'Information');
+    //        $mail->addCC('cc@example.com');
+    //        $mail->addBCC('bcc@example.com');
+
+            //Attachments
+      //            $mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
+      //            $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
+
+            //Content
+            $mail->isHTML(true);                                  // Set email format to HTML
+            $mail->Subject = 'Here is the subject';
+            $mail->Body    = 'The Auth link is http://teamd-iot.calit2.net/user/account/activate/'.$user['auth_code'];
+            $mail->AltBody = 'The alt body link is http://teamd-iot.calit2.net/user/account/activate/';
+
+            $mail->send();
+            echo 'Message has been sent';
+        } catch (Exception $e) {
+            echo 'Message could not be sent.';
+            echo 'Mailer Error: ' . $mail->ErrorInfo;
+        }
+
+ //======================================================================
 
 
 //===============================================================================
