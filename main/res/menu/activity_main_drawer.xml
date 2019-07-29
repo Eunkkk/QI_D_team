@@ -5,17 +5,17 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_home"
-            android:title="@string/menu_home" />
+            android:id="@+id/myAccount"
+            android:title="@string/menu_Account" />
         <item
-            android:id="@+id/nav_gallery"
-            android:title="@string/menu_gallery" />
+            android:id="@+id/mySensor"
+            android:title="@string/menu_Sensor" />
         <item
-            android:id="@+id/nav_slideshow"
-            android:title="@string/menu_slideshow" />
+            android:id="@+id/myBluetooth"
+            android:title="@string/menu_Bluetooth" />
         <item
-            android:id="@+id/nav_tools"
-            android:title="@string/menu_tools" />
+            android:id="@+id/logout"
+            android:title="@string/menu_Logout" />
     </group>
 
     <item android:title="Communicate">

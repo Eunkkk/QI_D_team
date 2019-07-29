@@ -217,7 +217,6 @@ public class ForgotActivity extends Activity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Log.d("asdf", "result log --> ");
             Log.d("asdf", result); // this is expecting a response code to be sent from your server upon receiving the POST data
         }
 
