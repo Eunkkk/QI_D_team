@@ -1,12 +1,12 @@
 <?php
 
 // set database parameters based on server
-if ($_SERVER['HTTP_HOST'] == '192.168.33.99') {
+if ($_SERVER['HTTP_HOST'] == 'teamd-iot.calit2.net') {
     $db_array = array(
         'host' => '127.0.0.1',
-        'user' => 'root',
-        'pass' => '12345678',
-        'dbname' => 'mydb'
+        'user' => 'teamd-iot',
+        'pass' => 'd23fg23kkksf',
+        'dbname' => 'teamd-2019summer'
     );
 } else {
     $db_array = array(
@@ -16,8 +16,6 @@ if ($_SERVER['HTTP_HOST'] == '192.168.33.99') {
         'dbname' => 'pogo'
     );
 }
-
-
 
 return [
     'settings' => [

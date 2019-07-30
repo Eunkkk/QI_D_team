@@ -76,6 +76,14 @@ $container['App\Controller\UserController'] = function ($container) {
     return new App\Controller\UserController($logger, $userModel,$view);
 };
 
+$container['App\Controller\MapsController'] = function ($container) {
+    $logger = $container->get('logger');
+    $mapsModel = $container->get('mapsModel');
+    $view = $container->get('view');
+
+    return new App\Controller\MapsController($view, $logger, $mapsModel);
+};
+
 // -----------------------------------------------------------------------------
 // Model factories
 // -----------------------------------------------------------------------------
@@ -84,4 +92,10 @@ $container['userModel'] = function ($container) {
     $settings = $container->get('settings');
     $userModel = new App\Model\UserModel($container->get('db'));
     return $userModel;
+};
+
+$container['mapsModel'] = function ($container) {
+    $settings = $container->get('settings');
+    $mapsModel = new App\Model\MapsModel($container->get('db'));
+    return $mapsModel;
 };

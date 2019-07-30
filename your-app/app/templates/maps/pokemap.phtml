@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Circles</title>
+       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script> 
+           <style>
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #map {
+        height: 100%;
+      }
+      .pgclass {
+        font-weight: bold;
+        color: orange;
+        }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+
+var comics = (function () {
+    var json = null;
+    $.ajax({
+        'async': false,
+        'url': "/maps/pokemonjson", //json 에서 데이터를 가져옴
+        'dataType': "json",
+        'success': function (data) {
+            json = data;
+        }
+    });
+    return json;
+})(); 
+      
+      function initMap() {
+        // Create the map.
+        var map = new google.maps.Map(document.getElementById('map'), {
+          zoom: 11,
+          center: {lat: 32.857, lng: -117.2231},
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+        });
+
+        var infowindow = new google.maps.InfoWindow();
+
+        // Construct the circle for each value in citymap.
+        // Note: We scale the area of the circle based on the population.
+        for (var hero in comics) {  //코믹의 히어로들 , 위에서 JSON 으로 코믹으로 애들가져옴 
+
+        // Create marker 
+                var myLatLng = new google.maps.LatLng(comics[hero].lat, comics[hero].lng);
+
+                var image = {
+                    url: "http://92.222.198.138/pg_images/vertical_sprites.png",
+                    size: new google.maps.Size(40, 50), // scaled size
+                    origin: new google.maps.Point(0, 50*(parseInt(comics[hero].dex) - 1)), // origin
+                    anchor: new google.maps.Point(20,25) // anchor
+                };
+                var marker = new google.maps.Marker({
+                    map: map,
+                    position: myLatLng,
+                    html: "<span class='pogo_name'>" + comics[hero].name + "</a></span><br />" + comics[hero].att + "<br />" + comics[hero].lat + "," + comics[hero].lng
+                });
+
+                    
+                google.maps.event.addListener(marker, 'click', function(evt) { 
+
+
+
+
+                    infowindow.setContent(this.html);
+                    infowindow.open(map, this);
+                    })
+
+                radiuss = 350;
+                color = "green";
+                var cityCircle = new google.maps.Circle({
+                    strokeColor: color,
+                    strokeOpacity: 1,
+                    strokeWeight: 2,
+                    fillColor: color,
+                    fillOpacity: 0.15,
+                    map: map,
+                    center: myLatLng,
+                    radius: radiuss
+                });
+        }
+      }
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRV05v2G9jSn4y5VowB22Sz__fgaYPzGE&callback=initMap">
+    </script>
+
+</body>
+</html>
