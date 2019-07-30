@@ -1,20 +1,207 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".LoginActivity"
     tools:showIn="@layout/app_bar_main">
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_marginTop="50dp"
+        android:background="@color/main_background_color"
+        android:gravity="center"
+        android:text="My Sensors"
+        android:textColor="@color/main_text_color"
+        android:textSize="45dp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@color/main_background_color"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/main_background_color"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginLeft="20dp"
+                android:background="@color/main_background_color"
+                android:gravity="center"
+                android:text="O₃" />
+
+            <EditText
+                android:id="@+id/S_O3_value"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_marginLeft="20dp"
+                android:background="@color/main_background_color"
+                android:gravity="center"
+                android:text="0" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/main_background_color"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/main_background_color"
+                android:gravity="center"
+                android:text="NO₂" />
+
+            <EditText
+                android:id="@+id/S_NO_value"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/main_background_color"
+                android:gravity="center"
+                android:text="0" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@color/main_background_color"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/main_background_color"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView13"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginLeft="20dp"
+                android:background="@color/main_background_color"
+                android:gravity="center"
+                android:text="CO" />
+
+            <EditText
+                android:id="@+id/S_CO_value"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_marginLeft="20dp"
+                android:background="@color/main_background_color"
+                android:gravity="center"
+                android:text="0" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/main_background_color"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView15"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/main_background_color"
+                android:gravity="center"
+                android:text="SO₂" />
+
+            <EditText
+                android:id="@+id/S_SO_value"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/main_background_color"
+                android:gravity="center"
+                android:text="0" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@color/main_background_color"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_weight="1"
+            android:background="@color/main_background_color"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textview99"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginLeft="20dp"
+                android:background="@color/main_background_color"
+                android:gravity="center"
+                android:text="temprature" />
+
+            <EditText
+                android:id="@+id/S_temprature_value"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_marginLeft="20dp"
+                android:background="@color/main_background_color"
+                android:gravity="center"
+                android:text="0" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_weight="1"
+            android:background="@color/main_background_color"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textview100"
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/main_background_color"
+                android:gravity="center"
+                android:text="PM2.5" />
+
+            <EditText
+                android:id="@+id/S_PM_value"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/main_background_color"
+                android:gravity="center"
+                android:text="0" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/s_save_button"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/main_background_color"
+        android:text="Save" />
+
+</LinearLayout>

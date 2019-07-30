@@ -1,21 +1,21 @@
 
 package com.example.design;
+
 import android.app.ActionBar;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.view.KeyEvent;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -49,20 +49,10 @@ public class BluetoothFragment extends Fragment {
     private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
     private static final int REQUEST_ENABLE_BT = 3;
 
-    // Layout Views
-    private ListView mConversationView;
-    private EditText mOutEditText;
-    private Button mSendButton;
-
     /**
      * Name of the connected device
      */
     private String mConnectedDeviceName = null;
-
-    /**
-     * Array adapter for the conversation thread
-     */
-    private ArrayAdapter<String> mConversationArrayAdapter;
 
     /**
      * String buffer for outgoing messages
@@ -78,6 +68,13 @@ public class BluetoothFragment extends Fragment {
      * Member object for the chat services
      */
     private BluetoothService mChatService = null;
+    EditText O3_Edit;
+    EditText NO2_Edit;
+    EditText CO_Edit;
+    EditText SO2_Edit;
+    EditText temparture_Edit;
+    EditText PM_Edit;
+    public String temp_String = "";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -94,6 +91,20 @@ public class BluetoothFragment extends Fragment {
         }
     }
 
+    public View onCreateView(LayoutInflater inflater, ViewGroup parent,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.content_main, parent, false);
+        O3_Edit = (EditText) view.findViewById(R.id.S_O3_value);
+        NO2_Edit = (EditText) view.findViewById(R.id.S_NO_value);
+        CO_Edit = (EditText) view.findViewById(R.id.S_CO_value);
+        SO2_Edit = (EditText) view.findViewById(R.id.S_SO_value);
+        temparture_Edit = (EditText) view.findViewById(R.id.S_temprature_value);
+        PM_Edit = (EditText) view.findViewById(R.id.S_PM_value);
+
+        SharedPreferences settings = this.getActivity().getSharedPreferences("PREFS", 0);
+
+        return view;
+    }
 
     @Override
     public void onStart() {
@@ -132,6 +143,8 @@ public class BluetoothFragment extends Fragment {
             }
         }
     }
+
+
     /**
      * Set up the UI and background operations for chat.
      */
@@ -154,24 +167,6 @@ public class BluetoothFragment extends Fragment {
             startActivity(discoverableIntent);
         }
     }
-
-    private void sendMessage(String message) {
-            // Reset out string buffer to zero and clear the edit text field
-            mOutStringBuffer.setLength(0);
-            mOutEditText.setText(mOutStringBuffer);
-    }
-
-    private TextView.OnEditorActionListener mWriteListener
-            = new TextView.OnEditorActionListener() {
-        public boolean onEditorAction(TextView view, int actionId, KeyEvent event) {
-            // If the action is a key-up event on the return key, send the message
-            if (actionId == EditorInfo.IME_NULL && event.getAction() == KeyEvent.ACTION_UP) {
-                String message = view.getText().toString();
-                sendMessage(message);
-            }
-            return true;
-        }
-    };
 
     /**
      * Updates the status on the action bar.
@@ -219,7 +214,6 @@ public class BluetoothFragment extends Fragment {
                     switch (msg.arg1) {
                         case BluetoothService.STATE_CONNECTED:
                             setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
-                            mConversationArrayAdapter.clear();
                             break;
                         case BluetoothService.STATE_CONNECTING:
                             setStatus(R.string.title_connecting);
@@ -230,17 +224,48 @@ public class BluetoothFragment extends Fragment {
                             break;
                     }
                     break;
-                case Constants.MESSAGE_WRITE:
-                    byte[] writeBuf = (byte[]) msg.obj;
-                    // construct a string from the buffer
-                    String writeMessage = new String(writeBuf);
-                    mConversationArrayAdapter.add("Me:  " + writeMessage);
-                    break;
                 case Constants.MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
+                    if (readMessage!=null){
+                        Log.d("asdf", "readMessage: " + readMessage);
+                        String[] change_target = readMessage.split("\\n");
+
+                        for(int i = 0; i<change_target.length; i++) {
+                            Log.d("asdf", "change_target: " + change_target[i]);
+                            String[] change_st = change_target[i].split("-st ");
+                            switch(change_st[0]){
+                                case "0":{
+                                    temparture_Edit.setText(change_st[1]);
+                                    break;
+                                }
+                                case "1":{
+                                    PM_Edit.setText(change_st[1]);
+                                    break;
+                                }
+                                case "2":{
+                                    NO2_Edit.setText(change_st[1]);
+                                    break;
+                                }
+                                case "3":{
+                                    O3_Edit.setText(change_st[1]);
+                                    break;
+                                }
+                                case "4":{
+                                    CO_Edit.setText(change_st[1]);
+                                    break;
+                                }
+                                case "5":{
+                                    SO2_Edit.setText(change_st[1]);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    //Toast.makeText(activity, readMessage, Toast.LENGTH_SHORT).show();
+                    //mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name

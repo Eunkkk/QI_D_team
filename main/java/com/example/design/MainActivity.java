@@ -8,13 +8,6 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -75,8 +68,6 @@ public class MainActivity extends AppCompatActivity{
                 EditText password_Edit = (EditText)findViewById(R.id.A_Pass_Edit);
                 setInput_password(password_Edit.getText().toString());
 
-                //sign_in_request();
-
                 Intent intent = new Intent(
                         getApplicationContext(),
                         LoginActivity.class);
@@ -97,37 +88,5 @@ public class MainActivity extends AppCompatActivity{
         return err;
     }
 
-    public static void sign_in_request (){ //Sign_in request
-        URL url = null;
-        try {
-            url = new URL("http://teamd-iot.calit2.net/");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Accept-Language", "ko-kr,ko;q=0.8,en-us;q=0.5,en;q=0.3");
-            String param = "{\"email_address\": \"asdasd\", \"body\" : \"ddddddddd\"}";
 
-            OutputStreamWriter osw = new OutputStreamWriter(
-                    conn.getOutputStream());
-
-            osw.write(param);
-            osw.flush();
-
-            BufferedReader br = null;
-            br = new BufferedReader(new InputStreamReader(conn.getInputStream(),"UTF-8"));
-
-            String line = null;
-            while((line = br.readLine()) != null){ // 여기에
-                System.out.println(line);
-            }
-
-            osw.close();
-            br.close();
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
