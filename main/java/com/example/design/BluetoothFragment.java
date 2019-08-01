@@ -72,8 +72,9 @@ public class BluetoothFragment extends Fragment {
     EditText NO2_Edit;
     EditText CO_Edit;
     EditText SO2_Edit;
-    EditText temparture_Edit;
+    EditText temprature_Edit;
     EditText PM_Edit;
+    EditText MAC_Edit;
     public String temp_String = "";
 
     @Override
@@ -98,8 +99,9 @@ public class BluetoothFragment extends Fragment {
         NO2_Edit = (EditText) view.findViewById(R.id.S_NO_value);
         CO_Edit = (EditText) view.findViewById(R.id.S_CO_value);
         SO2_Edit = (EditText) view.findViewById(R.id.S_SO_value);
-        temparture_Edit = (EditText) view.findViewById(R.id.S_temprature_value);
+        temprature_Edit = (EditText) view.findViewById(R.id.S_temprature_value);
         PM_Edit = (EditText) view.findViewById(R.id.S_PM_value);
+        MAC_Edit = (EditText)view.findViewById(R.id.S_MAC_address);
 
         SharedPreferences settings = this.getActivity().getSharedPreferences("PREFS", 0);
 
@@ -143,7 +145,6 @@ public class BluetoothFragment extends Fragment {
             }
         }
     }
-
 
     /**
      * Set up the UI and background operations for chat.
@@ -237,7 +238,7 @@ public class BluetoothFragment extends Fragment {
                             String[] change_st = change_target[i].split("-st ");
                             switch(change_st[0]){
                                 case "0":{
-                                    temparture_Edit.setText(change_st[1]);
+                                    temprature_Edit.setText(change_st[1]);
                                     break;
                                 }
                                 case "1":{
@@ -320,6 +321,8 @@ public class BluetoothFragment extends Fragment {
         // Get the device MAC address
         String address = data.getExtras()
                 .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+        if(DeviceListActivity.EXTRA_DEVICE_ADDRESS != "device_address")
+            MAC_Edit.setText(DeviceListActivity.EXTRA_DEVICE_ADDRESS); //////////////////// instance data
         // Get the BluetoothDevice object
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         // Attempt to connect to the device

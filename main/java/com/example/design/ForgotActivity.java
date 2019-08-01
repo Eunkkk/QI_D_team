@@ -3,7 +3,9 @@ package com.example.design;
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,8 +15,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ForgotActivity extends Activity {
     private static final String TAG = "asdf";
@@ -22,6 +22,9 @@ public class ForgotActivity extends Activity {
     String input_new_password = "";
     String input_confirm_password = "";
     String result = "";
+    boolean email_format = false;
+    boolean password_format = false;
+    boolean confirm_password_format = false;
 
     public String getInput_email() {
         return input_email;
@@ -52,7 +55,6 @@ public class ForgotActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.forgot_password_update);
 
-
         Button complete_button = (Button) findViewById(R.id.F_complete_button);
         Button cancel_button = (Button) findViewById(R.id.F_cancel_button);
         Button check_button = (Button) findViewById(R.id.F_check_button);
@@ -62,6 +64,8 @@ public class ForgotActivity extends Activity {
             public void onClick(View view) {
                 EditText email_Edit = (EditText) findViewById(R.id.F_Email_Edit);
                 setInput_email(email_Edit.getText().toString());
+                if (!isValidEmail(getInput_email()))
+                    Toast.makeText(ForgotActivity.this, "Your email is invalid", Toast.LENGTH_SHORT).show();
 
                 JSONObject json = new JSONObject();
                 try {
@@ -69,18 +73,16 @@ public class ForgotActivity extends Activity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                Log.d("asdf", json.toString());
+                Log.d("asdf", "json: " + json.toString());
                 if (getInput_email().length() > 0) {
                     try {
-                        result = new PostJSON().execute("http://teamd-iot.calit2.net/test", json.toString()).get();
+                        result = new PostJSON().execute("http://teamd-iot.calit2.net/app/fpwchange", json.toString()).get();
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-                Toast.makeText(ForgotActivity.this, result, Toast.LENGTH_SHORT).show();
-
             }
         });
 
@@ -93,7 +95,24 @@ public class ForgotActivity extends Activity {
                 EditText confirm_passwordEdit = (EditText) findViewById(R.id.F_confirmpass_Edit);
                 setInput_confirm_password(confirm_passwordEdit.getText().toString());
 
-                //password_update(); // Password Update request
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("USN", "001");
+                    json.put("new_password", getInput_new_password());
+                    json.put("confirm_new_password", getInput_confirm_password());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Log.d("asdf", "json: " + json.toString());
+                if (getInput_email().length() > 0) {
+                    try {
+                        result = new PostJSON().execute("http://teamd-iot.calit2.net/app/fpwchange", json.toString()).get();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         });
 
@@ -105,15 +124,8 @@ public class ForgotActivity extends Activity {
         });
     }
 
-    public static boolean isValidEmail(String email) {
-        boolean err = false;
-        String regex = "^[_a-z0-9-]+(.[_a-z0-9-]+)*@(?:\\w+\\.)+\\w+$";
-        Pattern p = Pattern.compile(regex);
-        Matcher m = p.matcher(email);
-        if (m.matches()) {
-            err = true;
-        }
-        return err;
+    public static boolean isValidEmail(CharSequence target) {
+        return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
     }
 
     private void setUseableEditText(EditText et, boolean useable) { // 버튼 활성화, 비활성화

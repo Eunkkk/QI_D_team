@@ -2,10 +2,13 @@ package com.example.design;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -75,11 +78,22 @@ public class SignupActivity extends Activity {
         Button complete_button = (Button)findViewById(R.id.U_complete_button);
         Button cancel_button = (Button)findViewById(R.id.U_cancel_button);
 
+        EditText email_Edit = (EditText) findViewById(R.id.U_Email_Edit);
+        EditText pass_Edit = (EditText) findViewById(R.id.U_password_Edit);
+        EditText confirmpass_Edit = (EditText) findViewById(R.id.U_confirmpass_Edit);
+        EditText Fname_Edit = (EditText) findViewById(R.id.U_Fname_Edit);
+        EditText Lname_Edit = (EditText) findViewById(R.id.U_Lname_Edit);
+        EditText Birth_Edit = (EditText) findViewById(R.id.U_Birth_edit);
+
         complete_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 EditText email_Edit = (EditText) findViewById(R.id.U_Email_Edit);
                 setInput_email(email_Edit.getText().toString());
+                if(!isValidEmail(getInput_email()))
+                    Toast.makeText(SignupActivity.this, "Your email is invalid", Toast.LENGTH_SHORT).show();
+                else
+                    Toast.makeText(SignupActivity.this, "SUCCESS", Toast.LENGTH_SHORT).show();
                 EditText pass_Edit = (EditText) findViewById(R.id.U_password_Edit);
                 setInput_password(pass_Edit.getText().toString());
                 EditText confirmpass_Edit = (EditText) findViewById(R.id.U_confirmpass_Edit);
@@ -96,22 +110,21 @@ public class SignupActivity extends Activity {
                     json.put("e_mail", getInput_email());
                     json.put("password", getInput_password());
                     json.put("confirm_password", getInput_confirm_password());
-                    json.put("First_name", getInput_First_name());
-                    json.put("Last_name", getInput_Last_name());
-                    json.put("Birth_Date", getInput_Birth_Date());
+                    json.put("first_name", getInput_First_name());
+                    json.put("last_name", getInput_Last_name());
+                    json.put("birth_date", getInput_Birth_Date());
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if (getInput_email().length() > 0) {
                     try {
-                        new PostJSON().execute("http://teamd-iot.calit2.net/test", json.toString()).get();
+                        new PostJSON().execute("http://teamd-iot.calit2.net/app/signup", json.toString()).get();
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                }
-                Log.d("asdf", json.toString());
+                Log.d("asdf", "json: " + json.toString());
             }
         });
 
@@ -121,5 +134,9 @@ public class SignupActivity extends Activity {
                 finish();
             }
         });
+    }
+
+    public static boolean isValidEmail(CharSequence target) {
+        return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());
     }
 }

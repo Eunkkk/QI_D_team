@@ -1,6 +1,5 @@
 package com.example.design;
 
-import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -17,31 +16,6 @@ import com.google.android.material.navigation.NavigationView;
 
 public class LoginActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
-
-    // Intent request codes
-    private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
-    private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
-    private static final int REQUEST_ENABLE_BT = 3;
-
-    /**
-     * Name of the connected device
-     */
-    private String mConnectedDeviceName = null;
-
-    /**
-     * String buffer for outgoing messages
-     */
-    private StringBuffer mOutStringBuffer;
-
-    /**
-     * Local Bluetooth adapter
-     */
-    private BluetoothAdapter mBluetoothAdapter = null;
-
-    /**
-     * Member object for the chat services
-     */
-    private BluetoothService mChatService = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +44,7 @@ public class LoginActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+    DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -80,7 +54,7 @@ public class LoginActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate the menu; this adds sitems to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
@@ -91,24 +65,37 @@ public class LoginActivity extends AppCompatActivity
         int id = item.getItemId();
         item.setChecked(true);
 
-        if(id == R.id.myAccount) {
-            return true;
-        }
-        else if(id == R.id.mySensor) {
+        if(id == R.id.myMap) {
             Intent intent = new Intent(
                     getApplicationContext(),
-                    MySensorActivity.class);
+                    MyMapActivity.class);
             startActivity(intent);
             return true;
         }
         else if(id == R.id.myBluetooth) {
                 // Ensure this device is discoverable by others
                 return true;
-            }
+        }
         else if(id == R.id.logout) {
                 // Ensure this device is discoverable by others
                 return true;
-            }
+        }
+        else if(id == R.id.Password_change) {
+            // Ensure this device is discoverable by others
+            Intent intent = new Intent(
+                    getApplicationContext(),
+                    Password_ChangeActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else if(id == R.id.ID_cancellation) {
+            // Ensure this device is discoverable by others
+            Intent intent = new Intent(
+                    getApplicationContext(),
+                    ID_CancellationActivity.class);
+            startActivity(intent);
+            return true;
+        }
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

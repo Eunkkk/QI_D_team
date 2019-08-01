@@ -9,8 +9,8 @@
     tools:context=".LoginActivity"
     tools:showIn="@layout/app_bar_main">
 
-    <TextView
-        android:id="@+id/textView3"
+    <EditText
+        android:id="@+id/S_MAC_address"
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:layout_marginTop="50dp"

@@ -49,7 +49,9 @@
         <activity android:name=".LoginActivity" />
         <activity android:name=".ForgotActivity" />
         <activity android:name=".SignupActivity" />
-        <activity android:name=".MySensorActivity" />
+        <activity android:name=".MyMapActivity" />
+        <activity android:name=".Password_ChangeActivity" />
+        <activity android:name=".ID_CancellationActivity" />
         <activity
             android:name=".DeviceListActivity"
             android:label="@string/select_device"
