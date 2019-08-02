@@ -17,6 +17,11 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         {# ==================================================================== #}
+        <script>
+            var getUSN = localStorage.getItem('USN');
+            if (getUSN === null) 
+                window.location.replace("http://teamd-iot.calit2.net/");
+        </script>
     </head>
     {# ==================================================================== #}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
@@ -27,8 +32,10 @@
             $("#password, #confirm_password").keyup(checkPasswordMatch);
 
             var getUSN = localStorage.getItem('USN');
+            console.log(getUSN);
 
             $('#clickidcancellation').click(function () {
+                formCheck(this);
                 event.preventDefault();
                 if (request) {
                     request.abort();
@@ -167,15 +174,12 @@
                         <div class="panel-heading">
                             <h3 class="panel-title">ID Cancellation</h3>
                         </div>
-                        <div
-                            class="panel-body">
+                        <div class="panel-body">
 
-                            {# <form action="/user/idcancellation/request" method="post" onsubmit="return formCheck(this)"> #}
                             <form onsubmit="return formCheck(this)">
                                 <div class="form-group">
                                     <label>Password</label>
-                                    <input
-                                    class="form-control" id="password" name="password" placeholder="Password" type="password" value=""/>
+                                    <input class="form-control" id="password" name="password" placeholder="Password" type="password" value=""/>
                                     <br><label>Confirm Password</label>
                                     <input class="form-control" id="confirm_password" name="confirm_password" onchange="checkPasswordMatch();" placeholder="Password" type="password" value=""/>
                                     <div id="divCheckPasswordMatch"></div><br>

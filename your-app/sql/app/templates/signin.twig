@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <title>QI Team D Sign In Page</title>
+        <!-- Core CSS - Include with every page -->
+        <link href="/assets/plugins/bootstrap/bootstrap.css" rel="stylesheet"/>
+        <link href="/assets/font-awesome//css/font-awesome.css" rel="stylesheet"/>
+        <link href="/assets/plugins/pace/pace-theme-big-counter.css" rel="stylesheet"/>
+        <link href="/assets//css/style.css" rel="stylesheet"/>
+        <link
+        href="/assets//css/main-style.css" rel="stylesheet"/>
+
+        {# ===============================Modal===================================== #}
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        {# ==================================================================== #}
+
+    </head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(window).on('load', function () { // popup
+
+            var delayMs = 100; // delay in milliseconds
+            setTimeout(function () {
+                $('#myModal').modal('show');
+            }, delayMs);
+        });
+
+        var request;
+        $(document).ready(function () {
+
+            $("#e_mail").keyup(checkEmailForm);
+
+            $('#clicksignin').click(function () {
+                event.preventDefault();
+                if (request) {
+                    request.abort();
+                }
+
+                var email = $("#e_mail").val();
+                var pwd = $("#password").val();
+
+                request = $.post('/user/signin/request', {
+                    e_mail: email,
+                    password: pwd
+                }, function (returnedData) {
+                    console.log(returnedData);
+                });
+
+                // Callback handler that will be called on success
+                request.done(function (response, textStatus, jqXHR) { // Log a message to the console
+
+                    if (response.USN && response.permission) {
+                        localStorage.setItem('USN', response.USN);
+                        if (response.permission.permission == 1) { // Admin
+                            window.location.replace("http://teamd-iot.calit2.net/admin/index");
+                        } else { // user
+                            window.location.replace("http://teamd-iot.calit2.net/user/index");
+                        }
+                    } else {
+                        alert(response.error_message);
+                    }
+                });
+
+                // Callback handler that will be called on failure
+                request.fail(function (jqXHR, textStatus, errorThrown) { // Log the error to the console
+                    alert("The following error occurred: " + textStatus, errorThrown);
+
+                });
+            });
+        });
+
+        function checkEmailForm() {
+
+            var email = $("#e_mail").val();
+            var email_regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+            if (email_regex.test(email) == false) {
+                var match = "Enter a valid email address"
+                var result = match.fontcolor('red');
+                $("#divCheckEmailForm").html(result);
+            } else {
+                var match = "A valid email address "
+                var result = match.fontcolor('green');
+                $("#divCheckEmailForm").html(result);
+            }
+        }
+
+        function formCheck(frm) {
+            if (frm.e_mail.value == "") {
+                alert("Please enter your E-mail address.");
+                frm.e_mail.focus();
+                return false;
+            }
+            if (frm.password.value == "") {
+                alert("Please enter your password.");
+                frm.password.focus();
+                return false;
+            }
+
+            var email = $("#e_mail").val();
+            var pass = $("#password").val();
+
+            var email_regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+            var password_regex1 = /([a-z].*[A-Z])|([A-Z].*[a-z])([0-9])+([!,%,&,@,#,$,^,*,?,_,~])/;
+            var password_regex2 = /([0-9])/;
+            var password_regex3 = /([!,%,&,@,#,$,^,*,?,_,~])/;
+
+            if (email_regex.test(email) == false) {
+                alert("Please Enter Correct Email");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+
+    {# ==================================================================== #}
+    {% if error_message %}
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog modal-lg modal-dialog-centered " role="document">
+                <div class="modal-content ">
+                    <div class="modal-header text-danger">
+                        <h4 class="modal-title ">Notification</h4>
+                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{error_message}}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary mx-auto" data-dismiss="modal" type="button">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% elseif success_message %}
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog modal-lg modal-dialog-centered " role="document">
+                <div class="modal-content ">
+                    <div class="modal-header ">
+                        <h4 class="modal-title ">Notification</h4>
+                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{success_message}}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary mx-auto" data-dismiss="modal" type="button">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
+    {# ==================================================================== #}
+
+    <body class="body-Login-back">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-md-4 col-md-offset-4 text-center logo-margin ">
+                    <img alt="" src="/assets/img/logo_new.png"/>
+                </div>
+                <div class="col-md-4 col-md-offset-4">
+                    <div class="login-panel panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Please, Sign In</h3>
+                        </div>
+                        <div class="panel-body">
+
+                            <form onsubmit="return formCheck(this)">
+                                <fieldset>
+                                    <div class="form-group">
+                                        <input autofocus class="form-control" id="e_mail" name="e_mail" onchange="checkEmailForm();" placeholder="E-mail" type="email">
+                                        <div id="divCheckEmailForm"></div>
+                                    </div>
+                                    <div class="form-group">
+                                        <input class="form-control" id="password" name="password" placeholder="Password" type="password" value="">
+                                    </div>
+                                    <div>
+                                        <a href="http://teamd-iot.calit2.net/user/fpwchange">
+                                            Forgot Your Pssword?</a>
+                                    </br>
+                                    <a href="http://teamd-iot.calit2.net/user/signup">New here? Sign up!</a>
+                                </br>
+                            </br>
+                        </div>
+                        <input class="btn btn-lg btn-success btn-block " id="clicksignin" type="submit" value="SIGN-IN"/>
+                    </fieldset>
+                </form>
+            </div>
+        </div>
+    </body>
+</html></div></div></div><!-- Core Scripts - Include with every page --><script src="/assets/plugins/jquery-1.10.2.js"></script><script src="/assets/plugins/bootstrap/bootstrap.min.js"></script><script src="/assets/plugins/metisMenu/jquery.metisMenu.js"></script></body></html>
+

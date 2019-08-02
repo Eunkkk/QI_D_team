@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <title>QI Team D ID Cancellation Page</title>
+        <!-- Core CSS - Include with every page -->
+        <link href="/assets/plugins/bootstrap/bootstrap.css" rel="stylesheet"/>
+        <link href="/assets/font-awesome//css/font-awesome.css" rel="stylesheet"/>
+        <link href="/assets/plugins/pace/pace-theme-big-counter.css" rel="stylesheet"/>
+        <link href="/assets//css/style.css" rel="stylesheet"/>
+        <link
+        href="/assets//css/main-style.css" rel="stylesheet"/>
+        {# ===============================Modal===================================== #}
+        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        {# ==================================================================== #}
+    </head>
+    {# ==================================================================== #}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript">
+
+        var request;
+        $(document).ready(function () {
+            $("#password, #confirm_password").keyup(checkPasswordMatch);
+
+            var getUSN = localStorage.getItem('USN');
+
+            $('#clickidcancellation').click(function () {
+                event.preventDefault();
+                if (request) {
+                    request.abort();
+                }
+
+                var pwd = $("#password").val();
+
+                request = $.post('/user/idcancellation/request', {
+                    USN: getUSN,
+                    password: pwd
+                }, function (returnedData) {
+                    console.log(returnedData);
+                });
+
+                // Callback handler that will be called on success
+                request.done(function (response, textStatus, jqXHR) { // Log a message to the console
+                    if (response.result_code == 0) {
+                        alert(response.success_message);
+                        window.location.replace("http://teamd-iot.calit2.net/");
+                    } else {
+                        alert(response.error_message);
+                        window.location.replace("http://teamd-iot.calit2.net/user/idcancellation");
+                    }
+                });
+
+                // Callback handler that will be called on failure
+                request.fail(function (jqXHR, textStatus, errorThrown) { // Log the error to the console
+                    alert("The following error occurred: " + textStatus, errorThrown);
+
+                });
+            });
+        });
+
+        $(window).on('load', function () { // popup
+            var delayMs = 100; // delay in milliseconds
+            setTimeout(function () {
+                $('#myModal').modal('show');
+            }, delayMs);
+        });
+
+        function checkPasswordMatch() {
+            var password = $("#password").val();
+            var confirmPassword = $("#confirm_password").val();
+
+            if (password != confirmPassword) {
+                var match = "The passwords do not match."
+                var result = match.fontcolor('red');
+                $("#divCheckPasswordMatch").html(result);
+            } else {
+                var match = "The passwords match!";
+                var result = match.fontcolor('green');
+                $("#divCheckPasswordMatch").html(result);
+            }
+        }
+
+        function formCheck(frm) {
+            if (frm.password.value == "") {
+                alert("Please enter your password.");
+                frm.password.focus();
+                return false;
+            }
+            if (frm.confirm_password.value == "") {
+                alert("Please enter your confirm password.");
+                frm.confirm_password.focus();
+                return false;
+            }
+
+            var pass = $("#password").val();
+            var confirm = $("#confirm_password").val();
+
+            var password_regex1 = /([a-z].*[A-Z])|([A-Z].*[a-z])([0-9])+([!,%,&,@,#,$,^,*,?,_,~])/;
+            var password_regex2 = /([0-9])/;
+            var password_regex3 = /([!,%,&,@,#,$,^,*,?,_,~])/;
+
+            if (pass.length < 8 || password_regex1.test(pass) == false || password_regex2.test(pass) == false || password_regex3.test(pass) == false) {
+                alert("Password Must be at least 8 Digitslong and contains one UpperCase, one LowerCase and One special character.");
+                return false;
+            } else if (pass !== confirm) {
+                alert("Passwords do not match.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+    {# ==================================================================== #}
+    {% if error_message %}
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog modal-lg modal-dialog-centered " role="document">
+                <div class="modal-content ">
+                    <div class="modal-header text-danger">
+                        <h4 class="modal-title ">Notification</h4>
+                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{error_message}}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary mx-auto" data-dismiss="modal" type="button">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% elseif success_message %}
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog modal-lg modal-dialog-centered " role="document">
+                <div class="modal-content ">
+                    <div class="modal-header ">
+                        <h4 class="modal-title ">Notification</h4>
+                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{success_message}}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary mx-auto" data-dismiss="modal" type="button">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    {% endif %}
+    {# ==================================================================== #}
+
+    <body class="body-Login-back">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-md-offset-4 text-center logo-margin ">
+                    <img alt="" src="/assets/img/logo_new.png"/>
+                </div>
+                <div class="col-md-4 col-md-offset-4">
+                    <div class="login-panel panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">ID Cancellation</h3>
+                        </div>
+                        <div
+                            class="panel-body">
+
+                            {# <form action="/user/idcancellation/request" method="post" onsubmit="return formCheck(this)"> #}
+                            <form onsubmit="return formCheck(this)">
+                                <div class="form-group">
+                                    <label>Password</label>
+                                    <input class="form-control" id="password" name="password" placeholder="Password" type="password" value=""/>
+                                    <br><label>Confirm Password</label>
+                                    <input class="form-control" id="confirm_password" name="confirm_password" onchange="checkPasswordMatch();" placeholder="Password" type="password" value=""/>
+                                    <div id="divCheckPasswordMatch"></div><br>
+
+                                    <div class="row text-center" style="width: 100%">
+                                        <a class="btn btn-sm btn-success " href="javascript:window.history.back();">CANCEL</a>
+                                        <input class="btn btn-sm btn-success " id="clickidcancellation" type="submit" value="COMPLETE"/>
+                                    </dev>
+                                </fieldset>
+
+                            </div>
+                        </body>
+                    </html>
+                </div>
+            </div>
+        </body>
+    </body>
+</html></div></div><!-- Core Scripts - Include with every page --><script src="/assets/plugins/jquery-1.10.2.js"></script><script src="/assets/plugins/bootstrap/bootstrap.min.js"></script><script src="/assets/plugins/metisMenu/jquery.metisMenu.js"></script></body></html>
+

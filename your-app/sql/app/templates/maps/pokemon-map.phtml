@@ -1,0 +1,109 @@
+<!-- 
+Marker Toggle Example Using Google Maps Javascript Library
+November 1, 2015
+EFWJames.com
+Released under GNU General Public License v3.0 - Freely share and share freely
+This code set is dependent only on Google Maps and uses traditional JavaScript techniques
+-->
+
+<html>
+<head>
+<title>Dynamic JSON Markers with Info Windows</title>
+
+<link type="text/css" rel="stylesheet" href="/supercoffee.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script> 
+<script type="text/javascript">
+
+    var points = (function () {
+        var json = null;
+        $.ajax({
+            'async': false,
+            'global': false,
+            'url': "/maps/fakesensors_as_json",
+            'dataType': "json",
+            'success': function (data) {
+                json = data;
+            }
+        });
+        return json;
+    })(); 
+
+
+    // Set a global variable for map
+    var map;
+
+    var activeInfoWindow;
+
+    function initMap() {
+        var options = {
+            center: {
+                lat: 32.8523,
+                lng: -117.2465
+            },
+            zoom: 12,
+            mapTypeId: google.maps.MapTypeId.TERRAIN
+        }
+        map = new google.maps.Map(document.getElementById("map_canvas"), options);
+
+        // Create markers into DOM
+        createMarkers(points);
+        
+    };
+
+ 
+    // Instantiate markers in the background and pass it back to the json object
+    function createMarkers(markerJson) {
+    
+        for (var id in markerJson) {
+            var shop = markerJson[id];
+            
+            var image = {
+                    url: "http://192.168.33.99/images/vertical_sprites.png",
+                    size: new google.maps.Size(40, 50), // scaled size
+                    origin: new google.maps.Point(0, 50*(parseInt(shop.dex) - 1)), // origin
+                    anchor: new google.maps.Point(20,25) // anchor
+                };
+                
+            var marker = new google.maps.Marker({
+                map: map,
+                position: shop.center,
+                title: shop.name,
+                id: shop.id,
+                //  icon: image
+            });
+
+            marker.infowindow = new google.maps.InfoWindow({
+                content: "<div><strong>" + shop.name + 
+                "</strong></div><br />CO2: " + shop.s1 + "</strong></div>"
+            });
+
+            marker.addListener('click', function() {
+                activeInfoWindow&&activeInfoWindow.close();
+                this.infowindow.open(map, this);
+                marker.infowindow.close();
+                activeInfoWindow = this.infowindow;
+            });
+    }
+}
+    </script>
+
+    <style type="text/css">
+    #map_canvas { width: 100%; height: 600px; }
+</style>
+    
+</head>
+<body>
+    <div id="map_canvas"></div>
+
+<div class='myLinkContainer'></div>
+
+<!--<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCKdEnO5F6KsGtIzKRu8q3geEZe30JYrMA&libraries=places&callback=initAutocomplete"
+         async defer></script> -->
+
+         <script type="text/javascript" 
+         src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBRV05v2G9jSn4y5VowB22Sz__fgaYPzGE&callback=initMap">
+         </script>
+         
+
+</body>
+</html>

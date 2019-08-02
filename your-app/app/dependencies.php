@@ -84,6 +84,23 @@ $container['App\Controller\MapsController'] = function ($container) {
     return new App\Controller\MapsController($view, $logger, $mapsModel);
 };
 
+$container['App\Controller\SensorController'] = function ($container) {
+    $logger = $container->get('logger');
+    $sensorModel = $container->get('sensorModel');
+
+    $view = $container->get('view');
+
+    return new App\Controller\SensorController($view, $logger, $sensorModel);
+};
+
+$container['App\Controller\DataController'] = function ($container) {
+    $logger = $container->get('logger');
+    $dataModel = $container->get('dataModel');
+    $view = $container->get('view');
+
+    return new App\Controller\DataController($view, $logger, $dataModel);
+};
+
 // -----------------------------------------------------------------------------
 // Model factories
 // -----------------------------------------------------------------------------
@@ -99,3 +116,24 @@ $container['mapsModel'] = function ($container) {
     $mapsModel = new App\Model\MapsModel($container->get('db'));
     return $mapsModel;
 };
+
+$container['appModel'] = function ($container) {
+    $settings = $container->get('settings');
+    $appModel = new App\Model\AppModel($container->get('db'));
+    return $appModel;
+};
+
+$container['sensorModel'] = function ($container) {
+    $settings = $container->get('settings');
+    $SensorModel = new App\Model\SensorModel($container->get('db'));
+    return $SensorModel;
+};
+
+$container['dataModel'] = function ($container) {
+    $settings = $container->get('settings');
+    $DataModel = new App\Model\DataModel($container->get('db'));
+    return $DataModel;
+};
+
+
+

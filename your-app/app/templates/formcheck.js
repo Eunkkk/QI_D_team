@@ -1,17 +1,20 @@
-function checkPasswordMatch() {
-    var password = $("#new_password").val();
-    var confirmPassword = $("#confirm_new_password").val();
+< script src = "https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js" > < /script> <
+    script type = "text/javascript" >
 
-    if (password != confirmPassword) {
-        var match = "The passwords do not match."
-        var result = match.fontcolor('red');
-        $("#divCheckPasswordMatch").html(result);
-    } else {
-        var match = "The passwords match!";
-        var result = match.fontcolor('green');
-        $("#divCheckPasswordMatch").html(result);
+    function checkPasswordMatch() {
+        var password = $("#new_password").val();
+        var confirmPassword = $("#confirm_new_password").val();
+
+        if (password != confirmPassword) {
+            var match = "The passwords do not match."
+            var result = match.fontcolor('red');
+            $("#divCheckPasswordMatch").html(result);
+        } else {
+            var match = "The passwords match!";
+            var result = match.fontcolor('green');
+            $("#divCheckPasswordMatch").html(result);
+        }
     }
-}
 
 function checkPasswordForm() {
     var password = $("#password").val();
