@@ -2,25 +2,25 @@ package com.example.design;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MainActivity extends AppCompatActivity{
     String input_email = "";
     String input_password = "";
+    String result = "";
 
     public String getInput_email() {
         return input_email;
@@ -75,8 +75,26 @@ public class MainActivity extends AppCompatActivity{
                 EditText password_Edit = (EditText)findViewById(R.id.A_Pass_Edit);
                 setInput_password(password_Edit.getText().toString());
 
-                //sign_in_request();
+                if (!isValidEmail(getInput_email()))
+                    Toast.makeText(MainActivity.this, "Your email is invalid", Toast.LENGTH_SHORT).show();
 
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("e_mail", getInput_email());
+                    json.put("password",getInput_password());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Log.d("asdf", "json: " + json.toString());
+                if (getInput_email().length() > 0) {
+                    try {
+                        result = new PostJSON().execute("http://teamd-iot.calit2.net/app/signin", json.toString()).get();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
                 Intent intent = new Intent(
                         getApplicationContext(),
                         LoginActivity.class);
@@ -97,37 +115,5 @@ public class MainActivity extends AppCompatActivity{
         return err;
     }
 
-    public static void sign_in_request (){ //Sign_in request
-        URL url = null;
-        try {
-            url = new URL("http://teamd-iot.calit2.net/");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setDoOutput(true);
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Accept-Language", "ko-kr,ko;q=0.8,en-us;q=0.5,en;q=0.3");
-            String param = "{\"email_address\": \"asdasd\", \"body\" : \"ddddddddd\"}";
 
-            OutputStreamWriter osw = new OutputStreamWriter(
-                    conn.getOutputStream());
-
-            osw.write(param);
-            osw.flush();
-
-            BufferedReader br = null;
-            br = new BufferedReader(new InputStreamReader(conn.getInputStream(),"UTF-8"));
-
-            String line = null;
-            while((line = br.readLine()) != null){ // 여기에
-                System.out.println(line);
-            }
-
-            osw.close();
-            br.close();
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

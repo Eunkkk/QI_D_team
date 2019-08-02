@@ -5,28 +5,21 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/myAccount"
-            android:title="@string/menu_Account" />
-        <item
-            android:id="@+id/mySensor"
-            android:title="@string/menu_Sensor" />
+            android:id="@+id/myMap"
+            android:title="MyMap" />
         <item
             android:id="@+id/myBluetooth"
             android:title="@string/menu_Bluetooth" />
         <item
+            android:id="@+id/Password_change"
+            android:title="Password_change" />
+        <item
+            android:id="@+id/ID_cancellation"
+            android:title="ID_cancellation" />
+
+        <item
             android:id="@+id/logout"
             android:title="@string/menu_Logout" />
     </group>
-
-    <item android:title="Communicate">
-        <menu>
-            <item
-                android:id="@+id/nav_share"
-                android:title="@string/menu_share" />
-            <item
-                android:id="@+id/nav_send"
-                android:title="@string/menu_send" />
-        </menu>
-    </item>
 
 </menu>

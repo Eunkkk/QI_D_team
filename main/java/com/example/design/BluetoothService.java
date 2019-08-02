@@ -1,5 +1,3 @@
-package com.example.design;
-
 /*
  * Copyright (C) 2014 The Android Open Source Project
  *
@@ -15,6 +13,9 @@ package com.example.design;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package com.example.design;
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothServerSocket;
@@ -234,24 +235,6 @@ public class BluetoothService {
         mState = STATE_NONE;
         // Update UI title
         updateUserInterfaceTitle();
-    }
-
-    /**
-     * Write to the ConnectedThread in an unsynchronized manner
-     *
-     * @param out The bytes to write
-     * @see ConnectedThread#write(byte[])
-     */
-    public void write(byte[] out) {
-        // Create temporary object
-        ConnectedThread r;
-        // Synchronize a copy of the ConnectedThread
-        synchronized (this) {
-            if (mState != STATE_CONNECTED) return;
-            r = mConnectedThread;
-        }
-        // Perform the write unsynchronized
-        r.write(out);
     }
 
     /**

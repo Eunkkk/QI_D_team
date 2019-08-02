@@ -22,11 +22,11 @@
 
         <TextView
             android:id="@+id/textView25"
-            android:layout_width="120dp"
+            android:layout_width="240dp"
             android:layout_height="30dp"
             android:layout_marginLeft="40dp"
             android:background="@color/main_background_color"
-            android:text="Password"
+            android:text="Current Password"
             android:textColor="@color/main_text_color"
             android:textSize="22dp" />
 
@@ -44,29 +44,54 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="80dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="240dp"
+            android:layout_height="30dp"
+            android:layout_marginLeft="40dp"
+            android:background="@color/main_background_color"
+            android:text="Confirm Password"
+            android:textColor="@color/main_text_color"
+            android:textSize="22dp" />
+
+        <EditText
+            android:id="@+id/W_confirmpass_Edit"
+            android:layout_width="280dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="40dp"
+            android:background="@color/main_text_color"
+            android:inputType="textPassword"
+            android:textColor="@color/black" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
         android:layout_marginTop="200dp"
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/W_complete_button"
+            android:id="@+id/W_cancel_button"
             android:layout_width="80dp"
             android:layout_height="60dp"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="20dp"
             android:layout_weight="1"
             android:background="@drawable/round_button"
-            android:text="Complete"
+            android:text="Cancel"
             android:textSize="22dp" />
 
         <Button
-            android:id="@+id/W_cancel_button"
+            android:id="@+id/W_complete_button"
             android:layout_width="80dp"
             android:layout_height="60dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="40dp"
             android:layout_weight="1"
             android:background="@drawable/round_button"
-            android:text="Cancel"
+            android:text="Complete"
             android:textSize="22dp" />
 
     </LinearLayout>
