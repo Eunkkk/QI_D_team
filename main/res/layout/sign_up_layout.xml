@@ -45,10 +45,10 @@
                 android:background="@color/main_text_color"
                 android:hint=" E-mail"
 
-                android:inputType="text"
+                android:inputType="textEmailAddress"
                 android:textColor="@color/black"
                 android:textColorHint="#9E9E9E"
-                android:textScaleX="0.8"
+                android:textScaleX="1"
                 android:textSize="22dp" />
 
         </LinearLayout>
@@ -77,10 +77,11 @@
             android:layout_marginLeft="20dp"
             android:background="@color/main_text_color"
             android:hint=" Password Must be at Least 8 Digits long contains"
+            android:inputType="textPassword"
             android:textColor="@color/black"
-            android:textColorHint="#9E9E9E"
 
-            android:textScaleX="0.8"
+            android:textColorHint="#9E9E9E"
+            android:textScaleX="1"
             android:textSize="15dp" />
 
     </LinearLayout>
@@ -107,9 +108,10 @@
             android:layout_marginLeft="20dp"
             android:background="@color/main_text_color"
             android:hint=" 1UPPER,1LowerCase,1Special Character"
+            android:inputType="textPassword"
             android:textColor="@color/black"
             android:textColorHint="#9E9E9E"
-            android:textScaleX="0.8"
+            android:textScaleX="1"
             android:textSize="15dp" />
 
     </LinearLayout>
@@ -143,9 +145,10 @@
                 android:layout_marginLeft="20dp"
                 android:background="@color/main_text_color"
                 android:hint=" First Name"
+                android:inputType="text"
                 android:textColor="@color/black"
                 android:textColorHint="#9E9E9E"
-                android:textScaleX="0.8"
+                android:textScaleX="1"
                 android:textSize="22dp" />
 
         </LinearLayout>
@@ -174,9 +177,10 @@
                 android:layout_marginRight="20dp"
                 android:background="@color/main_text_color"
                 android:hint=" Last Name"
+                android:inputType="text"
                 android:textColor="@color/black"
                 android:textColorHint="#9E9E9E"
-                android:textScaleX="0.8"
+                android:textScaleX="1"
                 android:textSize="22dp" />
         </LinearLayout>
 
@@ -207,9 +211,8 @@
             android:inputType="date"
             android:textColor="@color/black"
             android:textColorHint="#9E9E9E"
-            android:textScaleX="0.8"
-            android:textSize="22dp"
-            />
+            android:textScaleX="1"
+            android:textSize="22dp" />
 
     </LinearLayout>
 

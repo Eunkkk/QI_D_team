@@ -15,11 +15,19 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.concurrent.ExecutionException;
 
 /*
  * Copyright (C) 2014 The Android Open Source Project
@@ -69,19 +77,29 @@ public class BluetoothFragment extends Fragment {
      */
     private BluetoothService mChatService = null;
     EditText O3_Edit;
+    EditText O3AQI_Edit;
     EditText NO2_Edit;
+    EditText NO2AQI_Edit;
     EditText CO_Edit;
+    EditText COAQI_Edit;
     EditText SO2_Edit;
-    EditText temprature_Edit;
+    EditText SO2AQI_Edit;
     EditText PM_Edit;
+    EditText PMAQI_Edit;
+    EditText temperature_Edit;
     EditText MAC_Edit;
-    public String temp_String = "";
+    Button Save_Button;
+    public String result = "";
+    String result_code;
+    String success_message;
+    String error_message;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
         // Get local Bluetooth adapter
+
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         // If the adapter is null, then Bluetooth is not supported
@@ -90,18 +108,81 @@ public class BluetoothFragment extends Fragment {
             Toast.makeText(activity, "Bluetooth is not available", Toast.LENGTH_LONG).show();
             activity.finish();
         }
+
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup parent,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.content_main, parent, false);
         O3_Edit = (EditText) view.findViewById(R.id.S_O3_value);
+        O3AQI_Edit = (EditText) view.findViewById(R.id.S_O3_AQI);
         NO2_Edit = (EditText) view.findViewById(R.id.S_NO_value);
+        NO2AQI_Edit = (EditText) view.findViewById(R.id.S_NO_AQI);
         CO_Edit = (EditText) view.findViewById(R.id.S_CO_value);
+        COAQI_Edit = (EditText) view.findViewById(R.id.S_CO_AQI);
         SO2_Edit = (EditText) view.findViewById(R.id.S_SO_value);
-        temprature_Edit = (EditText) view.findViewById(R.id.S_temprature_value);
+        SO2AQI_Edit = (EditText) view.findViewById(R.id.S_SO_AQI);
         PM_Edit = (EditText) view.findViewById(R.id.S_PM_value);
+        PMAQI_Edit = (EditText) view.findViewById(R.id.S_PM_AQI);
+        temperature_Edit = (EditText) view.findViewById(R.id.S_temprature_value);
         MAC_Edit = (EditText)view.findViewById(R.id.S_MAC_address);
+        Save_Button = (Button)view.findViewById(R.id.s_save_button);
+
+        Save_Button.setOnClickListener(new View.OnClickListener()
+        {
+           @Override
+           public void onClick(View v){
+
+               SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-MM-hh-mm-ss");
+               String format = simpleDateFormat.format(new Date());
+               Log.d("asdf", "Current Timestamp: " + format);
+
+               JSONObject json = new JSONObject();
+               try {
+                   json.put("SSN", "100");
+                   json.put("O3", O3_Edit.getText().toString());
+                   json.put("NO2", NO2_Edit.getText().toString());
+                   json.put("CO", CO_Edit.getText().toString());
+                   json.put("SO2", SO2_Edit.getText().toString());
+                   json.put("temperature", temperature_Edit.getText().toString());
+                   json.put("PM2_5", PM_Edit.getText().toString());
+                   json.put("O3_AQI", O3AQI_Edit.getText().toString());
+                   json.put("NO2_AQI", NO2AQI_Edit.getText().toString());
+                   json.put("CO_AQI", COAQI_Edit.getText().toString());
+                   json.put("SO2_AQI", SO2AQI_Edit.getText().toString());
+                   json.put("PM2_5_AQI", PMAQI_Edit.getText().toString());
+                   json.put("lat", "0");
+                   json.put("lng", "0");
+                   json.put("timestamp", format);
+
+               } catch (JSONException e) {
+                   e.printStackTrace();
+               }
+               try {
+                   result = new PostJSON().execute("http://teamd-iot.calit2.net/data/transfer", json.toString()).get();
+               } catch (ExecutionException e) {
+                   e.printStackTrace();
+               } catch (InterruptedException e) {
+                   e.printStackTrace();
+               }
+               Log.d("asdf", "json: " + json.toString());
+               Log.d("asdf", "result: " + result);
+
+               try {
+                   JSONObject json_data = new JSONObject(result);
+                   Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
+                   Log.d("asdf", "receive json: " + json_data.toString());
+                   result_code = (json_data.optString("result_code"));
+                   success_message = (json_data.optString("success_message"));
+                   error_message = (json_data.optString("error_message"));
+                   Log.d("asdf", "result_code: " + result_code);
+                   Log.d("asdf", "success_message: " + success_message);
+                   Log.d("asdf", "error_message: " + error_message);
+               } catch (Exception e) {
+                   Log.e("Fail 3", e.toString());
+               }
+           }
+        });
 
         SharedPreferences settings = this.getActivity().getSharedPreferences("PREFS", 0);
 
@@ -229,40 +310,26 @@ public class BluetoothFragment extends Fragment {
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
-                    if (readMessage!=null){
-                        Log.d("asdf", "readMessage: " + readMessage);
-                        String[] change_target = readMessage.split("\\n");
+                    if (readMessage!=null) {
 
-                        for(int i = 0; i<change_target.length; i++) {
-                            Log.d("asdf", "change_target: " + change_target[i]);
-                            String[] change_st = change_target[i].split("-st ");
-                            switch(change_st[0]){
-                                case "0":{
-                                    temprature_Edit.setText(change_st[1]);
-                                    break;
-                                }
-                                case "1":{
-                                    PM_Edit.setText(change_st[1]);
-                                    break;
-                                }
-                                case "2":{
-                                    NO2_Edit.setText(change_st[1]);
-                                    break;
-                                }
-                                case "3":{
-                                    O3_Edit.setText(change_st[1]);
-                                    break;
-                                }
-                                case "4":{
-                                    CO_Edit.setText(change_st[1]);
-                                    break;
-                                }
-                                case "5":{
-                                    SO2_Edit.setText(change_st[1]);
-                                    break;
-                                }
-                            }
+                        try {
+                            JSONObject json_data = new JSONObject(readMessage);
+                            Log.d("asdf", "receive json: " + json_data.toString());
+                            temperature_Edit.setText(json_data.optString("temperature"));
+                            CO_Edit.setText(json_data.optString("CO"));
+                            COAQI_Edit.setText(json_data.optString("CO_AQI"));
+                            PM_Edit.setText(json_data.optString("PM2_5"));
+                            PMAQI_Edit.setText(json_data.optString("PM2_5_AQI"));
+                            NO2_Edit.setText(json_data.optString("NO2"));
+                            NO2AQI_Edit.setText(json_data.optString("NO2_AQI"));
+                            SO2_Edit.setText(json_data.optString("SO2"));
+                            SO2AQI_Edit.setText(json_data.optString("SO2_AQI"));
+                            O3_Edit.setText(json_data.optString("O3"));
+                            O3AQI_Edit.setText(json_data.optString("O3_AQI"));
+                        } catch (Exception e) {
+                            Log.e("Fail 3", e.toString());
                         }
+
                     }
 
                     //Toast.makeText(activity, readMessage, Toast.LENGTH_SHORT).show();

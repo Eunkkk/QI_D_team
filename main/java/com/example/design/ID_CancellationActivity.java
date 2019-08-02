@@ -1,6 +1,7 @@
 package com.example.design;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.concurrent.ExecutionException;
+import java.util.regex.Pattern;
 
 public class ID_CancellationActivity extends FragmentActivity {
     String Input_password = "";
@@ -75,5 +77,10 @@ public class ID_CancellationActivity extends FragmentActivity {
                 finish();
             }
         });
+    }
+
+    public static boolean isValidPassword(CharSequence target) {
+        Pattern pass_pattern = Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,16}$");
+        return (!TextUtils.isEmpty(target) && pass_pattern.matcher(target).matches());
     }
 }
