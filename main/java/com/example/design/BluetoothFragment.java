@@ -87,12 +87,22 @@ public class BluetoothFragment extends Fragment {
     EditText PM_Edit;
     EditText PMAQI_Edit;
     EditText temperature_Edit;
-    EditText MAC_Edit;
+    EditText name_Edit;
+    EditText mac_Edit;
     Button Save_Button;
     public String result = "";
-    String result_code;
-    String success_message;
-    String error_message;
+    String result_code = "";
+    String success_message = "";
+    String error_message = "";
+    String input_MAC = "";
+
+    public String getInput_MAC() {
+        return input_MAC;
+    }
+
+    public void setInput_MAC(String input_MAC) {
+        this.input_MAC = input_MAC;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -125,7 +135,8 @@ public class BluetoothFragment extends Fragment {
         PM_Edit = (EditText) view.findViewById(R.id.S_PM_value);
         PMAQI_Edit = (EditText) view.findViewById(R.id.S_PM_AQI);
         temperature_Edit = (EditText) view.findViewById(R.id.S_temprature_value);
-        MAC_Edit = (EditText)view.findViewById(R.id.S_MAC_address);
+        name_Edit = (EditText)view.findViewById(R.id.S_Bluetooth_name);
+        mac_Edit = (EditText)view.findViewById(R.id.S_MAC_address);
         Save_Button = (Button)view.findViewById(R.id.s_save_button);
 
         Save_Button.setOnClickListener(new View.OnClickListener()
@@ -139,7 +150,7 @@ public class BluetoothFragment extends Fragment {
 
                JSONObject json = new JSONObject();
                try {
-                   json.put("SSN", "100");
+                   json.put("SSN", "1");
                    json.put("O3", O3_Edit.getText().toString());
                    json.put("NO2", NO2_Edit.getText().toString());
                    json.put("CO", CO_Edit.getText().toString());
@@ -171,7 +182,7 @@ public class BluetoothFragment extends Fragment {
                try {
                    JSONObject json_data = new JSONObject(result);
                    Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
-                   Log.d("asdf", "receive json: " + json_data.toString());
+                   Log.d("asdf", mac_Edit.getText().toString() + "   receive json: " + json_data.toString());
                    result_code = (json_data.optString("result_code"));
                    success_message = (json_data.optString("success_message"));
                    error_message = (json_data.optString("error_message"));
@@ -181,6 +192,15 @@ public class BluetoothFragment extends Fragment {
                } catch (Exception e) {
                    Log.e("Fail 3", e.toString());
                }
+
+               if(result_code.equals("0")){
+                   Toast.makeText(getActivity(), success_message, Toast.LENGTH_SHORT).show();
+               }
+               else if(result_code.equals("1")){
+                   Toast.makeText(getActivity(), error_message, Toast.LENGTH_SHORT).show();
+               }
+               else
+                   Toast.makeText(getActivity(), "no message", Toast.LENGTH_SHORT).show();
            }
         });
 
@@ -296,6 +316,8 @@ public class BluetoothFragment extends Fragment {
                     switch (msg.arg1) {
                         case BluetoothService.STATE_CONNECTED:
                             setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
+                            name_Edit.setText(mConnectedDeviceName); //////////////////// instance data
+                            mac_Edit.setText(getInput_MAC());
                             break;
                         case BluetoothService.STATE_CONNECTING:
                             setStatus(R.string.title_connecting);
@@ -388,8 +410,7 @@ public class BluetoothFragment extends Fragment {
         // Get the device MAC address
         String address = data.getExtras()
                 .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-        if(DeviceListActivity.EXTRA_DEVICE_ADDRESS != "device_address")
-            MAC_Edit.setText(DeviceListActivity.EXTRA_DEVICE_ADDRESS); //////////////////// instance data
+        setInput_MAC(address);
         // Get the BluetoothDevice object
         BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
         // Attempt to connect to the device

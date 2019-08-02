@@ -234,7 +234,7 @@ public class SignupActivity extends Activity {
 
         Birth_Edit.addTextChangedListener(new TextWatcher(){
             private String current = "";
-            private String ddmmyyyy = "DDMMYYYY";
+            private String mmddyyyy = "MMDDYYYY";
             private Calendar cal = Calendar.getInstance();
 
             @Override
@@ -252,12 +252,12 @@ public class SignupActivity extends Activity {
                     if (clean.equals(cleanC)) sel--;
 
                     if (clean.length() < 8){
-                        clean = clean + ddmmyyyy.substring(clean.length());
+                        clean = clean + mmddyyyy.substring(clean.length());
                     }else{
                         //This part makes sure that when we finish entering numbers
                         //the date is correct, fixing it otherwise
-                        int day  = Integer.parseInt(clean.substring(0,2));
-                        int mon  = Integer.parseInt(clean.substring(2,4));
+                        int mon  = Integer.parseInt(clean.substring(0,2));
+                        int day  = Integer.parseInt(clean.substring(2,4));
                         int year = Integer.parseInt(clean.substring(4,8));
 
                         if(mon > 12) mon = 12;

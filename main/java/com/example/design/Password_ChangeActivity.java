@@ -64,9 +64,9 @@ public class Password_ChangeActivity extends FragmentActivity {
         Button complete_button = (Button)findViewById(R.id.C_complete_button);
         Button cancel_button = (Button)findViewById(R.id.C_cancel_button);
 
-        final EditText current_pass_Edit = (EditText) findViewById(R.id.U_password_Edit);
-        final EditText new_pass_Edit = (EditText) findViewById(R.id.U_password_Edit);
-        final EditText confirmpass_Edit = (EditText) findViewById(R.id.U_confirmpass_Edit);
+        final EditText current_pass_Edit = (EditText) findViewById(R.id.C_currentpass_Edit);
+        final EditText new_pass_Edit = (EditText) findViewById(R.id.C_newpass_Edit);
+        final EditText confirmpass_Edit = (EditText) findViewById(R.id.C_confirmpass_Edit);
 
         current_pass_Edit.addTextChangedListener(new TextWatcher() {
             @Override
