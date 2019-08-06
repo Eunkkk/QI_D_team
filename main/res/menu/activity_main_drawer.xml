@@ -8,11 +8,8 @@
             android:id="@+id/myMap"
             android:title="MyMap" />
         <item
-            android:id="@+id/mySensorList"
-            android:title="MySensorList" />
-        <item
-            android:id="@+id/sensor_register"
-            android:title="MySensorRegister"
+            android:id="@+id/sensor_List"
+            android:title="MySensorList"
             />
         <item
             android:id="@+id/Password_change"

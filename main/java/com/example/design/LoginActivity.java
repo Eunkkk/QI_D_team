@@ -137,14 +137,7 @@ public class LoginActivity extends AppCompatActivity
             startActivity(intent);
             return true;
         }
-        else if(id == R.id.mySensorList) {
-            Intent intent = new Intent(
-                    getApplicationContext(),
-                    SensorListActivity.class);
-            startActivity(intent);
-                return true;
-        }
-        else if(id == R.id.sensor_register) {
+        else if(id == R.id.sensor_List) {
             Intent intent = new Intent(
                     getApplicationContext(),
                     Sensor_Regist_Activity.class);

@@ -3,15 +3,8 @@
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView23"
-        android:layout_width="wrap_content"
-        android:layout_height="80dp"
-        android:gravity="center"
-        android:text="TextView" />
-
     <LinearLayout
-        android:layout_width="200dp"
+        android:layout_width="240dp"
         android:layout_height="80dp"
         android:orientation="vertical">
 
@@ -49,5 +42,5 @@
         android:layout_width="wrap_content"
         android:layout_height="80dp"
         android:gravity="center"
-        android:text="de-registration" />
+        android:text="delete" />
 </LinearLayout>
