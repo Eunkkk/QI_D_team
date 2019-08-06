@@ -16,7 +16,7 @@ public class MyMapActivity extends FragmentActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.my_sensor_list);
+        setContentView(R.layout.my_map);
 
     }
 

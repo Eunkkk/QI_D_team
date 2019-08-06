@@ -1,9 +1,12 @@
 package com.example.design;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,10 +17,20 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+
 public class LoginActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener{
 
     private static final String TAG = "asdf";
+    String result = "";
+    String result_code = "";
+    String success_message = "";
+    String error_message = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +55,57 @@ public class LoginActivity extends AppCompatActivity
             transaction.commit();
         }
 
+        activatePolar();
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        JSONObject json = new JSONObject();
+        User_data user_data = (User_data) getApplication();
+        try {
+            json.put("USN", user_data.getUSN());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.d("asdf", "json: " + json.toString());
+        try {
+            result = new PostJSON().execute("http://teamd-iot.calit2.net/app/signout", json.toString()).get();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        try {
+            JSONObject json_data = new JSONObject(result);
+            Log.d("asdf", "receive json: " + json_data.toString());
+            result_code = (json_data.optString("result_code"));
+            success_message = (json_data.optString("success_message"));
+            error_message = (json_data.optString("error_message"));
+
+            Log.d("asdf", "result_code: " + result_code);
+            Log.d("asdf", "success_message: " + success_message);
+            Log.d("asdf", "error_message: " + error_message);
+
+        } catch (Exception e) {
+            Log.e("Fail 3", e.toString());
+        }
+
+        if(result_code.equals("0")){
+            Log.d("asdf", "User_data: USN: " + user_data.getUSN());
+            Toast.makeText(LoginActivity.this, success_message, Toast.LENGTH_SHORT).show();
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            finish();
+        }
+        else if(result_code.equals("1")){
+            Toast.makeText(LoginActivity.this, error_message, Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     @Override
     public void onBackPressed() {
@@ -74,12 +137,64 @@ public class LoginActivity extends AppCompatActivity
             startActivity(intent);
             return true;
         }
-        else if(id == R.id.myBluetooth) {
-                // Ensure this device is discoverable by others
+        else if(id == R.id.mySensorList) {
+            Intent intent = new Intent(
+                    getApplicationContext(),
+                    SensorListActivity.class);
+            startActivity(intent);
                 return true;
         }
+        else if(id == R.id.sensor_register) {
+            Intent intent = new Intent(
+                    getApplicationContext(),
+                    Sensor_Regist_Activity.class);
+            startActivity(intent);
+            return true;
+        }
         else if(id == R.id.logout) {
-                // Ensure this device is discoverable by others
+            JSONObject json = new JSONObject();
+            User_data user_data = (User_data) getApplication();
+            try {
+                json.put("USN", user_data.getUSN());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            Log.d("asdf", "json: " + json.toString());
+            try {
+                result = new PostJSON().execute("http://teamd-iot.calit2.net/app/signout", json.toString()).get();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            try {
+                JSONObject json_data = new JSONObject(result);
+                Log.d("asdf", "receive json: " + json_data.toString());
+                result_code = (json_data.optString("result_code"));
+                success_message = (json_data.optString("success_message"));
+                error_message = (json_data.optString("error_message"));
+
+                Log.d("asdf", "result_code: " + result_code);
+                Log.d("asdf", "success_message: " + success_message);
+                Log.d("asdf", "error_message: " + error_message);
+
+            } catch (Exception e) {
+                Log.e("Fail 3", e.toString());
+            }
+
+            if(result_code.equals("0")){
+                Log.d("asdf", "User_data: USN: " + user_data.getUSN());
+                Toast.makeText(LoginActivity.this, success_message, Toast.LENGTH_SHORT).show();
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                finish();
+            }
+            else if(result_code.equals("1")){
+                Toast.makeText(LoginActivity.this, error_message, Toast.LENGTH_SHORT).show();
+            }
                 return true;
         }
         else if(id == R.id.Password_change) {
@@ -101,5 +216,24 @@ public class LoginActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private final MyPolarBleReceiver mPolarBleUpdateReceiver = new MyPolarBleReceiver() {};
+
+    protected void activatePolar() {
+        Log.w(this.getClass().getName(), "activatePolar()");
+        registerReceiver(mPolarBleUpdateReceiver, makePolarGattUpdateIntentFilter());
+    }
+
+    protected void deactivatePolar() {
+        unregisterReceiver(mPolarBleUpdateReceiver);
+    }
+
+    private static IntentFilter makePolarGattUpdateIntentFilter() {
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(MyPolarBleReceiver.ACTION_GATT_CONNECTED);
+        intentFilter.addAction(MyPolarBleReceiver.ACTION_GATT_DISCONNECTED);
+        intentFilter.addAction(MyPolarBleReceiver.ACTION_HR_DATA_AVAILABLE);
+        return intentFilter;
     }
 }

@@ -85,12 +85,12 @@
                     android:textColor="@color/white" />
             </LinearLayout>
 
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="2dip"
                 android:layout_marginRight="3dp"
                 android:background="@color/black" />
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -135,6 +135,7 @@
                 android:id="@+id/textView11"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
+                android:layout_marginLeft="3dp"
                 android:background="@color/colorPrimaryDark"
                 android:gravity="center"
                 android:text="NO₂"
@@ -321,7 +322,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
 
-                android:layout_marginRight="0dp"
+                android:layout_marginLeft="3dp"
                 android:background="@color/colorPrimaryDark"
                 android:gravity="center"
                 android:text="SO₂"
@@ -520,6 +521,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
 
+                android:layout_marginLeft="3dp"
                 android:background="@color/colorPrimaryDark"
                 android:gravity="center"
                 android:text="temprature"

@@ -54,22 +54,6 @@ public class PostJSON extends AsyncTask<String, Void, String> {
             }catch(Exception e){
                 e.printStackTrace();
             }
-            /*
-            try {
-                JSONObject json_data = new JSONObject(ResultStr);
-                // add whatever you would like to parse (all values you are
-                // sending from PHP)
-                Log.d("asdf",json_data.toString());
-                email = (json_data.getString("e_mail"));
-                pass = (json_data.getString("password"));
-                confirm_pass = (json_data.getString("confirm_password"));
-                Log.d("asdf", "e_mail:       " + email);
-                Log.d("asdf", "pass:       " + pass);
-                Log.d("asdf", "conpass:       " + confirm_pass);
-            } catch (Exception e) {
-                Log.e("Fail 3", e.toString());
-            }
-            */
 
         } catch (Exception e) {
             e.printStackTrace();

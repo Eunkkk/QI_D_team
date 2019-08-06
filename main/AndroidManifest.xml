@@ -15,6 +15,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
+        android:name=".User_data"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="Your Fresh Route"
@@ -52,6 +53,8 @@
         <activity android:name=".MyMapActivity" />
         <activity android:name=".Password_ChangeActivity" />
         <activity android:name=".ID_CancellationActivity" />
+        <activity android:name=".Sensor_Regist_Activity" />
+        <activity android:name=".SensorListActivity" />
         <activity
             android:name=".DeviceListActivity"
             android:label="@string/select_device"

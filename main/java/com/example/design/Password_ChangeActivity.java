@@ -149,50 +149,59 @@ public class Password_ChangeActivity extends FragmentActivity {
         complete_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditText pass_Edit = (EditText) findViewById(R.id.C_currentpass_Edit);
-                setInput_password(pass_Edit.getText().toString());
-                EditText new_pass_Edit = (EditText) findViewById(R.id.C_newpass_Edit);
-                setInput_new_password(new_pass_Edit.getText().toString());
-                EditText confirm_pass_Edit = (EditText) findViewById(R.id.C_confirmpass_Edit);
-                setInput_confirm_password(confirm_pass_Edit.getText().toString());
+                if(current_password_check == false)
+                    Toast.makeText(Password_ChangeActivity.this, "Please check current password text.", Toast.LENGTH_SHORT).show();
+                else if(new_password_Check == false)
+                    Toast.makeText(Password_ChangeActivity.this, "Please check new password text.", Toast.LENGTH_SHORT).show();
+                else if (confirm_password_Check)
+                    Toast.makeText(Password_ChangeActivity.this, "Please check new confirm password text.", Toast.LENGTH_SHORT).show();
+                else{
+                    EditText pass_Edit = (EditText) findViewById(R.id.C_currentpass_Edit);
+                    setInput_password(pass_Edit.getText().toString());
+                    EditText new_pass_Edit = (EditText) findViewById(R.id.C_newpass_Edit);
+                    setInput_new_password(new_pass_Edit.getText().toString());
+                    EditText confirm_pass_Edit = (EditText) findViewById(R.id.C_confirmpass_Edit);
+                    setInput_confirm_password(confirm_pass_Edit.getText().toString());
 
-                JSONObject json = new JSONObject();
-                try {
-                    json.put("USN", "100");
-                    json.put("password", getInput_password());
-                    json.put("new_password", getInput_new_password());
-                    json.put("confirm_password", getInput_confirm_password());
+                    JSONObject json = new JSONObject();
+                    User_data user_data = (User_data) getApplication();
+                    try {
+                        json.put("USN", user_data.getUSN());
+                        json.put("password", getInput_password());
+                        json.put("new_password", getInput_new_password());
+                        json.put("confirm_new_password", getInput_confirm_password());
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    result = new PostJSON().execute("http://teamd-iot.calit2.net/app/pwchange", json.toString()).get();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                Log.d("asdf", "json: " + json.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        result = new PostJSON().execute("http://teamd-iot.calit2.net/app/pwchange", json.toString()).get();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    Log.d("asdf", "json: " + json.toString());
 
-                try {
-                    JSONObject json_data = new JSONObject(result);
-                    Log.d("asdf", "receive json: " + json_data.toString());
-                    result_code = (json_data.optString("result_code"));
-                    success_message = (json_data.optString("success_message"));
-                    error_message = (json_data.optString("error_message"));
-                    Log.d("asdf", "result_code: " + result_code);
-                    Log.d("asdf", "success_message: " + success_message);
-                    Log.d("asdf", "error_message: " + error_message);
-                } catch (Exception e) {
-                    Log.e("Fail 3", e.toString());
-                }
+                    try {
+                        JSONObject json_data = new JSONObject(result);
+                        Log.d("asdf", "receive json: " + json_data.toString());
+                        result_code = (json_data.optString("result_code"));
+                        success_message = (json_data.optString("success_message"));
+                        error_message = (json_data.optString("error_message"));
+                        Log.d("asdf", "result_code: " + result_code);
+                        Log.d("asdf", "success_message: " + success_message);
+                        Log.d("asdf", "error_message: " + error_message);
+                    } catch (Exception e) {
+                        Log.e("Fail 3", e.toString());
+                    }
 
-                if(result_code.equals("0")){
-                    Toast.makeText(Password_ChangeActivity.this, success_message, Toast.LENGTH_SHORT).show();
-                }
-                else if(result_code.equals("1")){
-                    Toast.makeText(Password_ChangeActivity.this, error_message, Toast.LENGTH_SHORT).show();
+                    if(result_code.equals("0")){
+                        Toast.makeText(Password_ChangeActivity.this, success_message, Toast.LENGTH_SHORT).show();
+                    }
+                    else if(result_code.equals("1")){
+                        Toast.makeText(Password_ChangeActivity.this, error_message, Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });

@@ -318,6 +318,8 @@ public class BluetoothFragment extends Fragment {
                             setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
                             name_Edit.setText(mConnectedDeviceName); //////////////////// instance data
                             mac_Edit.setText(getInput_MAC());
+                            User_data user_data = (User_data) getActivity().getApplication();
+                            user_data.setMACaddress(getInput_MAC());
                             break;
                         case BluetoothService.STATE_CONNECTING:
                             setStatus(R.string.title_connecting);

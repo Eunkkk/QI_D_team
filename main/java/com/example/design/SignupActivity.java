@@ -21,17 +21,17 @@ import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
 public class SignupActivity extends Activity {
-    String input_email;
-    String input_password;
-    String input_confirm_password;
-    String input_First_name;
-    String input_Last_name;
-    String input_Birth_Date;
-    String temp;
-    String result;
-    String result_code;
-    String success_message;
-    String error_message;
+    String input_email = "";
+    String input_password = "";
+    String input_confirm_password = "";
+    String input_First_name = "";
+    String input_Last_name = "";
+    String input_Birth_Date = "";
+    String temp = "";
+    String result = "";
+    String result_code = "";
+    String success_message = "";
+    String error_message = "";
 
     boolean email_Check = false;
     boolean password_Check = false;
@@ -234,7 +234,7 @@ public class SignupActivity extends Activity {
 
         Birth_Edit.addTextChangedListener(new TextWatcher(){
             private String current = "";
-            private String mmddyyyy = "MMDDYYYY";
+            private String yyyymmdd = "YYYYMMDD";
             private Calendar cal = Calendar.getInstance();
 
             @Override
@@ -252,13 +252,13 @@ public class SignupActivity extends Activity {
                     if (clean.equals(cleanC)) sel--;
 
                     if (clean.length() < 8){
-                        clean = clean + mmddyyyy.substring(clean.length());
+                        clean = clean + yyyymmdd.substring(clean.length());
                     }else{
                         //This part makes sure that when we finish entering numbers
                         //the date is correct, fixing it otherwise
-                        int mon  = Integer.parseInt(clean.substring(0,2));
-                        int day  = Integer.parseInt(clean.substring(2,4));
-                        int year = Integer.parseInt(clean.substring(4,8));
+                        int year = Integer.parseInt(clean.substring(0,4));
+                        int mon  = Integer.parseInt(clean.substring(4,6));
+                        int day  = Integer.parseInt(clean.substring(6,8));
 
                         if(mon > 12) mon = 12;
                         cal.set(Calendar.MONTH, mon-1);
@@ -269,12 +269,12 @@ public class SignupActivity extends Activity {
                         //would be automatically corrected to 28/02/2012
 
                         day = (day > cal.getActualMaximum(Calendar.DATE))? cal.getActualMaximum(Calendar.DATE):day;
-                        clean = String.format("%02d%02d%02d",day, mon, year);
+                        clean = String.format("%02d%02d%02d",year, mon, day);
                     }
 
-                    clean = String.format("%s/%s/%s", clean.substring(0, 2),
-                            clean.substring(2, 4),
-                            clean.substring(4, 8));
+                    clean = String.format("%s-%s-%s", clean.substring(0, 4),
+                            clean.substring(4, 6),
+                            clean.substring(6, 8));
 
                     sel = sel < 0 ? 0 : sel;
                     current = clean;
@@ -304,61 +304,74 @@ public class SignupActivity extends Activity {
         complete_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            EditText email_Edit = (EditText) findViewById(R.id.U_Email_Edit);
-            setInput_email(email_Edit.getText().toString());
+                if(email_Check == false)
+                    Toast.makeText(SignupActivity.this, "Please check email text.", Toast.LENGTH_SHORT).show();
+                else if (password_Check == false)
+                    Toast.makeText(SignupActivity.this, "Please check password text.", Toast.LENGTH_SHORT).show();
+                else if (confirm_password_Check == false)
+                    Toast.makeText(SignupActivity.this, "Please check confirm_password text.", Toast.LENGTH_SHORT).show();
+                else if (fname_Check == false)
+                    Toast.makeText(SignupActivity.this, "Please check First name text.", Toast.LENGTH_SHORT).show();
+                else if (lname_Check == false)
+                    Toast.makeText(SignupActivity.this, "Please check Last name text.", Toast.LENGTH_SHORT).show();
+                else if (date_Check == false)
+                    Toast.makeText(SignupActivity.this, "Please check date text.", Toast.LENGTH_SHORT).show();
+                else{
+                    EditText email_Edit = (EditText) findViewById(R.id.U_Email_Edit);
+                    setInput_email(email_Edit.getText().toString());
+                    EditText pass_Edit = (EditText) findViewById(R.id.U_password_Edit);
+                    setInput_password(pass_Edit.getText().toString());
+                    EditText confirmpass_Edit = (EditText) findViewById(R.id.U_confirmpass_Edit);
+                    setInput_confirm_password(confirmpass_Edit.getText().toString());
+                    EditText Fname_Edit = (EditText) findViewById(R.id.U_Fname_Edit);
+                    setInput_First_name(Fname_Edit.getText().toString());
+                    EditText Lname_Edit = (EditText) findViewById(R.id.U_Lname_Edit);
+                    setInput_Last_name(Lname_Edit.getText().toString());
+                    EditText Birth_Edit = (EditText) findViewById(R.id.U_Birth_edit);
+                    setInput_Birth_Date(Birth_Edit.getText().toString());
 
-            EditText pass_Edit = (EditText) findViewById(R.id.U_password_Edit);
-            setInput_password(pass_Edit.getText().toString());
-            EditText confirmpass_Edit = (EditText) findViewById(R.id.U_confirmpass_Edit);
-            setInput_confirm_password(confirmpass_Edit.getText().toString());
-            EditText Fname_Edit = (EditText) findViewById(R.id.U_Fname_Edit);
-            setInput_First_name(Fname_Edit.getText().toString());
-            EditText Lname_Edit = (EditText) findViewById(R.id.U_Lname_Edit);
-            setInput_Last_name(Lname_Edit.getText().toString());
-            EditText Birth_Edit = (EditText) findViewById(R.id.U_Birth_edit);
-            setInput_Birth_Date(Birth_Edit.getText().toString());
+                    JSONObject json = new JSONObject();
+                    try {
+                        json.put("e_mail", getInput_email());
+                        json.put("password", getInput_password());
+                        json.put("confirm_password", getInput_confirm_password());
+                        json.put("first_name", getInput_First_name());
+                        json.put("last_name", getInput_Last_name());
+                        json.put("birth_date", getInput_Birth_Date());
 
-            JSONObject json = new JSONObject();
-            try {
-                json.put("e_mail", getInput_email());
-                json.put("password", getInput_password());
-                json.put("confirm_password", getInput_confirm_password());
-                json.put("first_name", getInput_First_name());
-                json.put("last_name", getInput_Last_name());
-                json.put("birth_date", getInput_Birth_Date());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        result = new PostJSON().execute("http://teamd-iot.calit2.net/app/signup", json.toString()).get();
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
 
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            try {
-                result = new PostJSON().execute("http://teamd-iot.calit2.net/app/signup", json.toString()).get();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+                    Log.d("asdf", "json: " + json.toString());
 
-            Log.d("asdf", "json: " + json.toString());
+                    try {
+                        JSONObject json_data = new JSONObject(result);
+                        Log.d("asdf", "receive json: " + json_data.toString());
+                        result_code = (json_data.optString("result_code"));
+                        success_message = (json_data.optString("success_message"));
+                        error_message = (json_data.optString("error_message"));
+                        Log.d("asdf", "result_code: " + result_code);
+                        Log.d("asdf", "success_message: " + success_message);
+                        Log.d("asdf", "error_message: " + error_message);
+                    } catch (Exception e) {
+                        Log.e("Fail 3", e.toString());
+                    }
 
-            try {
-                JSONObject json_data = new JSONObject(result);
-                Log.d("asdf", "receive json: " + json_data.toString());
-                result_code = (json_data.optString("result_code"));
-                success_message = (json_data.optString("success_message"));
-                error_message = (json_data.optString("error_message"));
-                Log.d("asdf", "result_code: " + result_code);
-                Log.d("asdf", "success_message: " + success_message);
-                Log.d("asdf", "error_message: " + error_message);
-            } catch (Exception e) {
-                Log.e("Fail 3", e.toString());
+                    if(result_code.equals("0")){
+                        Toast.makeText(SignupActivity.this, success_message, Toast.LENGTH_SHORT).show();
+                    }
+                    else if(result_code.equals("1")){
+                        Toast.makeText(SignupActivity.this, error_message, Toast.LENGTH_SHORT).show();
+                    }
                 }
-
-            if(result_code.equals("0")){
-                Toast.makeText(SignupActivity.this, success_message, Toast.LENGTH_SHORT).show();
-            }
-            else if(result_code.equals("1")){
-                Toast.makeText(SignupActivity.this, error_message, Toast.LENGTH_SHORT).show();
-            }
             }
         });
 
@@ -385,7 +398,7 @@ public class SignupActivity extends Activity {
     }
 
     public static boolean isValidDate(CharSequence target) {
-        Pattern pass_pattern = Pattern.compile("^[0-9][0-9]/[0-9][0-9]/[0-9][0-9][0-9][0-9]$");
+        Pattern pass_pattern = Pattern.compile("^[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]$");
         return (!TextUtils.isEmpty(target) && pass_pattern.matcher(target).matches());
     }
 }
