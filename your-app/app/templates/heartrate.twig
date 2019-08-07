@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QI Team D User Index</title>
+    <title>QI Team D Heart-Rate</title>
     <!-- Core CSS - Include with every page -->
     <link href="/assets/plugins/bootstrap/bootstrap.css" rel="stylesheet" />
     <link href="/assets/font-awesome//css/font-awesome.css" rel="stylesheet" />
@@ -14,174 +14,163 @@
     <link href="/assets//css/main-style.css" rel="stylesheet" />
     <!-- Page-Level CSS -->
     <link href="/assets/plugins/morris/morris-0.4.3.min.css" rel="stylesheet" />
+
+    
     <script>
         var getUSN = localStorage.getItem('USN');
         if (getUSN === null)
             window.location.replace("http://teamd-iot.calit2.net/");
     </script>
-    
+    <style>
+body {
+	margin: 0;
+	padding: 0;
+	background: #262626;
+}
+.center {
+	position: absolute;
+	top : 50%;
+	left : 50%;
+	transform: translate(-50%,-30%); 
+    {# heart position #}
+	padding: 100px;
+	background-color: #262626;
+	border: 5px solid #fff;
+	border-radius: 50%;
+	box-shadow: 45px 45px 45px rgba(0,0,0,.8);
+	z-index: 1;
+	overflow: hidden;
+}
+.center:before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: -50%;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,.3);
+}
+.heart {
+	position: relative;
+	width: 100px;
+	height: 100px;
+	background: #f00;
+	transform: rotate(45deg) translate(10px,10px);
+	animation: animate 1s linear infinite;
+}
+.heart:before {
+	content: '';
+	width: 100%;
+	height: 100%;
+	background: #f00;
+	position: absolute;
+	top: -50%;
+	left: 0;
+	border-radius: 50%;
+}
+.heart:after {
+	content: '';
+	width: 100%;
+	height: 100%;
+	background: #f00;
+	position: absolute;
+	bottom: 0;
+	right: 50%;
+	border-radius: 50%;
+}
+.heartmessage{
+	position: absolute;
+	top : 50%;
+	left : 50%;
+	transform: translate(-50%,-100%); 
+
+}
+
+@keyframes animate 
+{
+	0% 
+	{
+		transform: rotate(45deg) translate(10px,10px) scale(1);
+	}
+	25% 
+	{
+		transform: rotate(45deg) translate(10px,10px) scale(1);
+	}
+	30% 
+	{
+		transform: rotate(45deg) translate(10px,10px) scale(1.4);
+	}
+	50% 
+	{
+		transform: rotate(45deg) translate(10px,10px) scale(1.2);
+	}
+	70% 
+	{
+		transform: rotate(45deg) translate(10px,10px) scale(1.4);
+	}
+	90% 
+	{
+		transform: rotate(45deg) translate(10px,10px) scale(1);
+	}
+	100% 
+	{
+		transform: rotate(45deg) translate(10px,10px) scale(1);
+	}
+}
+</style>
 
 </head>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 
-<script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRV05v2G9jSn4y5VowB22Sz__fgaYPzGE&callback=initialize">
-    
+
 </script>
 <script type="text/javascript">
 var request;
-var map;
-var markers = [];
 
-function deleteMarkers(markers) {
-    clearMarkers(markers);
-    markers = [];
-}
-// Removes the markers from the map, but keeps them in the array.
-function clearMarkers(markers) {
-    setMapOnAll(markers);
-}
-
-// Sets the map on all markers in the array.
-function setMapOnAll(markers) {
-    for (var i = 0; i < markers.length; i++) {
-        markers[i].setMap(null);
-    }
-}
-
-function showMarkers(map) {
-    setMapOnAll(map);
-}
-
-function initialize() {
-    var mapOptions = {
-        center: new google.maps.LatLng(32.882632, -117.234817),
-        zoom: 15,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-    map = new google.maps.Map(document.getElementById("map"),
-        mapOptions);
-
-
-    google.maps.event.addListener(map, 'idle', function () {
-        console.log('location is changed');
-        getJSON($('#selectedvalue').val());
-    });
-
-    
-
-}
-
-function getJSON(selected) {
-
-    if (request) {
+function getJSON(USN){
+    if(request){
         request.abort();
     }
-    var aNorth  =   map.getBounds().getNorthEast().lat();   
-    var aEast   =   map.getBounds().getNorthEast().lng();
-    var aSouth  =   map.getBounds().getSouthWest().lat();   
-    var aWest   =   map.getBounds().getSouthWest().lng();
-  
-    request = $.post('/data/get/airquality', {
-        value: selected,
-        north: aNorth,
-        east : aEast,
-        south : aSouth,
-        west : aWest 
-    }, function (returnedData) {
-        console.log(returnedData);
+
+    request= $.post('/data/get/heartrate', {
+        USN:USN
+    }, function(returnedData){
+        console.log(returnedData)
     });
 
-    // Callback handler that will be called on success
     request.done(function (response, textStatus, jqXHR) { // Log a message to the console
         if(response.result_code==1){
-            $("#showmessage").html('<mark>'+response.error_message+'</mark>');
- 
-        }
-        else if (response.length == 0) {
             $("#message").html(response.error_message);
             $('#myModal').modal("show");
-
-        } else {
-            $("#showmessage").html('Click the marker');
-            deleteMarkers(markers);
-            var infowindow = new google.maps.InfoWindow();
-            var contentString = null;
-
-            for (person of response) {
-
-                var temp = JSON.parse(JSON.stringify(person));
-  
-                if(selected==="All") {
- 
-                    contentString = "<span>senseor name : " + temp['sensor_name'] + "</a></span><br/> "+
-                    "CO : " + temp['CO'] + "<br />NO2 : "+temp['NO2']+"<br/>"+
-                    "O3 : " + temp['O3'] + "<br />SO2 : "+temp['SO2']+"<br/>"+
-                    "PM2.5 : " + temp['PM2_5'] + "<br />O3_AQI : "+temp['O3_AQI']+"<br/>"+
-                    "NO2_AQI : " + temp['NO2_AQI'] + "<br />CO_AQI : "+temp['CO_AQI']+"<br/>"+
-                    "SO2_AQI : " + temp['SO2_AQI'] + "<br />PM2.5_AQI : "+temp['PM2_5_AQI']+"<br/>"+
-                    "temperature : " + temp['temperature'] +"<br />"+
-                    "Location : " + temp['lat'] + " ," + temp['lng'] + "<br /><br />" + temp['air_timestamp'];
-                }else{
-                     contentString ="<span>senseor name : " + temp['sensor_name'] + "</a></span><br/> " 
-                      + selected +" : "+ temp[selected] + "<br />" + 
-                      "temperature : " + temp['temperature'] + "<br/>"+
-                      "Location : "+ temp['lat'] + " ," + temp['lng'] + "<br /><br />" + temp['air_timestamp'];
-                }
-   
-
-                var marker = new google.maps.Marker({
-                    map: map,
-                    position: new google.maps.LatLng(temp.lat,temp.lng),
-                   
-                })
-
-                markers.push(marker);
-                google.maps.event.addListener(marker, 'click', function (content) {
-                    return function () {
-                        infowindow.setContent(content); //set the content
-                        infowindow.open(map, this);
-                    }
-                }(contentString));
-            } // end of for statement
-  
-            setMapOnAll(map);
-   
-
-        } // end of done
-    });
-    // Callback handler that will be called on failure
-    request.fail(function (jqXHR, textStatus, errorThrown) { // Log the error to the console
-
-        $("#message").html("The following error occurred :  " + textStatus,
-            errorThrown);
+        }
+        else  if (response.length == 0) {
+            $("#message").html(response.error_message);
             $('#myModal').modal("show");
-
+        }
+        else {
+            //테이블 작성
+            $("#heartmessage").html(response.error_message);
+            /////////////////////////////////////
+            console.log(response);
+        }
     });
-    request = "";
-    
+       request.fail(function (jqXHR, textStatus, errorThrown) { // Log the error to the console
+
+            $("#message").html("The following error occurred :  " + textStatus,
+                errorThrown);
+           $('#myModal').modal("show");
+        });
 }
-
-
-$(window).load(function () {
-    getJSON( $('#selectedvalue').val());
-      
-});
-
 
 $(document).ready(function () {
 
 
     var getUSN = localStorage.getItem('USN');
     var getemail = localStorage.getItem('e_mail');
+    getJSON(getUSN);
     $('#Hello').text(getemail);
 
-    $("[id$=button]").click(function () {
-        var value = this.value;
-        $('#selectedvalue').val(value); 
-        getJSON(value);
-    });
 
     $('#signoutButton').click(function () {
         event.preventDefault();
@@ -206,10 +195,7 @@ $(document).ready(function () {
                 $("#message").html(response.error_message);
 
             $('#myModal').modal("show");
-
-            setTimeout(function() { 
-                        window.location.replace("http://teamd-iot.calit2.net/");
-                        }, 3000);            
+            window.location.replace("http://teamd-iot.calit2.net/");
         });
 
         // Callback handler that will be called on failure
@@ -264,8 +250,8 @@ $(document).ready(function () {
 {# ==================================================================== #}
 <input type="hidden" value="All" id="selectedvalue" />
 
-<body onload="initialize()">
 
+<body>
     <!--  wrapper -->
     <div id="wrapper">
         <!-- navbar top -->
@@ -345,17 +331,17 @@ $(document).ready(function () {
                         </div>
                         <!--end user image section-->
                     </li>
- 
-                    <li class="selected">
+           
+                    <li >
                         <a href="/user/index"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
                     </li>
                     <li>
-                        <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Airquality & Heart-Rate Charts<span class="fa arrow"></span></a>
+                        <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Airquality & Heart-Rate Chart<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
                             <li>
                                 <a href="/data/airquality">Airquality Charts</a>
                             </li>
-                            <li>
+                            <li class="selected">
                                 <a href="/data/heart">Heart-Rate Charts</a>
                             </li>
                         </ul>
@@ -392,44 +378,29 @@ $(document).ready(function () {
             <div class="row">
                 <!-- Page Header -->
                 <div class="col-lg-12">
-                    <h1 class="page-header">Dashboard</h1>
+                    <h1 class="page-header">Heart-Rate Data View</h1>
+
                 </div>
                 <!--End Page Header -->
             </div>
 
-            <div class="row">
-                <!-- Welcome -->
-                <div class="col-lg-12">
-                    <div class="alert alert-info">
-                        <i class="fa fa-folder-open"></i><b>&nbsp;Welcome to 'Fresh Your Route' !!
-                    </div>
+
+        <div class="container">
+                <div class="center">
+                    <div class="heart"></div>
+                    <div class="heartmessage" id="heartmessage"></div>
                 </div>
-                <!--end  Welcome -->
-            </div>
+        </div>
+         
+            
             <div class="row">
                 <div class="col-lg-12">
-                    <big class ="text-dark  font-weight-bold">Click the value you want to see on the googlemap </big><br/><br/>
-                    <button id="All_button" class="btn btn-waring btn-success" value="All">All</button>
-                    <button id="CO_button" class="btn btn-danger btn-success" value="CO">CO</button>
-                    <button id="CO_AQI_button" class="btn btn-info btn-success" value="CO_AQI">CO_AQI</button>
-                    <button id="NO2_button" class="btn btn-danger btn-success" value="NO2">NO2</button>
-                    <button id="NO2_AQI_button" class="btn btn-info btn-success" value="NO2_AQI">NO2_AQI</button>
-                    <button id="O3_button" class="btn btn-danger btn-success" value="O3">O3</button>
-                    <button id="O3_AQI_button" class="btn btn-info btn-success" value="O3_AQI">O3_AQI</button>
-                    <button id="SO2_button" class="btn btn-danger btn-success" value="SO2">SO2</button>
-                    <button id="SO2_AQI_button" class="btn btn-info btn-success" value="SO2_AQI">SO2_AQI</button>
-                    <button id="PM2_5_button" class="btn btn-danger btn-success" value="PM2_5">PM2.5</button>
-                    <button id="PM2_5_AQI_button" class="btn btn-info btn-success" value="PM2_5_AQI">PM2.5_AQI</button>
-
-
-                    <div id="map" style="height:480px;width:100%;margin:0 auto;"></div>
-                    <big class="text-justify font-weight-bold" id="showmessage"></>
+                
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-lg-8">
-
                 </div>
 
             </div>

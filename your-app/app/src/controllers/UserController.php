@@ -13,12 +13,14 @@ final class UserController extends BaseController
   protected $logger;
   protected $UserModel;
   protected $view;
+  protected $SensorModel;
 
-  public function __construct($logger, $UserModel, $view)
+  public function __construct($logger, $UserModel, $view, $SensorModel)
   {
     $this->logger = $logger;
     $this->UserModel = $UserModel;
     $this->view = $view;
+    $this->SensorModel = $SensorModel;
   }
 
   //============================================================================================
@@ -82,9 +84,8 @@ final class UserController extends BaseController
     $user=[];
     try {
 
-      if (isset($_POST['e_mail']) || isset($_POST['password'])|| isset($_POST['password'])
+      if (isset($_POST['e_mail']) || isset($_POST['password']) 
       || isset($_POST['confirm_password'])|| isset($_POST['first_name'])|| isset($_POST['last_name'])
-      || isset($_POST['password'])|| isset($_POST['password'])|| isset($_POST['password'])
       || isset($_POST['birth_date'])) {
       
       $user['e_mail'] =  $_POST['e_mail'];
@@ -106,34 +107,27 @@ final class UserController extends BaseController
       }
 
       if (strcmp($_POST['password'], $_POST['confirm_password']) !== 0) { //if The passwords do not match.
-        $this->view->render(
-          $response,
-          'signup.twig',
-          ['error_message' => 'Two password are different.', 'result_code' => 1]
-        );
-        return $response;
+        $json = ['error_message' => 'Two password are different.', 'result_code' => 1];
+        return $response->withHeader('Content-type', 'application/json')
+          ->write(json_encode($json));
       }
 
       if (count($this->UserModel->duplicate_check_by_email_from_user_table($user)) >= 1) {   //User does exist in "User" table
-
-        $this->view->render(
-          $response,
-          'signup.twig',
-          ['error_message' => 'This E-mail has already been signed up.', 'result_code' => 1]
-        );
-        return $response;
+        $json = ['error_message' => 'This E-mail has already been signed up.', 'result_code' => 1];
+        return $response->withHeader('Content-type', 'application/json')
+          ->write(json_encode($json));
       } else {  //User doesn't exist in "User" table
         if (count($this->UserModel->duplicate_check_by_email_from_temp_user_table($user)) != 0) {
           //but User does exist in "Temp_user" table
-
-          $this->view->render($response, 'signup.twig', ['error_message' => 'We have already received your sign-up request and authentication-mail has been sent. 
-          Please, Check your E-mail again.', 'result_code' => 1]);
-          return $response;
+          $json = ['error_message' => 'We have already received your sign-up request and authentication-mail has been sent. 
+          Please, Check your E-mail again.', 'result_code' => 1];
+          return $response->withHeader('Content-type', 'application/json')
+            ->write(json_encode($json));
         } else {    //User doesn't exist in "User" and "Temp_user" table
 
           $query_results =  $this->UserModel->insert_user_into_temp_table($user);
-
-          if ($query_results) { // if insert query is successful, 0 is fail
+          
+          if ($query_results>0) { // if insert query is successful, 0 is fail
             $mail = new PHPMailer(true);                              // Passing `true` enables exceptions
             try {
               //Server settings
@@ -156,26 +150,29 @@ final class UserController extends BaseController
             Click Here !!</a><p>";
 
               $mail->send();
-              return $this->view->render($response, 'signup.twig', ['success_message'
-              => 'Authentication-mail has been sent. Please, check your E-mail.', 'result_code' => 0]);
+
+              $json = ['success_message' => 'Authentication-mail has been sent. Please, check your E-mail.', 'result_code' => 0];
+              return $response->withHeader('Content-type', 'application/json')
+                ->write(json_encode($json));
+
+           
             } catch (Exception $e) {
-              $this->view->render($response, 'signup.twig', ['error_message'
-              => 'Authentication-mail could not be sent. Try again.', 'result_code' => 1]);
-              return $response;
+              $json = ['error_message' => 'Authentication-mail could not be sent. Try again.', 'result_code' => 1];
+              return $response->withHeader('Content-type', 'application/json')
+                ->write(json_encode($json));
             }
           } 
           else {  //else 
-            $this->view->render($response, 'signup.twig', ['error_message'
-            => 'Some errors occurred during sign-up.', 'result_code' => 1]);
-            return $response;
+            $json = ['error_message' => 'Some errors occurred during sign-up.', 'result_code' => 1];
+            return $response->withHeader('Content-type', 'application/json')
+              ->write(json_encode($json));
           }
         }
       }
     } catch (PDOException $e) {
-
-      $this->view->render($response, 'signup.twig', ['error_message'
-      => 'Some errors occurred during sign-up', 'result_code' => 1]);
-      return $response;
+      $json = ['error_message' => 'Some errors occurred during sign-up.', 'result_code' => 1];
+      return $response->withHeader('Content-type', 'application/json')
+        ->write(json_encode($json));
     }
   }
 
@@ -196,8 +193,8 @@ final class UserController extends BaseController
         $results[0]['isActive'] = 1;
         $results[0]['auth_code'] = NULL;
        
-        if ($this->UserModel->insert_user_into_user_table($results[0])) {  //insert user information into user table
-          if ($this->UserModel->delete_from_temp_user_table($nonce) == 0) { //delete user information from temp user table 
+        if ($this->UserModel->insert_user_into_user_table($results[0])>0) {  //insert user information into user table
+          if ($this->UserModel->delete_from_temp_user_table($nonce) > 0) { //delete user information from temp user table 
 
             $this->view->render($response, 'signin.twig', ['success_message'
             => 'Your account is activated.', 'result_code' => 0]);
@@ -251,18 +248,19 @@ final class UserController extends BaseController
         if (password_verify($user['password'], $results['hashed_pwd'])) {
           $user['USN'] = $results['USN'];
           $results['loginStateFlag'] = 1; //set login state flage to 1
+          $results['isActive'] = 1; //set login state flage to 1
 
-          if ($this->UserModel->update_user_set_loginStateFlag($results) == 0) {
+          if ($this->UserModel->update_user_set_loginStateFlag($results) >= 0) {
             $user['permission'] = $this->UserModel->select_permission_from_user_table($results);
 
             $json = [
-              'success_message' => 'Sign-In is completed.', 'USN' => $user['USN'], 
+              'success_message' => 'Sign-In is completed.', 'USN' => $user['USN'], 'e_mail'=>$user['e_mail'],
               'permission' => $user['permission'], 'result_code' => 0
             ];
             return $response->withHeader('Content-type', 'application/json')
               ->write(json_encode($json));
           } else {
-
+            
             $json = ['error_message' => 'Some errors occurred during sign-in.', 'result_code' => 1];
             return $response->withHeader('Content-type', 'application/json')
               ->write(json_encode($json));
@@ -298,13 +296,14 @@ final class UserController extends BaseController
       if (isset($_POST['USN'])) {
         $user['USN'] =  $_POST['USN'];
         $user['loginStateFlag'] = 0; // set login state flag to 0 
+        $user['isActive']=1;
       } else {
         $json = ['error_message' => 'Please, Sign-in first.', 'result_code' => 1];
         return $response->withHeader('Content-type', 'application/json')
           ->write(json_encode($json));
       }
 
-      if ($this->UserModel->update_user_set_loginStateFlag($user) == 0) {
+      if ($this->UserModel->update_user_set_loginStateFlag($user) >= 0) {
 
         $json = ['success_message' => 'You have been logged-out.', 'result_code' => 0];
         return $response->withHeader('Content-type', 'application/json')
@@ -347,14 +346,23 @@ final class UserController extends BaseController
 
         if (password_verify($user['password'], $results['hashed_pwd'])) {
           $user['isActive'] = 0;  // set isActive flag to 0. it is mean that user account is cancelled.
+          $user['regActive'] = 0;
+          if ($this->UserModel->update_user_set_isActive($user) >= 0) { //update database 
 
-          if ($this->UserModel->update_user_set_isActive($user) == 0) { //update database 
-
-            $json = [
-              'success_message' => 'ID cancellation is completed.', 'result_code' => 0
-            ];
-            return $response->withHeader('Content-type', 'application/json')
-              ->write(json_encode($json));
+            if($this->SensorModel->update_sensor_info_set_regAtive_by_USN($user)>=0){
+              $json = [
+                'success_message' => 'ID cancellation is completed.', 'result_code' => 0
+              ];
+              return $response->withHeader('Content-type', 'application/json')
+                ->write(json_encode($json));
+            }else{
+              $json = [
+                'error_message' => 'Some errors occurred during ID Cancellation.', 'result_code' => 1
+              ];
+              return $response->withHeader('Content-type', 'application/json')
+                ->write(json_encode($json));
+            }
+      
           } else {
 
             $json = [
@@ -414,7 +422,7 @@ final class UserController extends BaseController
         if (password_verify($user['password'], $results['hashed_pwd'])) {
           $user['new_password'] = password_hash($_POST['new_password'], PASSWORD_DEFAULT);
 
-          if ($this->UserModel->update_user_set_password($user) == 0) {
+          if ($this->UserModel->update_user_set_password($user) >= 0) {
 
             $json = [
               'success_message' => 'Password change is completed.', 'result_code' => 0
@@ -478,7 +486,7 @@ final class UserController extends BaseController
           $user['auth_code'][$i] =  strval(mt_rand());
         }
 
-        if ($this->UserModel->update_user_set_auth_code($user) == 0) {
+        if ($this->UserModel->update_user_set_auth_code($user) >= 0) {
 
           $mail = new PHPMailer(true);                              // Passing `true` enables exceptions
           try {
@@ -502,9 +510,10 @@ final class UserController extends BaseController
             Click Here </a><p>";
 
             $mail->send();
-            $this->view->render($response, 'signin.twig', ['success_message'
-            => 'Authentication-mail has been sent. Please, check your E-mail.', 'result_code' => 0]);
-            return $response;
+
+            $json = ['success_message' => 'Authentication-mail has been sent. Please, check your E-mail.', 'result_code' => 0];
+            return $response->withHeader('Content-type', 'application/json')
+              ->write(json_encode($json));
           } catch (Exception $e) {
 
             $json = [
@@ -523,10 +532,11 @@ final class UserController extends BaseController
         }
       } else {  // There is no user information or There is more than two user information.
         $json = [
-          'error_message' => 'Some errors occurred during forgotten password change.', 'result_code' => 1
+          'error_message' => 'E-mail does not exist.', 'result_code' => 1
         ];
         return $response->withHeader('Content-type', 'application/json')
           ->write(json_encode($json));
+  
       }
     } catch (PDOException $e) {
       $json = ['error_message' => 'Some errors occurred during forgotten password change.', 'result_code' => 1];
@@ -546,12 +556,10 @@ final class UserController extends BaseController
 
       $nonce = substr($parts['path'], 21);
 
-
-
       $results = $this->UserModel->select_USN_by_nonce_from_user_table($nonce);
       if (count($results) == 1) {
 
-        $this->view->render($response, 'signin.twig',[ 'auth_code' => $nonce, 'USN' => $results[0]['USN'],
+        $this->view->render($response, 'fpwenter.twig',[ 'auth_code' => $nonce, 'USN' => $results[0]['USN'],
         'success_message'=>'Please, Enter Your new password.', 'result_code' => 0]);
         return $response;
 
@@ -579,11 +587,13 @@ final class UserController extends BaseController
       if (isset($_POST['new_password']) || isset($_POST['confirm_new_password'])) {
         $user['new_password'] =  $_POST['new_password'];
         $user['confirm_new_password'] =  $_POST['confirm_new_password'];
+
       } else {
         $json = ['error_message' => 'No information received.', 'result_code' => 1];
         return $response->withHeader('Content-type', 'application/json')
           ->write(json_encode($json));
       }
+  
 
       $url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
       $parts = parse_url($url);
@@ -595,15 +605,17 @@ final class UserController extends BaseController
         $user['USN'] = $results[0]['USN'];
         $user['hashed_pwd'] = password_hash($_POST['new_password'], PASSWORD_DEFAULT); //hasing password
         $user['auth_code'] =  NULL;   //update auth_code 
-
-        if ($this->UserModel->update_user_set_password_auth_code($user)) {
+ 
+        if ($this->UserModel->update_user_set_password_auth_code($user)>=0) {
+ 
+   
           $json = ['success_message' => 'Forgotten password change is completed. ', 'result_code' => 0];
           return $response->withHeader('Content-type', 'application/json')
-            ->write(json_encode($results));
+            ->write(json_encode($json));
         } else {
           $json = ['error_message' => 'Some errors occurred during forgotten password change.', 'result_code' => 1];
           return $response->withHeader('Content-type', 'application/json')
-            ->write(json_encode($results));
+            ->write(json_encode($json));
         }
       } else {
         $json = ['error_message' => 'Some errors occurred during forgotten password change.', 'result_code' => 1];

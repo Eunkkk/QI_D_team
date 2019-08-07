@@ -7,56 +7,172 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 final class DataController extends BaseController
 {
-protected $logger;
+  protected $logger;
   protected $DataModel;
   protected $view;
 
-  public function __construct($logger, $DataModel, $view)
+ 
+  public function __construct($view, $DataModel, $logger)
   {
     $this->logger = $logger;
     $this->DataModel = $DataModel;
     $this->view = $view;
   }
 
-public function data_transfer_request(Request $request, Response $response, $args)
+public function data_heartrate_page(Request $request, Response $response,$args){
+  $this->view->render($response, 'heartrate.twig');
+  return $response;
+}
+
+public function data_airquality_page(Request $request, Response $response,$args){
+  $this->view->render($response, 'airquality.twig');
+  return $response;
+}
+
+
+  //app to database 
+public function data_airquality_transfer_request(Request $request, Response $response, $args)
     {
       header('Content-type:application/json');
       $json = file_get_contents('php://input'); //allows the server to read raw POST data from the request body.
       $data = json_decode($json, true);
-    //   $response = array(
-    //     'success_message' => 'Airquality is stored.',
-    //     'result_code' => 0,
-    //   );
-    //   return json_encode($data['O3']);
-      $response = array(
-        'SSN' => $data['SSN'],
-        'timestamp' => $data['timestampl'],
-        'temperature' => $data['temperature'],
-        'PM2.5' => $data['PM2.5'],
-        'CO' => $data['CO'],
-        'NO2' => $data['NO2'],
-        'O3' => $data['O3'],
-        'SO2' => $data['SO2'],
-        'PM2.5_AQI' => $data['PM2.5_AQI'],
-        'CO_AQI' => $data['CO_AQI'],
-        'NO2_AQI' => $data['NO2_AQI'],
-        'O3_AQI' => $data['O3_AQI'],
-        'SO2_AQI' => $data['SO2_AQI'],
-        'lat' => $data['lat'],
-        'lng' => $data['lng'],
-      );
-      if($this->DataModel->insert_data_into_airquaility_table($data)){
+      try{
+        
+      $result = $this->DataModel->select_SSN_from_sensor_info_table($data);
+
+      if(count($result)!=0){
+        if(($this->DataModel->insert_data_into_airquaility_table($data))>0){
+          $response = array(
+              'success_message' => 'Airquality data is stored.',
+              'result_code' => 0,
+            );
+            return json_encode($response);
+        } else{
+          $response = array(
+              'error_message' => 'Airquiality data is not stored.',
+              'result_code' => 1,
+            );
+            return json_encode($response);
+        }
+      }else{
         $response = array(
-            'success_message' => 'Airquality is stored.',
-            'result_code' => 0,
-          );
-          return json_encode($response);
-      } else{
+          'error_message' => 'You have to Sensor registration first .',
+          'result_code' => 1,
+        );
+        return json_encode($response);
+      }
+
+       }catch(PDOException $e){
         $response = array(
-            'success_message' => 'Airquiality is not stored.',
-            'result_code' => 1,
-          );
-          return json_encode($response);
+          'error_message' => 'Some errors occurred during airquality data transfer.',
+          'result_code' => 1,
+        );
       }
     }
+
+    public function data_heartrate_transfer_request(Request $request, Response $response, $args)
+    {
+      header('Content-type:application/json');
+      $json = file_get_contents('php://input'); //allows the server to read raw POST data from the request body.
+      $data = json_decode($json, true);
+      
+
+      try{
+        
+        if(($this->DataModel->insert_data_into_heartrate_table($data))>0){
+          $response = array(
+              'success_message' => 'Heart rate data is stored.',
+              'result_code' => 0,
+            );
+            return json_encode($response);
+        } else{
+          $response = array(
+              'error_message' => 'Heart rate data is not stored.',
+              'result_code' => 1,
+            );
+            return json_encode($response);
+        }
+   
+
+       }catch(PDOException $e){
+        $response = array(
+          'error_message' => 'Some errors occurred during heart_rate data transfer.',
+          'result_code' => 1,
+        );
+        return json_encode($response);
+      }
+    }
+
+    public function get_airquality_request(Request $request, Response $response, $args)
+    {
+
+      try{
+        if (isset($_POST['value'])||isset($_POST['north'])||isset($_POST['east'])
+        ||isset($_POST['south'])||isset($_POST['west'])) {
+          $user['value'] =  $_POST['value'];
+          $user['north'] =  $_POST['north'];
+          $user['east'] =  $_POST['east'];
+          $user['south'] =  $_POST['south'];
+          $user['west'] =  $_POST['west'];
+        } else {
+          $json = ['error_message' => 'There is no value.', 'result_code' => 1];
+          return $response->withHeader('Content-type', 'application/json')
+            ->write(json_encode($json));
+        } 
+       
+        $results = $this->DataModel->select_data_from_airquality_table($user);
+
+        if(count($results)>0){
+          return $response->withHeader('Content-type', 'application/json')
+          ->write(json_encode($results));
+        }else{
+          $json = ['error_message' => 'There is no air quality data', 'result_code' => 1];
+          return $response->withHeader('Content-type', 'application/json')
+            ->write(json_encode($json));
+        }
+     
+
+      }catch(PDOException $e){
+        $json = ['error_message' => 'Some errors occurred during getting air quality', 'result_code' => 1];
+        return $response->withHeader('Content-type', 'application/json')
+          ->write(json_encode($json));
+      }
+    }
+
+     
+    public function get_heartrate_request(Request $request, Response $response, $args)
+    {
+
+      try{
+        if (isset($_POST['USN'])) {
+          $user['USN'] =  $_POST['USN'];
+
+        } else {
+          $json = ['error_message' => 'There is no value.', 'result_code' => 1];
+          return $response->withHeader('Content-type', 'application/json')
+            ->write(json_encode($json));
+        } 
+       
+         $results = $this->DataModel->select_data_from_heartrate_table($user);
+
+        if(count($results)>0){
+          return $response->withHeader('Content-type', 'application/json')
+          ->write(json_encode($results));
+        }else{
+          $json = ['error_message' => 'There is Heart-rate data', 'result_code' => 1];
+          return $response->withHeader('Content-type', 'application/json')
+            ->write(json_encode($json));
+        }
+     
+
+      }catch(PDOException $e){
+        $json = ['error_message' => 'Some errors occurred during getting  Heart-rate data', 'result_code' => 1];
+        return $response->withHeader('Content-type', 'application/json')
+          ->write(json_encode($json));
+      }
+    }
+    
+
+    
+
 }

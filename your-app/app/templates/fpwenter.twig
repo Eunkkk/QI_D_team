@@ -11,17 +11,32 @@
         <link href="/assets/plugins/pace/pace-theme-big-counter.css" rel="stylesheet"/>
         <link href="/assets//css/style.css" rel="stylesheet"/>
         <link href="/assets//css/main-style.css" rel="stylesheet"/>
-
+{# ===============================Modal===================================== #}
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    {# ==================================================================== #}
     </head>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script type="text/javascript">
+
         var request;
         $(document).ready(function () {
+             var error_message =$('#id_error_message').text();
+            var success_message =$('#id_success_message').text();   
+            if((error_message.localeCompare("  "))!=0){
+                    $("#message").html(error_message);
+                    $('#myModal').modal("show");
+ 
+            }else if(success_message.localeCompare("  ")!=0){
+                $("#message").html(success_message);
+                $('#myModal').modal("show");
+         }
+         
             $("#new_password, #confirm_new_password").keyup(checkPasswordMatch);
             $("#new_password").keyup(checkPasswordForm);
 
             $('#clickfpwchangeButton').click(function () {
-                formCheck(this);
                 event.preventDefault();
                 if (request) {
                     request.abort();
@@ -38,24 +53,32 @@
                     confirm_new_password: confirm_new_pwd
                 }, function (returnedData) {
                     console.log(returnedData);
+
                 });
 
                 // Callback handler that will be called on success
                 request.done(function (response, textStatus, jqXHR) { // Log a message to the console
-                    if (response.result_code == 0) {
-                        alert(response.success_message);
+                        console.log(response);           
+                            if (response.result_code == 0) {
+                        $("#message").html(response.success_message);
+                        $('#myModal').modal("show");
+                                                setTimeout(function() { 
                         window.location.replace("http://teamd-iot.calit2.net/user/signin");
-
+                        }, 3000);
                     } else {
-                        alert(response.error_message);
+                        $("#message").html(response.error_message);
+                        $('#myModal').modal("show");
+                        setTimeout(function() { 
                         window.location.replace("http://teamd-iot.calit2.net/user/fpwchange");
+                        }, 3000);
+                       
                     }
                 });
 
                 // Callback handler that will be called on failure
                 request.fail(function (jqXHR, textStatus, errorThrown) { // Log the error to the console
-                    alert("The following error occurred: " + textStatus, errorThrown);
-
+                    $("#message").html("The following error occurred: " + textStatus, errorThrown);
+                    $('#myModal').modal("show");
                 });
             });
 
@@ -95,12 +118,14 @@
         function formCheck(frm) {
 
             if (frm.new_password.value == "") {
-                alert("Please enter your new password.");
+                $("#message").html("Please enter your new password.");
+                $('#myModal').modal("show");
                 frm.new_password.focus();
                 return false;
             }
             if (frm.confirm_new_password.value == "") {
-                alert("Please enter your confirm password.");
+                $("#message").html("Please enter your confirm password.");
+                $('#myModal').modal("show");
                 frm.confirm_new_password.focus();
                 return false;
             }
@@ -112,16 +137,41 @@
             var password_regex3 = /([!,%,&,@,#,$,^,*,?,_,~])/;
 
             if (new_pwd.length < 8 || password_regex1.test(new_pwd) == false || password_regex2.test(new_pwd) == false || password_regex3.test(new_pwd) == false) {
-                alert("Password Must be at least 8 Digitslong and contains one UpperCase, one LowerCase and One special character.");
+                $("#message").html("Password Must be at least 8 Digitslong and contains one UpperCase, one LowerCase and One special character.");
+                $('#myModal').modal("show");
                 return false;
             } else if (new_pwd !== confirm_new_pwd) {
-                alert("Passwords do not match.");
+                $("#message").html("Passwords do not match.");
+                $('#myModal').modal("show");
                 return false;
             }
             return true;
         }
     </script>
 
+    {# ==================================================================== #}
+       <div class="modal fade" id="myModal">
+            <div class="modal-dialog modal-lg modal-dialog-centered " role="document">
+                <div class="modal-content ">
+                    <div class="modal-header text-danger">
+                        <h4 class="modal-title ">Notification</h4>
+                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p id = "message"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary mx-auto" data-dismiss="modal" type="button">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    {# ==================================================================== #}
+<p id="id_success_message" hidden> {{success_message}} <p>
+<p id="id_error_message" hidden> {{error_message}} <p>
 
     <body class="body-Login-back">
         <div class="container">
@@ -149,7 +199,7 @@
                             <!-- Change this to a button or input when using this as a form -->
                             <div class="row text-center" style="width: 100%">
                                 <a class="btn btn-sm btn-success" href="javascript:window.history.back();">CANCEL</a>
-                                <input class="btn btn-sm btn-success" id="clickfpwchangeButton" type="submit" value="COMPLATE"/>
+                                <input class="btn btn-sm btn-success" id="clickfpwchangeButton" type="submit" value="COMPLETE"/>
 
                             </dev>
 

@@ -184,7 +184,7 @@ final class AppController extends BaseController
           $user['USN'] = $results['USN'];
           $results['loginStateFlag'] = 1; //set login state flage to 1
 
-          if ($this->UserModel->update_user_set_loginStateFlag($results) == 0) {
+          if ($this->UserModel->update_user_set_loginStateFlag($results) >= 0) {
             $user['permission'] = $this->UserModel->select_permission_from_user_table($results);
 
             $response = array(
@@ -247,11 +247,11 @@ final class AppController extends BaseController
         return json_encode($response);
       }
 
-      if ($this->UserModel->update_user_set_loginStateFlag($user) == 0) {
+      if ($this->UserModel->update_user_set_loginStateFlag($user) >= 0) {
 
         $response = array(
           'error_message' => 'You have been logged-out.',
-          'result_code' => 1
+          'result_code' => 0
         );
         return json_encode($response);
       } else {
@@ -277,13 +277,71 @@ final class AppController extends BaseController
   public function app_pw_change_request(Request $request, Response $response, $args)
   {
     $json = file_get_contents('php://input'); //allows the server to read raw POST data from the request body.
-    $data = json_decode($json);
-    echo json_encode($data);
+    $data = json_decode($json, true);
+ 
+    $json = [];
+    $user = [];
+    try {
+      if (
+        isset($data['USN']) && isset($data['password']) &&
+        isset($data['new_password']) && isset($data['confirm_new_password'])
+        && ($data['new_password'] === $data['confirm_new_password'])
+      ) {
+        $user['password'] =  $data['password'];
+        $user['USN'] =  $data['USN'];
+      } else {
+        $response = array(
+          'error_message' => 'No information received.',
+          'result_code' => 1
+        );
+        return json_encode($response);
+      }
 
-    //   echo $data->USN;
-    //   echo $data->password;
-    //   echo $data->new_password;
-    //   echo $data->confirm_new_password;
+      $results = $this->UserModel->select_hashpw_from_user_table($user);
+
+      if ($results) {
+
+        if (password_verify($user['password'], $results['hashed_pwd'])) {
+          $user['new_password'] = password_hash($data['new_password'], PASSWORD_DEFAULT);
+
+          if ($this->UserModel->update_user_set_password($user) >= 0) {
+
+            $response = array(
+              'success_message' => 'Password change is completed.',
+              'result_code' => 0
+            );
+            return json_encode($response);
+
+          } else {
+            $response = array(
+              'error_message' => 'Password is not changed.',
+              'result_code' => 1
+            );
+            return json_encode($response);
+           
+          }
+        } else {
+          $response = array(
+            'error_message' => 'Password Change is Failed, Password is wrong.',
+            'result_code' => 1
+          );
+          return json_encode($response);
+        }
+      } else {
+        $response = array(
+          'error_message' => 'User does not exist in table. Please, Sign-in first.',
+          'result_code' => 1
+        );
+        return json_encode($response);
+      }
+    } catch (PDOException $e) {
+      $response = array(
+        'error_message' => 'Some errors occurred during password change.',
+        'result_code' => 1
+      );
+      return json_encode($response);
+      
+    }
 
   }
 
@@ -295,9 +353,91 @@ final class AppController extends BaseController
   public function app_forgotton_pw_change_request(Request $request, Response $response, $args)
   {
     $json = file_get_contents('php://input'); //allows the server to read raw POST data from the request body.
-    $data = json_decode($json);
-    echo json_encode($data);
-    //   echo $data->e_mail;
+    $data = json_decode($json, true);
+    try {
+
+      if (isset($data['e_mail'])) {
+        $user['e_mail'] =  $data['e_mail'];
+      } else {
+        $response = array(
+          'error_message' => 'There is no E-mail.',
+          'result_code' => 1
+        );
+        return json_encode($response);
+
+      }
+
+      $results = $this->UserModel->duplicate_check_by_email_from_user_table($user);
+      if (count($results) == 1) { // Only one account is exist with the e-mail entered
+        $user['USN'] = $results[0]['USN'];
+        $temp =  password_hash(strval(mt_rand()), PASSWORD_DEFAULT);
+        $user['auth_code'] = str_replace(array('\\', '/', '.'), strval(mt_rand()), $temp); //generate new auth_code
+        for ($i = 0; $i <= 6; $i++) {
+          $user['auth_code'][$i] =  strval(mt_rand());
+        }
+
+        if ($this->UserModel->update_user_set_auth_code($user) >= 0) {
+
+          $mail = new PHPMailer(true);                              // Passing `true` enables exceptions
+          try {
+            // Server settings
+            $mail->isSMTP();                                        // Set mailer to use SMTP
+            $mail->Host = 'smtp.gmail.com';                         // Specify main and backup SMTP servers
+            $mail->SMTPAuth = true;                                 // Enable SMTP authentication
+            $mail->Username = 'dmsrb1595@gmail.com';                 // SMTP username
+            $mail->Password = 'znjfzja1!';                           // SMTP password
+            $mail->SMTPSecure = 'tls';                              // Enable TLS encryption, `ssl` also accepted
+            $mail->Port = 587;                                      // TCP port to connect to
+
+            //Recipients
+            $auth_url =  'http://teamd-iot.calit2.net/account/resetpasswd/' . $user['auth_code'];
+            $mail->setFrom('dmsrb1595@gmail.com', 'Team D');
+            $mail->addAddress($user['e_mail'], 'Team D');         // Add a recipient
+            $mail->isHTML(true);                                  // Set email format to HTML
+            $mail->Subject = 'Authentication E-mail from "Fresh Your Route"!!';
+            $mail->Body    = 'I’m sorry that you lost your password.
+            <br>If you want to reset your acccount password, Please,' . "<a href=\"$auth_url\">
+            Click Here </a><p>";
+
+            $mail->send();
+            $response = array(
+              'success_message' => 'Authentication-mail has been sent. Please, check your E-mail.',
+              'result_code' => 0
+            );
+            return json_encode($response);
+
+          } catch (Exception $e) {
+            $response = array(
+              'error_message' => 'Authentication-mail could not be sent. Try again.',
+              'result_code' => 1
+            );
+            return json_encode($response);
+  
+          } // end of catch statement 
+        } else {
+
+          $response = array(
+            'error_message' => 'Some errors occurred during forgotten password change.',
+            'result_code' => 1
+          );
+          return json_encode($response);
+        }
+      } else {  // There is no user information or There is more than two user information.
+        
+        $response = array(
+          'error_message' => 'E-mail does not exist in the table. Please, Sign-up first',
+          'result_code' => 1
+        );
+  
+      }
+    } catch (PDOException $e) {
+      $response = array(
+        'error_message' => 'Some errors occurred during forgotten password change.',
+        'result_code' => 1
+      );
+      return json_encode($response);
+    }
+  
 
   }
 
@@ -308,7 +448,7 @@ final class AppController extends BaseController
   public function app_ID_cancellation_request(Request $request, Response $response, $args)
   {
     $json = file_get_contents('php://input'); //allows the server to read raw POST data from the request body.
-    $data = json_decode($json);
+    $data = json_decode($json, true);
 
     $json = [];
     $user = [];
@@ -333,50 +473,45 @@ final class AppController extends BaseController
         if (password_verify($user['password'], $results['hashed_pwd'])) {
           $user['isActive'] = 0;  // set isActive flag to 0. it is mean that user account is cancelled.
 
-          if ($this->UserModel->update_user_set_isActive($user) == 0) { //update database 
-
-
+          if ($this->UserModel->update_user_set_isActive($user) >= 0) { //update database 
             
-        $response = array(
-          'success_message' => 'ID cancellation is completed.',
-          'result_code' => 0
-        );
-        return json_encode($response);
-
-          } else {
-
-
             $response = array(
               'success_message' => 'ID cancellation is completed.',
               'result_code' => 0
             );
             return json_encode($response);
-            
-            $json = [
-              'error_message' => 'Some errors occurred during ID Cancellation.', 'result_code' => 1
-            ];
-            return $response->withHeader('Content-type', 'application/json')
-              ->write(json_encode($json));
+
+          } else {
+
+            $response = array(
+              'error_message' => 'Some errors occurred during ID Cancellation.',
+              'result_code' => 1
+            );
+            return json_encode($response);
           }
         } else {
-          $json = [
-            'error_message' => 'ID cancellation is Failed, Password is wrong.', 'result_code' => 1
-          ];
-          return $response->withHeader('Content-type', 'application/json')
-            ->write(json_encode($json));
+
+          $response = array(
+            'error_message' => 'ID cancellation is Failed, Password is wrong.',
+            'result_code' => 1
+          );
+          return json_encode($response);
+
         }
       } else {
+        $response = array(
+          'error_message' => 'Some errors occurred during ID Cancellation.',
+          'result_code' => 1
+        );
+        return json_encode($response);
 
-        $json = [
-          'error_message' => 'Some errors occurred during ID Cancellation.', 'result_code' => 1
-        ];
-        return $response->withHeader('Content-type', 'application/json')
-          ->write(json_encode($json));
       }
     } catch (PDOException $e) {
-      $json = ['error_message' => 'Some errors occurred during ID Cancellation.', 'result_code' => 1];
-      return $response->withHeader('Content-type', 'application/json')
-        ->write(json_encode($json));
+      $response = array(
+        'error_message' => 'Some errors occurred during ID Cancellation.',
+        'result_code' => 1
+      );
+      return json_encode($response);
     }
 
   }

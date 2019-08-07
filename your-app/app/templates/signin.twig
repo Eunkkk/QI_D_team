@@ -20,19 +20,32 @@
         {# ==================================================================== #}
 
     </head>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script type="text/javascript">
-        $(window).on('load', function () { // popup
 
-            var delayMs = 100; // delay in milliseconds
-            setTimeout(function () {
-                $('#myModal').modal('show');
-            }, delayMs);
+
+        $(document).load(function() {
+  
+
+              //$('#myModal').modal('show');
         });
 
         var request;
         $(document).ready(function () {
+            var error_message =$('#id_error_message').text();
+            var success_message =$('#id_success_message').text();   
+   
+            if((error_message.localeCompare("  "))!=0){
+                    $("#message").html(error_message);
+                    $('#myModal').modal("show");
+ 
+            }else if(success_message.localeCompare("  ")!=0){
+                $("#message").html(success_message);
+                $('#myModal').modal("show");
 
+         }
+ 
             $("#e_mail").keyup(checkEmailForm);
 
             $('#clicksignin').click(function () {
@@ -44,32 +57,37 @@
                 var email = $("#e_mail").val();
                 var pwd = $("#password").val();
 
-                request = $.post('/user/signin/request', {
-                    e_mail: email,
-                    password: pwd
-                }, function (returnedData) {
-                    console.log(returnedData);
-                });
+            request = $.post('/user/signin/request', {
+                e_mail: email,
+                password: pwd
+            }, function (returnedData) {
+                console.log(returnedData);
+            });
 
                 // Callback handler that will be called on success
                 request.done(function (response, textStatus, jqXHR) { // Log a message to the console
 
                     if (response.USN && response.permission) {
                         localStorage.setItem('USN', response.USN);
-
+                        localStorage.setItem('e_mail', response.e_mail);
+                        
                         if (response.permission.permission == 1) { // Admin
                             window.location.replace("http://teamd-iot.calit2.net/admin/index");
                         } else { // user
                             window.location.replace("http://teamd-iot.calit2.net/user/index");
                         }
                     } else {
-                        alert(response.error_message);
+                          $("#message").html(response.error_message);
+                         $('#myModal').modal("show");
+                  
                     }
                 });
 
                 // Callback handler that will be called on failure
                 request.fail(function (jqXHR, textStatus, errorThrown) { // Log the error to the console
-                    alert("The following error occurred: " + textStatus, errorThrown);
+                        $("#message").html("The following error occurred: " + textStatus, errorThrown);
+                         $('#myModal').modal("show");
+                    
 
                 });
             });
@@ -92,13 +110,15 @@
         }
 
         function formCheck(frm) {
-            if (frm.e_mail.value == "") {
-                alert("Please enter your E-mail address.");
+            if (frm.e_mail.value == "") { 
+                $("#message").html("Please enter your E-mail address");
+                 $('#myModal').modal("show");
                 frm.e_mail.focus();
                 return false;
             }
             if (frm.password.value == "") {
-                alert("Please enter your password.");
+                $("#message").html("Please enter your password.");
+                 $('#myModal').modal("show");
                 frm.password.focus();
                 return false;
             }
@@ -112,17 +132,18 @@
             var password_regex3 = /([!,%,&,@,#,$,^,*,?,_,~])/;
 
             if (email_regex.test(email) == false) {
-                alert("Please Enter Correct Email");
+                $("#message").html("Please Enter Correct E-mail address.");
+                $('#myModal').modal("show");
                 return false;
             }
 
             return true;
         }
     </script>
+    
 
     {# ==================================================================== #}
-    {% if error_message %}
-        <div class="modal fade" id="myModal">
+       <div class="modal fade" id="myModal">
             <div class="modal-dialog modal-lg modal-dialog-centered " role="document">
                 <div class="modal-content ">
                     <div class="modal-header text-danger">
@@ -132,7 +153,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>{{error_message}}</p>
+                        <p id = "message"></p>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary mx-auto" data-dismiss="modal" type="button">Close</button>
@@ -140,28 +161,11 @@
                 </div>
             </div>
         </div>
-    {% elseif success_message %}
-        <div class="modal fade" id="myModal">
-            <div class="modal-dialog modal-lg modal-dialog-centered " role="document">
-                <div class="modal-content ">
-                    <div class="modal-header ">
-                        <h4 class="modal-title ">Notification</h4>
-                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>{{success_message}}</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary mx-auto" data-dismiss="modal" type="button">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    {% endif %}
+        
     {# ==================================================================== #}
+
+<p id="id_success_message" hidden> {{success_message}} <p>
+<p id="id_error_message" hidden> {{error_message}} <p>
 
     <body class="body-Login-back">
         <div class="container">

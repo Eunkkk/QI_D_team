@@ -22,19 +22,64 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script type="text/javascript">
-
+var request;
         $(document).ready(function () {
             $("#password, #confirm_password").keyup(checkPasswordMatch);
             $("#password").keyup(checkPasswordForm);
             $("#e_mail").keyup(checkEmailForm);
+
+             $('#clicksignup').click(function () {
+                event.preventDefault();
+                if (request) {
+                    request.abort();
+                }
+
+                var ve_mail = $("#e_mail").val();
+                var vpassword = $("#password").val();
+                var vconfirm_password = $("#confirm_password").val();
+                var vfirst_name = $("#first_name").val();
+                var vlast_name = $("#last_name").val();
+                var vbirth_date = $("#birth_date").val();
+ 
+           request = $.post('/user/signup/request', {
+                e_mail: ve_mail,
+                password: vpassword,
+                confirm_password : vconfirm_password,
+                first_name: vfirst_name,
+                last_name : vlast_name,
+                birth_date: vbirth_date
+            }, function (returnedData) {
+                console.log(returnedData);
+            });
+
+                // Callback handler that will be called on success
+                request.done(function (response, textStatus, jqXHR) { // Log a message to the console
+
+                    if (response.result_code==0) {
+                            $("#message").html(response.success_message);
+                             $('#myModal').modal("show");
+                               setTimeout(function() { 
+                                   window.location.replace("http://teamd-iot.calit2.net/user/signin");
+                                   }, 3000);
+             
+                    } else {
+                          $("#message").html(response.error_message);
+                          $('#myModal').modal("show");
+                    }
+                    
+                });
+
+                // Callback handler that will be called on failure
+                request.fail(function (jqXHR, textStatus, errorThrown) { // Log the error to the console
+                        $("#message").html("The following error occurred: " + textStatus, errorThrown);
+                         $('#myModal').modal("show");
+                    
+
+                });
+            });
+
         });
 
-        $(window).on('load', function () { // popup
-            var delayMs = 100; // delay in milliseconds
-            setTimeout(function () {
-                $('#myModal').modal('show');
-            }, delayMs);
-        });
 
         function checkEmailForm() {
 
@@ -87,32 +132,38 @@
 
         function formCheck(frm) {
             if (frm.e_mail.value == "") {
-                alert("Please enter your E-mail address.");
+                $("#message").html("Please enter your E-mail address");
+                 $('#myModal').modal("show");
                 frm.e_mail.focus();
                 return false;
             }
             if (frm.password.value == "") {
-                alert("Please enter your password.");
+                $("#message").html("Please enter your password.");
+                 $('#myModal').modal("show");
                 frm.password.focus();
                 return false;
             }
             if (frm.confirm_password.value == "") {
-                alert("Please enter your confirm password.");
+                $("#message").html("Please enter your confirm password.");
+                $('#myModal').modal("show");
                 frm.confirm_password.focus();
                 return false;
             }
             if (frm.first_name.value == "") {
-                alert("Please enter your fisrt name.");
+                $("#message").html("Please enter your fisrt name.");
+                $('#myModal').modal("show");
                 frm.first_name.focus();
                 return false;
             }
             if (frm.last_name.value == "") {
-                alert("Please enter your last name.");
+                $("#message").html("Please enter your last name.");
+                $('#myModal').modal("show");
                 frm.last_name.focus();
                 return false;
             }
             if (frm.birth_date.value == "") {
-                alert("Please enter your birth_date.");
+                $("#message").html("Please enter your birth_date.");
+                $('#myModal').modal("show");
                 frm.birth_date.focus();
                 return false;
             }
@@ -128,16 +179,20 @@
             var password_regex3 = /([!,%,&,@,#,$,^,*,?,_,~])/;
 
             if (email_regex.test(email) == false) {
-                alert("Please Enter Correct E-mail address.");
+                $("#message").html("Please Enter Correct E-mail address.");
+                $('#myModal').modal("show");
                 return false;
             } else if (pass.length < 8 || password_regex1.test(pass) == false || password_regex2.test(pass) == false || password_regex3.test(pass) == false) {
-                alert("Password Must be at least 8 Digitslong and contains one UpperCase, one LowerCase and One special character.");
+                $("#message").html("Password Must be at least 8 Digitslong and contains one UpperCase, one LowerCase and One special character.");
+                $('#myModal').modal("show");
                 return false;
             } else if (password_regex2.test(first) == true || password_regex3.test(first) || password_regex2.test(last) == true || password_regex3.test(last)) {
-                alert("Please enter the correct name format.");
+                $("#message").html("Please enter the correct name format.");
+                $('#myModal').modal("show");
                 return false;
             } else if (pass !== confirm) {
-                alert("Passwords do not match.");
+                $("#message").html("Passwords do not match.");
+                $('#myModal').modal("show");
                 return false;
             }
             return true;
@@ -145,8 +200,7 @@
     </script>
 
     {# ==================================================================== #}
-    {% if error_message %}
-        <div class="modal fade" id="myModal">
+       <div class="modal fade" id="myModal">
             <div class="modal-dialog modal-lg modal-dialog-centered " role="document">
                 <div class="modal-content ">
                     <div class="modal-header text-danger">
@@ -156,7 +210,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>{{error_message}}</p>
+                        <p id = "message"></p>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary mx-auto" data-dismiss="modal" type="button">Close</button>
@@ -164,26 +218,7 @@
                 </div>
             </div>
         </div>
-    {% elseif success_message %}
-        <div class="modal fade" id="myModal">
-            <div class="modal-dialog modal-lg modal-dialog-centered " role="document">
-                <div class="modal-content ">
-                    <div class="modal-header ">
-                        <h4 class="modal-title ">Notification</h4>
-                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>{{success_message}}</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary mx-auto" data-dismiss="modal" type="button">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>>
-    {% endif %}
+        
     {# ==================================================================== #}
 
     <body class="body-Login-back">
@@ -199,7 +234,7 @@
                             <h3 class="panel-title">Please, Sign Up</h3>
                         </div>
                         <div class="panel-body">
-                            <form action="/user/signup/request" method="post" onsubmit="return formCheck(this)">
+                            <form  onsubmit="return formCheck(this)">
 
                                 <div class="form-group">
                                     <label>Email address</label><br>
@@ -224,15 +259,15 @@
                         </div>
                         <label>Birth Date</label>
                     </br>
-                    <input class="form-control" name="birth_date" placeholder="Birth Date" type="date" value=""></br>
+                    <input class="form-control" id="birth_date" name="birth_date" placeholder="Birth Date" type="date" value=""></br>
             </body>
         </html>
     </div>
     <!-- Change this to a button or input when using this as a form -->
 
     <div class="row text-center" style="width: 100%">
-                    <a class="btn  btn-success" href="javascript:window.history.back();">CANCEL</a>
-                    <input class="btn  btn-success" type="submit" value="COMPLATE"/>
+                    <a class="btn  btn-success" href="/user/signin">CANCEL</a>
+                    <input class="btn  btn-success" id="clicksignup"type="submit" value="COMPLETE"/>
         </dev>
     </div>
 </fieldset></form></div></div></div></div></div></div><!-- Core Scripts - Include with every page --><script src="/assets/plugins/jquery-1.10.2.js"></script><script src="/assets/plugins/bootstrap/bootstrap.min.js"></script><script src="/assets/plugins/metisMenu/jquery.metisMenu.js"></script></body></html>

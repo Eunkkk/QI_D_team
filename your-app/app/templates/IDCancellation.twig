@@ -28,6 +28,7 @@
     <script type="text/javascript">
 
         var request;
+        var request2;
         $(document).ready(function () {
             $("#password, #confirm_password").keyup(checkPasswordMatch);
 
@@ -35,7 +36,7 @@
             console.log(getUSN);
 
             $('#clickidcancellation').click(function () {
-                formCheck(this);
+        
                 event.preventDefault();
                 if (request) {
                     request.abort();
@@ -53,27 +54,28 @@
                 // Callback handler that will be called on success
                 request.done(function (response, textStatus, jqXHR) { // Log a message to the console
                     if (response.result_code == 0) {
-                        alert(response.success_message);
-                        window.location.replace("http://teamd-iot.calit2.net/");
-                    } else {
-                        alert(response.error_message);
-                        window.location.replace("http://teamd-iot.calit2.net/user/idcancellation");
-                    }
+                       
+                    $("#message").html(response.success_message);
+                     $('#myModal').modal("show");
+                    $.post('/user/signout/request', {
+                                    USN: getUSN,
+                                }, function(returnedData) {console.log(returnedData);});  
+                            window.location.replace("http://teamd-iot.calit2.net/user/signin");
+                        } else {
+                            $("#message").html(response.error_message);
+                             $('#myModal').modal("show");
+                                  setTimeout(function() { 
+                                   window.location.replace("http://teamd-iot.calit2.net/user/pwchange");
+                                   }, 3000);
+                        }
                 });
 
                 // Callback handler that will be called on failure
                 request.fail(function (jqXHR, textStatus, errorThrown) { // Log the error to the console
-                    alert("The following error occurred: " + textStatus, errorThrown);
-
+                     $("#message").html("The following error occurred: " + textStatus, errorThrown);
+                        $('#myModal').modal("show");
                 });
             });
-        });
-
-        $(window).on('load', function () { // popup
-            var delayMs = 100; // delay in milliseconds
-            setTimeout(function () {
-                $('#myModal').modal('show');
-            }, delayMs);
         });
 
         function checkPasswordMatch() {
@@ -93,12 +95,14 @@
 
         function formCheck(frm) {
             if (frm.password.value == "") {
-                alert("Please enter your password.");
+                $("#message").html("Please enter your password.");
+                $('#myModal').modal("show");
                 frm.password.focus();
                 return false;
             }
             if (frm.confirm_password.value == "") {
-                alert("Please enter your confirm password.");
+                $("#message").html("Please enter your confirm password.");
+                $('#myModal').modal("show");
                 frm.confirm_password.focus();
                 return false;
             }
@@ -111,18 +115,21 @@
             var password_regex3 = /([!,%,&,@,#,$,^,*,?,_,~])/;
 
             if (pass.length < 8 || password_regex1.test(pass) == false || password_regex2.test(pass) == false || password_regex3.test(pass) == false) {
-                alert("Password Must be at least 8 Digitslong and contains one UpperCase, one LowerCase and One special character.");
+                $("#message").html("Password Must be at least 8 Digitslong and contains one UpperCase, one LowerCase and One special character.");
+                $('#myModal').modal("show");
                 return false;
             } else if (pass !== confirm) {
-                alert("Passwords do not match.");
+                $("#message").html("Passwords do not match.");
+                $('#myModal').modal("show");
                 return false;
             }
             return true;
         }
     </script>
+
+
     {# ==================================================================== #}
-    {% if error_message %}
-        <div class="modal fade" id="myModal">
+       <div class="modal fade" id="myModal">
             <div class="modal-dialog modal-lg modal-dialog-centered " role="document">
                 <div class="modal-content ">
                     <div class="modal-header text-danger">
@@ -132,7 +139,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <p>{{error_message}}</p>
+                        <p id = "message"></p>
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-secondary mx-auto" data-dismiss="modal" type="button">Close</button>
@@ -140,27 +147,7 @@
                 </div>
             </div>
         </div>
-    {% elseif success_message %}
-        <div class="modal fade" id="myModal">
-            <div class="modal-dialog modal-lg modal-dialog-centered " role="document">
-                <div class="modal-content ">
-                    <div class="modal-header ">
-                        <h4 class="modal-title ">Notification</h4>
-                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <p>{{success_message}}</p>
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary mx-auto" data-dismiss="modal" type="button">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    {% endif %}
+        
     {# ==================================================================== #}
 
     <body class="body-Login-back">
@@ -185,7 +172,7 @@
                                     <div id="divCheckPasswordMatch"></div><br>
 
                                     <div class="row text-center" style="width: 100%">
-                                        <a class="btn btn-sm btn-success " href="javascript:window.history.back();">CANCEL</a>
+                                        <a class="btn btn-sm btn-success " href="/user/index">CANCEL</a>
                                         <input class="btn btn-sm btn-success " id="clickidcancellation" type="submit" value="COMPLETE"/>
                                     </dev>
                                 </fieldset>

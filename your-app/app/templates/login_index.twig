@@ -18,13 +18,13 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script type="text/javascript">
- 
+
 // ========================================================
         var request;
         $(document).ready(function () {
 
             $('#signoutButton').click(function () {
-                
+
                 // event.preventDefault();
                 // if (request) {
                 //     request.abort();
@@ -40,7 +40,7 @@
 
                 // // Callback handler that will be called on success
                 // request.done(function (response, textStatus, jqXHR) { // Log a message to the console
-                    
+
                 //     localStorage.removeItem('USN');
 
                 //     if(response.success_message)  alert(response.success_message);
@@ -62,7 +62,7 @@
                 request.abort();
             }
             window.location.replace("http://teamd-iot.calit2.net/user/idcancellation");
-           
+
            });
           $('#passwordchangeButton').click(function () {
             event.preventDefault();
@@ -70,7 +70,7 @@
                 request.abort();
             }
             window.location.replace("http://teamd-iot.calit2.net/user/pwchange");
-           
+
            });
         });
 // ========================================================
@@ -125,7 +125,7 @@
                              </input>
                         </form>
                         </li>
-                        
+
                     </ul>
                     <!-- end dropdown-user -->
                 </li>
@@ -192,7 +192,7 @@
                     <li>
                         <a href="tables.html"><i class="fa fa-table fa-fw"></i>Tables</a>
                     </li>
-                    
+
                     <li>
                         <a href="#"><i class="fa fa-files-o fa-fw"></i>Sample Pages<span class="fa arrow"></span></a>
                         <ul class="nav nav-second-level">
@@ -413,6 +413,8 @@
 
 
             </div>
+
+
 
         </div>
 

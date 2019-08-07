@@ -20,9 +20,9 @@
 </head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
 <script type="text/javascript">
+ 
     var request;
     $(document).ready(function() {
-
 
         $("#new_password, #confirm_new_password").keyup(checkPasswordMatch);
         $("#new_password").keyup(checkPasswordForm);
@@ -53,18 +53,30 @@
             request.done(function(response, textStatus, jqXHR) { // Log a message to the console
 
                 if (response.result_code == 0) {
-                    alert(response.success_message);
-                    window.location.replace("http://teamd-iot.calit2.net/user/signin");
+                    $("#message").html(response.success_message);
+                    $('#myModal').modal("show");
+                    $.post('/user/signout/request', {
+                               USN: getUSN,
+                         }, function(returnedData) {});  
+                $("#message").html(response.error_message);
+                $('#myModal').modal("show");
+                         setTimeout(function() { 
+                             window.location.replace("http://teamd-iot.calit2.net/user/signin");
+                                   }, 3000);
+            
                 } else {
-                    alert(response.error_message);
-                    window.location.replace("http://teamd-iot.calit2.net/user/pwchange");
+                $("#message").html(response.error_message);
+                $('#myModal').modal("show");
+                    setTimeout(function() { 
+                                   window.location.replace("http://teamd-iot.calit2.net/user/pwchange");
+                                   }, 3000);
                 }
             });
 
             // Callback handler that will be called on failure
             request.fail(function(jqXHR, textStatus, errorThrown) { // Log the error to the console
-                alert("The following error occurred: " + textStatus, errorThrown);
-
+                $("#message").html("The following error occurred: " + textStatus, errorThrown);
+                $('#myModal').modal("show");
             });
         });
     });
@@ -85,14 +97,18 @@
     }
 
     function checkPasswordForm() {
-        var password = $("#password").val();
-        var new_password = $("#new_password").val();
-        var confirm_new_password = $("#confirm_new_password").val();
+        var password = "";
+        var new_password = "";
+        var confirm_new_password = "";
+        password = $("#password").val();
+        new_password = $("#new_password").val();
+        confirm_new_password = $("#confirm_new_password").val();
+
         var password_regex1 = /([a-z].*[A-Z])|([A-Z].*[a-z])([0-9])+([!,%,&,@,#,$,^,*,?,_,~])/;
         var password_regex2 = /([0-9])/;
         var password_regex3 = /([!,%,&,@,#,$,^,*,?,_,~])/;
 
-        if (password.length < 8 || password_regex1.test(password) == false || password_regex2.test(password) == false || password_regex3.test(password) == false) {
+        if (new_password.length < 8 || password_regex1.test(new_password) == false || password_regex2.test(new_password) == false || password_regex3.test(new_password) == false) {
             var match = "Password must be at least 8 Digits long and contains one upper case, one Lower case and one special character."
             var result = match.fontcolor('red');
             $("#divCheckPasswordForm").html(result);
@@ -106,17 +122,20 @@
 
     function formCheck(frm) {
         if (frm.password.value == "") {
-            alert("Please enter your current password.");
+            $("#message").html("Please enter your current password.");
+            $('#myModal').modal("show");
             frm.password.focus();
             return false;
         }
         if (frm.new_password.value == "") {
-            alert("Please enter your new password.");
+            $("#message").html("Please enter your new password.");
+            $('#myModal').modal("show");
             frm.new_password.focus();
             return false;
         }
         if (frm.confirm_new_password.value == "") {
-            alert("Please enter your confirm password.");
+            $("#message").html("Please enter your confirm password.");
+            $('#myModal').modal("show");
             frm.confirm_new_password.focus();
             return false;
         }
@@ -128,16 +147,39 @@
         var password_regex3 = /([!,%,&,@,#,$,^,*,?,_,~])/;
 
         if (new_pwd.length < 8 || password_regex1.test(new_pwd) == false || password_regex2.test(new_pwd) == false || password_regex3.test(new_pwd) == false) {
-            alert("Password Must be at least 8 Digitslong and contains one UpperCase, one LowerCase and One special character.");
+            $("#message").html("Password Must be at least 8 Digitslong and contains one UpperCase, one LowerCase and One special character.");
+             $('#myModal').modal("show");
             return false;
         } else if (new_pwd !== confirm_new_pwd) {
-            alert("Passwords do not match.");
+            $("#message").html("Passwords do not match.");
+             $('#myModal').modal("show");
             return false;
         }
         return true;
     }
 </script>
 
+    {# ==================================================================== #}
+       <div class="modal fade" id="myModal">
+            <div class="modal-dialog modal-lg modal-dialog-centered " role="document">
+                <div class="modal-content ">
+                    <div class="modal-header text-danger">
+                        <h4 class="modal-title ">Notification</h4>
+                        <button aria-label="Close" class="close" data-dismiss="modal" type="button">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p id = "message"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary mx-auto" data-dismiss="modal" type="button">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    {# ==================================================================== #}
 <body class="body-Login-back">
 
     <div class="container">
@@ -172,8 +214,8 @@
 
                             <!-- Change this to a button or input when using this as a form -->
                             <div class="row text-center" style="width: 100%">
-                                <a class="btn btn-sm btn-success" href="javascript:window.history.back();">CANCEL</a>
-                                <input class="btn btn-sm btn-success" id="clickpwchangeButton" type="submit" value="COMPLATE" />
+                                <a class="btn btn-sm btn-success" href="/user/index">CANCEL</a>
+                                <input class="btn btn-sm btn-success" id="clickpwchangeButton" type="submit" value="COMPLETE" />
 
                                 </dev>
 

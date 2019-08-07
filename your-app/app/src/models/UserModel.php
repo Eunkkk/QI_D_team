@@ -10,7 +10,7 @@ final class UserModel extends BaseModel
         $sql = "DELETE FROM Temp_user where auth_code = ?";
         $sth = $this->db->prepare($sql);
         $sth->execute(array($nonce));
-        $results = $sth !== false ? 0 : 1;
+        $results = $sth->rowCount();
         return $results;
     }
 
@@ -22,6 +22,7 @@ final class UserModel extends BaseModel
         $results = $sth->fetchAll();
         return $results;
     }
+
     public function duplicate_check_by_email_from_temp_user_table($user)
     {
         $sql = "SELECT e_mail from Temp_user where e_mail = ?";
@@ -91,7 +92,7 @@ final class UserModel extends BaseModel
             $user['auth_code'],
             $user['timestamp'],
         ));
-        $results = $sth;
+        $results = $sth->rowCount();
         return $results;
     }
 
@@ -112,16 +113,16 @@ final class UserModel extends BaseModel
             $user['loginStateFlag'],
             $user['isActive'],
         ));
-        $last_id = $this->db->lastInsertId();
-        return $last_id;
+        $results = $sth->rowCount();
+        return $results;
     }
 
     public function update_user_set_loginStateFlag($user)
     {
-        $sql = "UPDATE User SET loginStateFlag = ? WHERE USN = ?";
+        $sql = "UPDATE User SET loginStateFlag = ?, isActive=? WHERE USN = ?";
         $sth = $this->db->prepare($sql);
-        $sth->execute(array($user['loginStateFlag'], $user['USN']));
-        $results = $sth !== false ? 0 : 1;
+        $sth->execute(array($user['loginStateFlag'],$user['isActive'], $user['USN']));
+        $results = $sth->rowCount();
         return $results;
     }
 
@@ -130,7 +131,7 @@ final class UserModel extends BaseModel
         $sql = "UPDATE User SET isActive = ? WHERE USN = ?";
         $sth = $this->db->prepare($sql);
         $sth->execute(array($user['isActive'], $user['USN']));
-        $results = $sth !== false ? 0 : 1;
+        $results = $sth->rowCount();
         return $results;
     }
 
@@ -139,7 +140,7 @@ final class UserModel extends BaseModel
         $sql = "UPDATE User SET hashed_pwd = ? WHERE USN = ?";
         $sth = $this->db->prepare($sql);
         $sth->execute(array($user['new_password'], $user['USN']));
-        $results = $sth !== false ? 0 : 1;
+        $results = $sth->rowCount();
         return $results;
     }
 
@@ -148,7 +149,7 @@ final class UserModel extends BaseModel
         $sql = "UPDATE User SET auth_code = ? WHERE USN = ?";
         $sth = $this->db->prepare($sql);
         $sth->execute(array($user['auth_code'], $user['USN']));
-        $results = $sth !== false ? 0 : 1;
+        $results = $sth->rowCount();
         return $results;
     }
 
@@ -157,7 +158,7 @@ final class UserModel extends BaseModel
         $sql = "UPDATE User SET hashed_pwd = ? , auth_code = ? WHERE USN = ?";
         $sth = $this->db->prepare($sql);
         $sth->execute(array($user['hashed_pwd'], $user['auth_code'], $user['USN']));
-        $results = $sth !== false ? 0 : 1;
+        $results = $sth->rowCount();
         return $results;
     }
 }

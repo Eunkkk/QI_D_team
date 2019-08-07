@@ -73,7 +73,8 @@ $container['App\Controller\UserController'] = function ($container) {
     $logger = $container->get('logger');
     $userModel = $container->get('userModel');
     $view = $container->get('view');
-    return new App\Controller\UserController($logger, $userModel,$view);
+    $sensorModel = $container->get('sensorModel');
+    return new App\Controller\UserController($logger, $userModel,$view, $sensorModel);
 };
 
 $container['App\Controller\MapsController'] = function ($container) {
@@ -87,10 +88,18 @@ $container['App\Controller\MapsController'] = function ($container) {
 $container['App\Controller\SensorController'] = function ($container) {
     $logger = $container->get('logger');
     $sensorModel = $container->get('sensorModel');
-
     $view = $container->get('view');
 
-    return new App\Controller\SensorController($view, $logger, $sensorModel);
+    return new App\Controller\SensorController( $logger, $sensorModel,$view);
+};
+
+$container['App\Controller\AppController'] = function ($container) {
+    $logger = $container->get('logger');
+    $userModel = $container->get('userModel');
+    $appModel = $container->get('appModel');
+    $view = $container->get('view');
+
+    return new App\Controller\AppController($view, $logger, $appModel,$userModel);
 };
 
 $container['App\Controller\DataController'] = function ($container) {
@@ -98,8 +107,9 @@ $container['App\Controller\DataController'] = function ($container) {
     $dataModel = $container->get('dataModel');
     $view = $container->get('view');
 
-    return new App\Controller\DataController($view, $logger, $dataModel);
+    return new App\Controller\DataController($view, $dataModel,$logger);
 };
+
 
 // -----------------------------------------------------------------------------
 // Model factories
@@ -125,15 +135,14 @@ $container['appModel'] = function ($container) {
 
 $container['sensorModel'] = function ($container) {
     $settings = $container->get('settings');
-    $SensorModel = new App\Model\SensorModel($container->get('db'));
-    return $SensorModel;
+    $sensorModel = new App\Model\SensorModel($container->get('db'));
+    return $sensorModel;
 };
 
 $container['dataModel'] = function ($container) {
     $settings = $container->get('settings');
-    $DataModel = new App\Model\DataModel($container->get('db'));
-    return $DataModel;
+    $dataModel = new App\Model\DataModel($container->get('db'));
+    return $dataModel;
 };
-
 
 

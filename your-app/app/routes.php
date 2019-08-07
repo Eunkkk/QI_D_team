@@ -25,6 +25,26 @@ $app->get('/user/idcancellation', 'App\Controller\UserController:ID_cancellation
 $app->get('/user/index', 'App\Controller\UserController:user_index_page')
     ->setName('userindex');
 
+    
+//============================================================================================
+// Sensor rending page
+//============================================================================================
+$app->get('/sensor/listview', 'App\Controller\SensorController:sensor_userlist_view_page')
+    ->setName('sensorlistview');
+
+
+//============================================================================================
+// Sensor rending page
+//============================================================================================
+       
+$app->get('/data/heart', 'App\Controller\DataController:data_heartrate_page')
+    ->setName('dataheartrate');
+
+$app->get('/data/airquality', 'App\Controller\DataController:data_airquality_page')
+    ->setName('dataairquality');
+
+
+
 //============================================================================================
 // Application API
 //============================================================================================
@@ -91,63 +111,43 @@ $app->post('/account/resetpasswd2/{nonce}', 'App\Controller\UserController:accou
 // Sensor Management API
 //============================================================================================
 
-$app->post('/sensor/registration', 'App\Controller\SensorController:sensor_register_request')
+$app->post('/sensor/registration', 'App\Controller\SensorController:sensor_registraion_request')
     ->setName('sensorregister');
 
-$app->post('/sensor/association', 'App\Controller\SensorController:sensor_association')
-    ->setName('sensorassociation');
-
-$app->post('/sensor/deregistration', 'App\Controller\SensorController:sensor_deregister')
+$app->post('/sensor/deregistration/request', 'App\Controller\SensorController:sensor_deregistration_request')
     ->setName('sensorderegister');
 
-$app->post('/sensor/dessociation', 'App\Controller\SensorController:sensor_deassociation')
-    ->setName('sensordeassociation');
+$app->post('/sensor/app/deregistration/request', 'App\Controller\SensorController:app_sensor_deregistration_request')
+    ->setName('sensorderegister');
 
-    
+$app->post('/sensor/userlistview/request', 'App\Controller\SensorController:sensor_userlist_view_request')
+->setName('sensorlisttview');
+
+$app->post('/sensor/app/userlistview/request', 'App\Controller\SensorController:app_sensor_userlist_view_request')
+->setName('sensorapplistview');
+
+
+
 //============================================================================================
 // Data Management API
 //============================================================================================
 
-$app->post('/data/transfer', 'App\Controller\DataController:data_transfer_request')
+$app->post('/data/airquality/transfer', 'App\Controller\DataController:data_airquality_transfer_request')
     ->setName('datatransfer');
 
-// $app->post('/data/registration', 'App\Controller\SensorController:sensor_register_request')
-//     ->setName('sensorregister');
+    
+$app->post('/data/heartrate/transfer', 'App\Controller\DataController:data_heartrate_transfer_request')
+->setName('datatransfer');
+
+
+
 
 //============================================================================================
-// Maps API
+// Data Monitoring
 //============================================================================================
 
+$app->post('/data/get/airquality', 'App\Controller\DataController:get_airquality_request')
+    ->setName('getairquality');
 
-$app->get('/    ', 'App\Controller\MapsController:defaulta')
-    ->setName('defaultmap');
-
-// example with red circles instead of pins
-$app->get('/maps/circles', 'App\Controller\MapsController:circles')
-    ->setName('circlesmap');
-
-// fake sensor information
-$app->get('/maps/fakesensors', 'App\Controller\MapsController:fakesensors')
-    ->setName('fakesensorsmap');
-
-$app->get('/maps/fakesensors_as_json', 'App\Controller\MapsController:fakesensors_as_json')
-    ->setName('fakesensors_as_json');
-
-/*
-$app->get('/maps/newyork-as-json', 'App\Controller\MapsController:default')
-    ->setName('defaultmap');
-*/
-
-$app->get('/maps/pokemonjson', 'App\Controller\MapsController:pokemonjson')
-    ->setName('pokemapjson');
-
-
-$app->get('/maps/pokemon', 'App\Controller\MapsController:pokemon')
-    ->setName('pokemap');
-
-$app->get('/mapjson', 'App\Controller\MapsController:mapjson')
-    ->setName('pokemapjsonsfasdf');
-
-
-$app->get('/maps/air', 'App\Controller\MapsController:map_air')
-    ->setName('pokemapasdfsdf');
+$app->post('/data/get/heartrate', 'App\Controller\DataController:get_heartrate_request')
+    ->setName('getairquality');
