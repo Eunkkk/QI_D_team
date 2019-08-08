@@ -53,6 +53,7 @@ public class LoginActivity extends AppCompatActivity
             transaction.replace(R.id.sample_content_fragment, fragment);
             transaction.commit();
         }
+
     }
 
     @Override
@@ -145,6 +146,13 @@ public class LoginActivity extends AppCompatActivity
             Intent intent = new Intent(
                     getApplicationContext(),
                     MyPolarActivity.class);
+            startActivity(intent);
+            return true;
+        }
+        else if(id == R.id.My_chart) {
+            Intent intent = new Intent(
+                    getApplicationContext(),
+                    chart_activity.class);
             startActivity(intent);
             return true;
         }

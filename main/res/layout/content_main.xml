@@ -75,6 +75,15 @@
                     android:text="value"
                     android:textColor="@color/white" />
 
+                <View
+                    android:layout_width="20dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/dotted_line_vertical"
+                    android:layerType="software" />
+
+
+
                 <TextView
                     android:id="@+id/textView12"
                     android:layout_width="match_parent"
@@ -107,6 +116,14 @@
                     android:gravity="center"
                     android:text="0"
                     android:textColor="@color/white" />
+
+                <View
+                    android:layout_width="30dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/dotted_line_vertical"
+                    android:layerType="software" />
+
 
                 <EditText
                     android:id="@+id/S_O3_AQI"
@@ -162,6 +179,13 @@
                     android:inputType="textPersonName"
                     android:text="value"
                     android:textColor="@color/white" />
+                <View
+                    android:layout_width="20dp"
+                    android:layout_height="102dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/dotted_line_vertical"
+                    android:layerType="software" />
+
 
                 <TextView
                     android:id="@+id/editText3"
@@ -195,6 +219,14 @@
                     android:gravity="center"
                     android:text="0"
                     android:textColor="@color/white" />
+
+                <View
+                    android:layout_width="30dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/dotted_line_vertical"
+                    android:layerType="software" />
+
 
                 <EditText
                     android:id="@+id/S_NO_AQI"
@@ -259,7 +291,12 @@
                     android:inputType="textPersonName"
                     android:text="value"
                     android:textColor="@color/white" />
-
+                <View
+                    android:layout_width="20dp"
+                    android:layout_height="102dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/dotted_line_vertical"
+                    android:layerType="software" />
                 <TextView
                     android:id="@+id/editText6"
                     android:layout_width="match_parent"
@@ -294,6 +331,13 @@
                     android:text="0"
                     android:textColor="@color/white" />
 
+                <View
+                    android:layout_width="30dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/dotted_line_vertical"
+                    android:layerType="software" />
+
                 <EditText
                     android:id="@+id/S_CO_AQI"
                     android:layout_width="match_parent"
@@ -321,7 +365,6 @@
                 android:id="@+id/textView15"
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
-
                 android:layout_marginLeft="3dp"
                 android:background="@color/colorPrimaryDark"
                 android:gravity="center"
@@ -350,6 +393,13 @@
                     android:inputType="textPersonName"
                     android:text="value"
                     android:textColor="@color/white" />
+
+                <View
+                    android:layout_width="20dp"
+                    android:layout_height="102dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/dotted_line_vertical"
+                    android:layerType="software" />
 
                 <TextView
                     android:id="@+id/editText9"
@@ -386,6 +436,15 @@
                     android:gravity="center"
                     android:text="0"
                     android:textColor="@color/white" />
+
+
+                <View
+                    android:layout_width="30dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/dotted_line_vertical"
+                    android:layerType="software" />
+
 
                 <EditText
                     android:id="@+id/S_SO_AQI"
@@ -451,6 +510,12 @@
                     android:inputType="textPersonName"
                     android:text="value"
                     android:textColor="@color/white" />
+                <View
+                    android:layout_width="20dp"
+                    android:layout_height="102dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/dotted_line_vertical"
+                    android:layerType="software" />
 
                 <TextView
                     android:id="@+id/editText14"
@@ -486,6 +551,14 @@
                     android:gravity="center"
                     android:text="0"
                     android:textColor="@color/white" />
+
+
+                <View
+                    android:layout_width="30dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/dotted_line_vertical"
+                    android:layerType="software" />
 
                 <EditText
                     android:id="@+id/S_PM_AQI"

@@ -63,7 +63,7 @@ public class Sensor_Regist_Activity extends FragmentActivity {
                     e.printStackTrace();
                 }
                 try {
-                    result = new PostJSON().execute("http://teamd-iot.calit2.net/sensor/app/userlistview/request", json.toString()).get();
+                    result = new PostJSON().execute("http://teamd-iot.calit2.net/sensor/userlistview/request", json.toString()).get();
                     Log.d("asdf", "here result: " + result);
                 } catch (ExecutionException e) {
                     e.printStackTrace();

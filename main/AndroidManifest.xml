@@ -52,6 +52,7 @@
         <activity android:name=".ID_CancellationActivity" />
         <activity android:name=".Sensor_Regist_Activity" />
         <activity android:name=".MyPolarActivity" />
+        <activity android:name=".chart_activity" />
         <activity
             android:name=".DeviceListActivity"
             android:label="@string/select_device"

@@ -5,6 +5,8 @@ import android.app.Application;
 public class User_data extends Application {
     private String USN = "";
     private String MACaddress = "";
+    private String lat = "";
+    private String lng = "";
 
     private static User_data mInstance;
 
@@ -30,4 +32,20 @@ public class User_data extends Application {
     }
 
     public static User_data getInstance() { return mInstance; }
+
+    public String getLat() {
+        return lat;
+    }
+
+    public void setLat(String lat) {
+        this.lat = lat;
+    }
+
+    public String getLng() {
+        return lng;
+    }
+
+    public void setLng(String lng) {
+        this.lng = lng;
+    }
 }

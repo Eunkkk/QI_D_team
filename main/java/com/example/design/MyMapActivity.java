@@ -35,7 +35,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
-public class MyMapActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MyMapActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
     private static MyMapActivity ins;
     private AppCompatActivity mActivity;
@@ -77,7 +77,13 @@ public class MyMapActivity extends AppCompatActivity implements OnMapReadyCallba
     private String[] mLikelyPlaceAttributions;
     private LatLng[] mLikelyPlaceLatLngs;
 
-    public static MyMapActivity  getInstance(){
+    TextView heart_Text;
+    TextView lat_Text;
+    TextView lng_Text;
+
+    LatLng destination;
+
+    public static MyMapActivity getInstance(){
         return ins;
     }
 
@@ -94,6 +100,11 @@ public class MyMapActivity extends AppCompatActivity implements OnMapReadyCallba
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_map);
+
+        heart_Text = (TextView)findViewById(R.id.map_heart_view);
+        lat_Text = (TextView)findViewById(R.id.map_lat);
+        lng_Text = (TextView)findViewById(R.id.map_lng);
+
 
         ins = this;
         // Retrieve location and camera position from saved instance state.
@@ -115,6 +126,7 @@ public class MyMapActivity extends AppCompatActivity implements OnMapReadyCallba
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
     }
 
     /**
@@ -156,6 +168,7 @@ public class MyMapActivity extends AppCompatActivity implements OnMapReadyCallba
     @Override
     public void onMapReady(GoogleMap map) {
         mMap = map;
+        mMap.setOnMapLongClickListener(this);
 
         // Use a custom info window adapter to handle multiple lines of text in the
         // info window contents.
@@ -193,11 +206,12 @@ public class MyMapActivity extends AppCompatActivity implements OnMapReadyCallba
         getDeviceLocation();
     }
 
-    private void getDeviceLocation() {
+    public void getDeviceLocation() {
         /*
          * Get the best and most recent location of the device, which may be null in rare
          * cases when a location is not available.
          */
+        final User_data user_data = (User_data) getApplication();
         try {
             if (mLocationPermissionGranted) {
                 Task<Location> locationResult = mFusedLocationProviderClient.getLastLocation();
@@ -210,6 +224,13 @@ public class MyMapActivity extends AppCompatActivity implements OnMapReadyCallba
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
                                     new LatLng(mLastKnownLocation.getLatitude(),
                                             mLastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                            user_data.setLat(String.valueOf(mLastKnownLocation.getLatitude()));
+                            user_data.setLng(String.valueOf(mLastKnownLocation.getLongitude()));
+
+                            lat_Text.setText("Lat: " + user_data.getLat());
+                            lng_Text.setText("lng: " + user_data.getLng());
+
+                            Log.d("asdf", user_data.getLat() + " / " + user_data.getLng());
                         } else {
                             Log.d(TAG, "Current location is null. Using defaults.");
                             Log.e(TAG, "Exception: %s", task.getException());
@@ -398,5 +419,13 @@ public class MyMapActivity extends AppCompatActivity implements OnMapReadyCallba
         } catch (SecurityException e)  {
             Log.e("Exception: %s", e.getMessage());
         }
+    }
+
+    @Override
+    public void onMapLongClick(LatLng latLng) {
+        mMap.clear();
+        destination = latLng;
+        mMap.addMarker(new MarkerOptions().position(latLng));
+
     }
 }

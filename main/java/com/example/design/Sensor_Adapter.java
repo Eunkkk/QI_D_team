@@ -74,7 +74,7 @@ public class Sensor_Adapter extends BaseAdapter {
                     e.printStackTrace();
                 }
                 try {
-                    result = new PostJSON().execute("http://teamd-iot.calit2.net/sensor/app/deregistration/request", json.toString()).get();
+                    result = new PostJSON().execute("http://teamd-iot.calit2.net/sensor/deregistration/request", json.toString()).get();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {

@@ -332,6 +332,7 @@ public class BluetoothFragment extends Fragment {
                             Log.e("Fail 3", e.toString());
                         }
 
+                        User_data user_data = (User_data)getActivity().getApplication();
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                         String format = simpleDateFormat.format(new Date());
                         Log.d("asdf", "Current Timestamp: " + format);
@@ -352,15 +353,15 @@ public class BluetoothFragment extends Fragment {
                             json.put("PM2_5_AQI", PMAQI_Edit.getText().toString());
                             json.put("total_AQI_name", final_Sensor.getText().toString());
                             json.put("total_AQI_value", final_Value.getText().toString());
-                            json.put("lat", "0");
-                            json.put("lng", "0");
+                            json.put("lat", user_data.getLat());
+                            json.put("lng", user_data.getLng());
                             json.put("air_timestamp", format);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                         try {
-                            result = new PostJSON().execute("http://teamd-iot.calit2.net/data/transfer", json.toString()).get();
+                            result = new PostJSON().execute("http://teamd-iot.calit2.net/data/airquality/transfer", json.toString()).get();
                         } catch (ExecutionException e) {
                             e.printStackTrace();
                         } catch (InterruptedException e) {

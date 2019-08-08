@@ -21,7 +21,7 @@ import org.json.JSONObject;
 import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
     String input_email = "";
     String input_password = "";
     String result = "";
@@ -57,9 +57,9 @@ public class MainActivity extends AppCompatActivity{
 
         final EditText email_Edit = (EditText) findViewById(R.id.A_Email_Edit);
         final EditText pass_Edit = (EditText) findViewById(R.id.A_Pass_Edit);
-        Button sign_up_button = (Button)findViewById(R.id.A_signup_button);
-        Button forgot_button = (Button)findViewById(R.id.A_forgot_button);
-        final Button sign_in_button = (Button)findViewById(R.id.A_signin_button);
+        Button sign_up_button = (Button) findViewById(R.id.A_signup_button);
+        Button forgot_button = (Button) findViewById(R.id.A_forgot_button);
+        final Button sign_in_button = (Button) findViewById(R.id.A_signin_button);
 
         email_Edit.addTextChangedListener(new TextWatcher() {
             @Override
@@ -70,12 +70,11 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 temp = email_Edit.getText().toString();
-                if(!isValidEmail(temp)) {
+                if (!isValidEmail(temp)) {
                     email_Edit.setTextColor(Color.RED);
                     email_Check = false;
                     Toast.makeText(MainActivity.this, "Enter Email Format", Toast.LENGTH_SHORT).show();
-                }
-                else{
+                } else {
                     email_Edit.setTextColor(Color.BLACK);
                     email_Check = true;
                 }
@@ -96,12 +95,11 @@ public class MainActivity extends AppCompatActivity{
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 temp = pass_Edit.getText().toString();
-                if(!isValidPassword(temp)) {
+                if (!isValidPassword(temp)) {
                     pass_Edit.setTextColor(Color.RED);
                     password_Check = false;
                     Toast.makeText(MainActivity.this, " Must contain 1 letters, 1 number, 1 special character, between 8-16 long", Toast.LENGTH_SHORT).show();
-                }
-                else{
+                } else {
                     pass_Edit.setTextColor(Color.BLACK);
                     password_Check = true;
                 }
@@ -136,6 +134,7 @@ public class MainActivity extends AppCompatActivity{
         sign_in_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if(email_Check == false)
                     Toast.makeText(MainActivity.this, "Please check email text.", Toast.LENGTH_SHORT).show();
                 else if (password_Check == false)
@@ -197,7 +196,6 @@ public class MainActivity extends AppCompatActivity{
                 }
             }
         });
-
     }
 
     public static boolean isValidEmail(CharSequence target) {
@@ -208,5 +206,4 @@ public class MainActivity extends AppCompatActivity{
         Pattern pass_pattern = Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,16}$");
         return (!TextUtils.isEmpty(target) && pass_pattern.matcher(target).matches());
     }
-
 }
