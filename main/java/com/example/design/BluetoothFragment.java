@@ -15,8 +15,8 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -89,12 +89,20 @@ public class BluetoothFragment extends Fragment {
     EditText temperature_Edit;
     EditText name_Edit;
     EditText mac_Edit;
-    Button Save_Button;
+    EditText final_Value;
+    TextView final_Sensor;
     public String result = "";
     String result_code = "";
     String success_message = "";
     String error_message = "";
     String input_MAC = "";
+    String O3_value = "";
+    String NO2_value = "";
+    String CO_value = "";
+    String SO2_value = "";
+    String PM_value = "";
+    String final_result = "";
+    String max_Sensor[] = {"CO_AQI", "PM2_5_AQI", "NO2_AQI", "SO2_AQI", "O3_AQI"};
 
     public String getInput_MAC() {
         return input_MAC;
@@ -137,72 +145,8 @@ public class BluetoothFragment extends Fragment {
         temperature_Edit = (EditText) view.findViewById(R.id.S_temprature_value);
         name_Edit = (EditText)view.findViewById(R.id.S_Bluetooth_name);
         mac_Edit = (EditText)view.findViewById(R.id.S_MAC_address);
-        Save_Button = (Button)view.findViewById(R.id.s_save_button);
-
-        Save_Button.setOnClickListener(new View.OnClickListener()
-        {
-           @Override
-           public void onClick(View v){
-
-               SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-MM-hh-mm-ss");
-               String format = simpleDateFormat.format(new Date());
-               Log.d("asdf", "Current Timestamp: " + format);
-
-               JSONObject json = new JSONObject();
-               try {
-                   json.put("SSN", "1");
-                   json.put("O3", O3_Edit.getText().toString());
-                   json.put("NO2", NO2_Edit.getText().toString());
-                   json.put("CO", CO_Edit.getText().toString());
-                   json.put("SO2", SO2_Edit.getText().toString());
-                   json.put("temperature", temperature_Edit.getText().toString());
-                   json.put("PM2_5", PM_Edit.getText().toString());
-                   json.put("O3_AQI", O3AQI_Edit.getText().toString());
-                   json.put("NO2_AQI", NO2AQI_Edit.getText().toString());
-                   json.put("CO_AQI", COAQI_Edit.getText().toString());
-                   json.put("SO2_AQI", SO2AQI_Edit.getText().toString());
-                   json.put("PM2_5_AQI", PMAQI_Edit.getText().toString());
-                   json.put("lat", "0");
-                   json.put("lng", "0");
-                   json.put("timestamp", format);
-
-               } catch (JSONException e) {
-                   e.printStackTrace();
-               }
-               try {
-                   result = new PostJSON().execute("http://teamd-iot.calit2.net/data/transfer", json.toString()).get();
-               } catch (ExecutionException e) {
-                   e.printStackTrace();
-               } catch (InterruptedException e) {
-                   e.printStackTrace();
-               }
-               Log.d("asdf", "json: " + json.toString());
-               Log.d("asdf", "result: " + result);
-
-               try {
-                   JSONObject json_data = new JSONObject(result);
-                   Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
-                   Log.d("asdf", mac_Edit.getText().toString() + "   receive json: " + json_data.toString());
-                   result_code = (json_data.optString("result_code"));
-                   success_message = (json_data.optString("success_message"));
-                   error_message = (json_data.optString("error_message"));
-                   Log.d("asdf", "result_code: " + result_code);
-                   Log.d("asdf", "success_message: " + success_message);
-                   Log.d("asdf", "error_message: " + error_message);
-               } catch (Exception e) {
-                   Log.e("Fail 3", e.toString());
-               }
-
-               if(result_code.equals("0")){
-                   Toast.makeText(getActivity(), success_message, Toast.LENGTH_SHORT).show();
-               }
-               else if(result_code.equals("1")){
-                   Toast.makeText(getActivity(), error_message, Toast.LENGTH_SHORT).show();
-               }
-               else
-                   Toast.makeText(getActivity(), "no message", Toast.LENGTH_SHORT).show();
-           }
-        });
+        final_Value = (EditText)view.findViewById(R.id.S_final_value);
+        final_Sensor = (TextView)view.findViewById(R.id.S_final_sensor);
 
         SharedPreferences settings = this.getActivity().getSharedPreferences("PREFS", 0);
 
@@ -335,29 +279,120 @@ public class BluetoothFragment extends Fragment {
                     // construct a string from the valid bytes in the buffer
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     if (readMessage!=null) {
-
+                        float max = 0;
+                        float data[] = new float[5];
+                        int selected_sensor = 0;
                         try {
                             JSONObject json_data = new JSONObject(readMessage);
                             Log.d("asdf", "receive json: " + json_data.toString());
                             temperature_Edit.setText(json_data.optString("temperature"));
                             CO_Edit.setText(json_data.optString("CO"));
-                            COAQI_Edit.setText(json_data.optString("CO_AQI"));
+                            CO_value = json_data.optString("CO_AQI");
+                            COAQI_Edit.setText(CO_value);
                             PM_Edit.setText(json_data.optString("PM2_5"));
-                            PMAQI_Edit.setText(json_data.optString("PM2_5_AQI"));
+                            PM_value = json_data.optString("PM2_5_AQI");
+                            PMAQI_Edit.setText(PM_value);
                             NO2_Edit.setText(json_data.optString("NO2"));
-                            NO2AQI_Edit.setText(json_data.optString("NO2_AQI"));
+                            NO2_value = json_data.optString("NO2_AQI");
+                            NO2AQI_Edit.setText(NO2_value);
                             SO2_Edit.setText(json_data.optString("SO2"));
-                            SO2AQI_Edit.setText(json_data.optString("SO2_AQI"));
+                            SO2_value = json_data.optString("SO2_AQI");
+                            SO2AQI_Edit.setText(SO2_value);
                             O3_Edit.setText(json_data.optString("O3"));
-                            O3AQI_Edit.setText(json_data.optString("O3_AQI"));
+                            O3_value = json_data.optString("O3_AQI");
+                            O3AQI_Edit.setText(O3_value);
+                            final_result = json_data.optString("final_result");
+                            final_Value.setText(final_result);
+                            if(Float.valueOf(final_result) >= 0 && Float.valueOf(final_result) < 50)
+                                final_Value.setBackgroundColor(getResources().getColor(R.color.AQI_0));
+                            else if(Float.valueOf(final_result) >= 50 && Float.valueOf(final_result) < 100)
+                                final_Value.setBackgroundColor(getResources().getColor(R.color.AQI_51));
+                            else if(Float.valueOf(final_result) >= 100 && Float.valueOf(final_result) < 150)
+                                final_Value.setBackgroundColor(getResources().getColor(R.color.AQI_101));
+                            else if(Float.valueOf(final_result) >= 150 && Float.valueOf(final_result) < 200)
+                                final_Value.setBackgroundColor(getResources().getColor(R.color.AQI_151));
+                            else if(Float.valueOf(final_result) >= 200 && Float.valueOf(final_result) < 300)
+                                final_Value.setBackgroundColor(getResources().getColor(R.color.AQI_201));
+                            else
+                                final_Value.setBackgroundColor(getResources().getColor(R.color.AQI_301));
+                            data[0] = Float.valueOf(CO_value);
+                            data[1] = Float.valueOf(PM_value);
+                            data[2] = Float.valueOf(NO2_value);
+                            data[3] = Float.valueOf(SO2_value);
+                            data[4] = Float.valueOf(O3_value);
+                            for(int i = 0; i < data.length; i++) {
+                                if (data[i] > max) {
+                                    max = data[i];
+                                    selected_sensor = i;
+                                }
+                            }
+                            Log.d("asdf", Integer.toString(selected_sensor));
+                            final_Sensor.setText(max_Sensor[selected_sensor]);
                         } catch (Exception e) {
                             Log.e("Fail 3", e.toString());
                         }
 
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        String format = simpleDateFormat.format(new Date());
+                        Log.d("asdf", "Current Timestamp: " + format);
+
+                        JSONObject json = new JSONObject();
+                        try {
+                            json.put("SSN", "1");
+                            json.put("O3", O3_Edit.getText().toString());
+                            json.put("NO2", NO2_Edit.getText().toString());
+                            json.put("CO", CO_Edit.getText().toString());
+                            json.put("SO2", SO2_Edit.getText().toString());
+                            json.put("temperature", temperature_Edit.getText().toString());
+                            json.put("PM2_5", PM_Edit.getText().toString());
+                            json.put("O3_AQI", O3AQI_Edit.getText().toString());
+                            json.put("NO2_AQI", NO2AQI_Edit.getText().toString());
+                            json.put("CO_AQI", COAQI_Edit.getText().toString());
+                            json.put("SO2_AQI", SO2AQI_Edit.getText().toString());
+                            json.put("PM2_5_AQI", PMAQI_Edit.getText().toString());
+                            json.put("total_AQI_name", final_Sensor.getText().toString());
+                            json.put("total_AQI_value", final_Value.getText().toString());
+                            json.put("lat", "0");
+                            json.put("lng", "0");
+                            json.put("air_timestamp", format);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            result = new PostJSON().execute("http://teamd-iot.calit2.net/data/transfer", json.toString()).get();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        Log.d("asdf", "json: " + json.toString());
+                        Log.d("asdf", "result: " + result);
+
+                        try {
+                            JSONObject json_data = new JSONObject(result);
+                            Toast.makeText(getActivity(), result, Toast.LENGTH_SHORT).show();
+                            Log.d("asdf", mac_Edit.getText().toString() + "   receive json: " + json_data.toString());
+                            result_code = (json_data.optString("result_code"));
+                            success_message = (json_data.optString("success_message"));
+                            error_message = (json_data.optString("error_message"));
+                            Log.d("asdf", "result_code: " + result_code);
+                            Log.d("asdf", "success_message: " + success_message);
+                            Log.d("asdf", "error_message: " + error_message);
+                        } catch (Exception e) {
+                            Log.e("Fail 3", e.toString());
+                        }
+
+                        if(result_code.equals("0")){
+                            Toast.makeText(getActivity(), success_message, Toast.LENGTH_SHORT).show();
+                        }
+                        else if(result_code.equals("1")){
+                            Toast.makeText(getActivity(), error_message, Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                            Toast.makeText(getActivity(), "no message", Toast.LENGTH_SHORT).show();
                     }
 
-                    //Toast.makeText(activity, readMessage, Toast.LENGTH_SHORT).show();
-                    //mConversationArrayAdapter.add(mConnectedDeviceName + ":  " + readMessage);
                     break;
                 case Constants.MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -442,5 +477,4 @@ public class BluetoothFragment extends Fragment {
         }
         return false;
     }
-
 }

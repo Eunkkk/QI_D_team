@@ -516,24 +516,57 @@
             android:background="@color/main_background_color"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textview99"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="20dp"
+                android:orientation="horizontal">
 
-                android:layout_marginLeft="3dp"
-                android:background="@color/colorPrimaryDark"
-                android:gravity="center"
-                android:text="temprature"
-                android:textColor="@color/white"
-                tools:layout_marginRight="0dp" />
+                <TextView
+                    android:id="@+id/textview99"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="3dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimaryDark"
+                    android:gravity="center"
+                    android:text="temprature"
+                    android:textColor="@color/white"
+                    tools:layout_marginRight="0dp" />
 
-            <View
+                <TextView
+                    android:id="@+id/textView16"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_marginLeft="3dp"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimaryDark"
+                    android:gravity="center"
+                    android:text="total_AQI"
+                    android:textColor="@color/white"
+                    tools:layout_marginRight="0dp" />
+
+            </LinearLayout>
+
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="2dip"
-                android:layout_marginLeft="3dp"
-                android:background="@color/black" />
+                android:orientation="horizontal">
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dip"
+                    android:layout_marginLeft="3dp"
+                    android:layout_weight="1"
+                    android:background="@color/black" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dip"
+                    android:layout_marginLeft="3dp"
+                    android:layout_weight="1"
+                    android:background="@color/black" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -546,18 +579,39 @@
                     android:layout_height="20dp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:inputType="textPersonName"
                     android:text="value"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    android:id="@+id/S_final_sensor"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="-"
                     android:textColor="@color/white" />
 
             </LinearLayout>
 
-            <View
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="2dip"
-                android:background="@color/black"
-                android:layout_marginLeft="3dp" />
+                android:layout_height="3dip"
+                android:orientation="horizontal">
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dip"
+                    android:layout_marginLeft="3dp"
+                    android:layout_weight="1"
+                    android:background="@color/black" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="2dip"
+                    android:layout_marginLeft="3dp"
+                    android:layout_weight="1"
+                    android:background="@color/black" />
+            </LinearLayout>
 
 
             <LinearLayout
@@ -568,6 +622,17 @@
 
                 <EditText
                     android:id="@+id/S_temprature_value"
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:layout_weight="1"
+                    android:background="@color/main_background_color"
+                    android:enabled="false"
+                    android:gravity="center"
+                    android:text="0"
+                    android:textColor="@color/white" />
+
+                <EditText
+                    android:id="@+id/S_final_value"
                     android:layout_width="match_parent"
                     android:layout_height="80dp"
                     android:layout_weight="1"
@@ -588,16 +653,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/main_background_color"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/s_save_button"
-            android:layout_width="240dp"
-            android:layout_height="60dp"
-            android:layout_gravity="center"
-            android:background="@drawable/round_button"
-            android:text="Save"
-            android:textSize="32dp" />
-    </LinearLayout>
+        android:orientation="vertical"/>
 
 </LinearLayout>

@@ -136,62 +136,64 @@ public class MainActivity extends AppCompatActivity{
         sign_in_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditText emailEdit = (EditText)findViewById(R.id.A_Email_Edit);
-                setInput_email(emailEdit.getText().toString());
-                EditText password_Edit = (EditText)findViewById(R.id.A_Pass_Edit);
-                setInput_password(password_Edit.getText().toString());
+                if(email_Check == false)
+                    Toast.makeText(MainActivity.this, "Please check email text.", Toast.LENGTH_SHORT).show();
+                else if (password_Check == false)
+                    Toast.makeText(MainActivity.this, "Please check Password text.", Toast.LENGTH_SHORT).show();
+                else{
+                    EditText emailEdit = (EditText)findViewById(R.id.A_Email_Edit);
+                    setInput_email(emailEdit.getText().toString());
+                    EditText password_Edit = (EditText)findViewById(R.id.A_Pass_Edit);
+                    setInput_password(password_Edit.getText().toString());
 
-                JSONObject json = new JSONObject();
-                try {
-                    json.put("e_mail", getInput_email());
-                    json.put("password",getInput_password());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                Log.d("asdf", "json: " + json.toString());
-                if (getInput_email().length() > 0) {
+                    JSONObject json = new JSONObject();
                     try {
-                        result = new PostJSON().execute("http://teamd-iot.calit2.net/app/signin", json.toString()).get();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
+                        json.put("e_mail", getInput_email());
+                        json.put("password",getInput_password());
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                }
-                try {
-                    JSONObject json_data = new JSONObject(result);
-                    Log.d("asdf", "receive json: " + json_data.toString());
-                    result_code = (json_data.optString("result_code"));
-                    success_message = (json_data.optString("success_message"));
-                    error_message = (json_data.optString("error_message"));
-                    get_USN = (json_data.optString("USN"));
+                    Log.d("asdf", "json: " + json.toString());
+                    if (getInput_email().length() > 0) {
+                        try {
+                            result = new PostJSON().execute("http://teamd-iot.calit2.net/app/signin", json.toString()).get();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    try {
+                        JSONObject json_data = new JSONObject(result);
+                        Log.d("asdf", "receive json: " + json_data.toString());
+                        result_code = (json_data.optString("result_code"));
+                        success_message = (json_data.optString("success_message"));
+                        error_message = (json_data.optString("error_message"));
+                        get_USN = (json_data.optString("USN"));
 
-                    Log.d("asdf", "result_code: " + result_code);
-                    Log.d("asdf", "success_message: " + success_message);
-                    Log.d("asdf", "error_message: " + error_message);
-                    Log.d("asdf", "USN: " + get_USN);
+                        Log.d("asdf", "result_code: " + result_code);
+                        Log.d("asdf", "success_message: " + success_message);
+                        Log.d("asdf", "error_message: " + error_message);
+                        Log.d("asdf", "USN: " + get_USN);
 
-                } catch (Exception e) {
-                    Log.e("Fail 3", e.toString());
-                }
+                    } catch (Exception e) {
+                        Log.e("Fail 3", e.toString());
+                    }
 
-                if(result_code.equals("0")){
-                    Log.d("asdf", "USN: " + get_USN);
-                    User_data user_data = (User_data) getApplication();
-                    user_data.setUSN(get_USN);
-                    Log.d("asdf", "User_data: USN: " + user_data.getUSN());
-                    Toast.makeText(MainActivity.this, success_message, Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(
-                            getApplicationContext(),
-                            LoginActivity.class);
-                    startActivity(intent);
-                }
-                else if(result_code.equals("1")){
-                    Toast.makeText(MainActivity.this, error_message, Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(
-                            getApplicationContext(),
-                            LoginActivity.class);
-                    startActivity(intent);
+                    if(result_code.equals("0")){
+                        Log.d("asdf", "USN: " + get_USN);
+                        User_data user_data = (User_data) getApplication();
+                        user_data.setUSN(get_USN);
+                        Log.d("asdf", "User_data: USN: " + user_data.getUSN());
+                        Toast.makeText(MainActivity.this, success_message, Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(
+                                getApplicationContext(),
+                                LoginActivity.class);
+                        startActivity(intent);
+                    }
+                    else if(result_code.equals("1")){
+                        Toast.makeText(MainActivity.this, error_message, Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         });

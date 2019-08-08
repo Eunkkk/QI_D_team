@@ -17,7 +17,9 @@
         <item
             android:id="@+id/ID_cancellation"
             android:title="ID_cancellation" />
-
+        <item
+            android:id="@+id/Heart_rate"
+            android:title="My_Heart_rate" />
         <item
             android:id="@+id/logout"
             android:title="@string/menu_Logout" />

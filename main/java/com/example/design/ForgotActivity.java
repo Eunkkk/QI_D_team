@@ -44,6 +44,7 @@ public class ForgotActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.forgot_password_update);
 
+        final EditText email_Edit = (EditText) findViewById(R.id.F_Email_Edit);
         Button complete_button = (Button) findViewById(R.id.F_complete_button);
         Button cancel_button = (Button) findViewById(R.id.F_cancel_button);
         Button check_button = (Button) findViewById(R.id.F_check_button);

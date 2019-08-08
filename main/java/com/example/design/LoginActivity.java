@@ -1,7 +1,6 @@
 package com.example.design;
 
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -54,8 +53,6 @@ public class LoginActivity extends AppCompatActivity
             transaction.replace(R.id.sample_content_fragment, fragment);
             transaction.commit();
         }
-
-        activatePolar();
     }
 
     @Override
@@ -144,6 +141,13 @@ public class LoginActivity extends AppCompatActivity
             startActivity(intent);
             return true;
         }
+        else if(id == R.id.Heart_rate) {
+            Intent intent = new Intent(
+                    getApplicationContext(),
+                    MyPolarActivity.class);
+            startActivity(intent);
+            return true;
+        }
         else if(id == R.id.logout) {
             JSONObject json = new JSONObject();
             User_data user_data = (User_data) getApplication();
@@ -209,24 +213,5 @@ public class LoginActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    private final MyPolarBleReceiver mPolarBleUpdateReceiver = new MyPolarBleReceiver() {};
-
-    protected void activatePolar() {
-        Log.w(this.getClass().getName(), "activatePolar()");
-        registerReceiver(mPolarBleUpdateReceiver, makePolarGattUpdateIntentFilter());
-    }
-
-    protected void deactivatePolar() {
-        unregisterReceiver(mPolarBleUpdateReceiver);
-    }
-
-    private static IntentFilter makePolarGattUpdateIntentFilter() {
-        final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(MyPolarBleReceiver.ACTION_GATT_CONNECTED);
-        intentFilter.addAction(MyPolarBleReceiver.ACTION_GATT_DISCONNECTED);
-        intentFilter.addAction(MyPolarBleReceiver.ACTION_HR_DATA_AVAILABLE);
-        return intentFilter;
     }
 }

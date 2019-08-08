@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/main_background_color"
+    tools:layout_editor_absoluteY="25dp"
+    >
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.05" />
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_top1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.20" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_top2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.50" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_top3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.80" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.50" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.10"/>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/gl_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.90" />
+
+    <TextView
+        android:id="@+id/Healthware"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="HEALTHWARE"
+        android:textColor="@color/white"
+        android:textSize="45dp"
+        app:layout_constraintBottom_toBottomOf="@id/gl_top1"
+        app:layout_constraintEnd_toEndOf="@id/gl_right"
+        app:layout_constraintStart_toStartOf="@id/gl_left"
+        app:layout_constraintTop_toTopOf="@id/gl_top" />
+
+    <TextView
+        android:id="@+id/HR"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="HR"
+        android:textColor="@color/white"
+        android:textSize="30dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="@id/gl_center"
+        app:layout_constraintStart_toStartOf="@id/gl_left"
+        app:layout_constraintTop_toTopOf="@id/gl_top1"
+        android:background="@color/colorPrimaryDark"/>
+
+
+    <EditText
+        android:id="@+id/HR_value"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="00"
+        android:textSize="40dp"
+        android:textColor="@color/white"
+        app:layout_constraintStart_toStartOf="@id/gl_left"
+        app:layout_constraintEnd_toEndOf="@id/gl_center"
+        app:layout_constraintTop_toBottomOf="@id/HR"
+        android:background="@color/main_background_color"
+        android:layout_marginTop="30dp"
+        />
+    <TextView
+        android:id="@+id/beats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="beats per minute"
+        android:textSize="15dp"
+        app:layout_constraintTop_toBottomOf="@id/HR_value"
+        app:layout_constraintStart_toStartOf="@id/gl_left"
+        app:layout_constraintEnd_toEndOf="@id/gl_center"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white"
+        />
+
+    <TextView
+        android:id="@+id/HR_MISC"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="HR_MISC"
+        android:textSize="30dp"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toTopOf="@id/gl_top1"
+        app:layout_constraintEnd_toEndOf="@id/gl_right"
+        app:layout_constraintStart_toStartOf="@id/gl_center"
+        android:background="@color/colorPrimaryDark"/>
+
+
+
+    <EditText
+        android:id="@+id/HR_MISC_value"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="NA"
+        android:textSize="40dp"
+        app:layout_constraintTop_toBottomOf="@+id/HR_MISC"
+        app:layout_constraintStart_toStartOf="@id/gl_center"
+        app:layout_constraintEnd_toEndOf="@id/gl_right"
+        android:background="@color/main_background_color"
+        android:layout_marginTop="30dp"
+        />
+    <TextView
+        android:id="@+id/HR_Min"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="HR Min"
+        android:textSize="15dp"
+        app:layout_constraintTop_toBottomOf="@id/HR_MISC_value"
+        app:layout_constraintStart_toStartOf="@id/gl_center"
+        app:layout_constraintEnd_toEndOf="@id/gl_right"
+        android:textColor="@color/white"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:id="@+id/NN50"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NN50"
+        android:layout_marginTop="20dp"
+        android:textSize="30dp"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toTopOf="@+id/gl_top2"
+        app:layout_constraintStart_toStartOf="@id/gl_left"
+        app:layout_constraintEnd_toEndOf="@id/gl_center"
+        android:background="@color/colorPrimaryDark"
+        />
+
+    <EditText
+        android:id="@+id/NN50_Value"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:text="00"
+        android:textSize="40dp"
+        app:layout_constraintStart_toStartOf="@id/gl_left"
+        app:layout_constraintEnd_toEndOf="@id/gl_center"
+        app:layout_constraintTop_toBottomOf="@id/NN50"
+        android:background="@color/main_background_color"
+        android:layout_marginTop="30dp"/>
+
+    <TextView
+        android:id="@+id/NN50_Event"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="NN50 Events"
+        android:textSize="15dp"
+        app:layout_constraintTop_toBottomOf="@id/NN50_Value"
+        app:layout_constraintStart_toStartOf="@id/gl_left"
+        app:layout_constraintEnd_toEndOf="@id/gl_center"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white"
+        />
+
+    <TextView
+        android:id="@+id/pNN50"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:text="pNN50"
+        android:textSize="30dp"
+        android:layout_marginTop="20dp"
+        android:textColor="@android:color/white"
+        app:layout_constraintTop_toTopOf="@id/gl_top2"
+        app:layout_constraintStart_toStartOf="@id/gl_center"
+        app:layout_constraintEnd_toEndOf="@id/gl_right"
+        android:background="@color/colorPrimaryDark"/>
+
+    <EditText
+        android:id="@+id/pNN50_value"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:text="00%"
+        android:textSize="40dp"
+        app:layout_constraintStart_toStartOf="@id/gl_center"
+        app:layout_constraintEnd_toEndOf="@id/gl_right"
+        app:layout_constraintTop_toBottomOf="@id/pNN50"
+        android:background="@color/main_background_color"
+        android:layout_marginTop="30dp"
+        />
+
+    <TextView
+        android:id="@+id/percent_NN50"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="% NN50 Events"
+        android:textSize="15dp"
+        app:layout_constraintTop_toBottomOf="@id/pNN50_value"
+        app:layout_constraintStart_toStartOf="@id/gl_center"
+        app:layout_constraintEnd_toEndOf="@id/gl_right"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white"
+        />
+    <View
+        android:layout_width="0dp"
+        android:layout_height="3dp"
+        android:background="@color/black"
+        app:layout_constraintEnd_toEndOf="@id/gl_right"
+        app:layout_constraintStart_toStartOf="@id/gl_left"
+        app:layout_constraintTop_toBottomOf="@id/gl_top2"
+        />
+    <View
+        android:layout_width="3dp"
+        android:layout_height="0dp"
+        android:background="@color/black"
+        app:layout_constraintStart_toStartOf="@id/gl_center"
+        app:layout_constraintTop_toTopOf="@id/gl_top1"
+        app:layout_constraintBottom_toBottomOf="@id/gl_top3"/>
+
+    <Button
+        android:id="@+id/polar_save_button"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        app:layout_goneMarginTop="50dp"
+        app:layout_constraintTop_toTopOf="@id/gl_top3"
+        app:layout_constraintStart_toStartOf="@id/gl_left"
+        app:layout_constraintEnd_toEndOf="@id/gl_right"
+        android:background="@drawable/round_button"
+        android:text="Save"
+        android:textSize="25sp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

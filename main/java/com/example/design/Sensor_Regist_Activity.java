@@ -25,11 +25,14 @@ public class Sensor_Regist_Activity extends FragmentActivity {
     String result = "";
 
     EditText Mac_Edit;
+    EditText Sensor_Edit;
     ListView listView;
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sensor_regist);
+        final EditText Mac_Edit = (EditText)findViewById(R.id.Se_Mac_Edit);
+        final EditText Sensor_Edit = (EditText)findViewById(R.id.Se_Sensor_name);
 
         Button load_button = (Button)findViewById(R.id.Se_device_button);
         Button save_button = (Button)findViewById(R.id.Se_complete_button);
@@ -109,12 +112,16 @@ public class Sensor_Regist_Activity extends FragmentActivity {
             public void onClick(View view) {
                 if(!Mac_Edit.getText().equals("")){
                     JSONObject json = new JSONObject();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd-MM-hh-mm-ss");
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
                     String format = simpleDateFormat.format(new Date());
                     User_data user_data = (User_data) getApplication();
                     try {
                         json.put("USN", user_data.getUSN());
                         json.put("MAC_address", user_data.getMACaddress());
+                        if(Sensor_Edit.getText().equals(""))
+                            json.put("sensor_name", "temp");
+                        else
+                            json.put("sensor_name", Sensor_Edit.getText().toString());
                         json.put("timestamp", format);
 
                     } catch (JSONException e) {

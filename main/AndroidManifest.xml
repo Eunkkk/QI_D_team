@@ -37,9 +37,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".MapsActivity"
-            android:label="@string/title_activity_maps"></activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -54,7 +51,7 @@
         <activity android:name=".Password_ChangeActivity" />
         <activity android:name=".ID_CancellationActivity" />
         <activity android:name=".Sensor_Regist_Activity" />
-        <activity android:name=".SensorListAdapter" />
+        <activity android:name=".MyPolarActivity" />
         <activity
             android:name=".DeviceListActivity"
             android:label="@string/select_device"

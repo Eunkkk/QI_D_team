@@ -17,7 +17,6 @@ public class MyPolarBleReceiver extends BroadcastReceiver {
             "edu.ucsd.healthware.fw.device.ble.ACTION_HR_DATA_AVAILABLE";
     public final static String EXTRA_DATA =
             "edu.ucsd.healthware.fw.device.ble.EXTRA_DATA";
-
     @Override
     public void onReceive(Context ctx, Intent intent) {
         final String action = intent.getAction();
@@ -34,7 +33,21 @@ public class MyPolarBleReceiver extends BroadcastReceiver {
             int rrThreshold = Integer.parseInt(tokens.nextToken());
             int totalNN = Integer.parseInt(tokens.nextToken());
             int lastRRvalue = Integer.parseInt(tokens.nextToken());
+
+            try {
+                MyPolarActivity.getInstance().updateTheTextView(heartRate, pnnPercentage, pnnCount, totalNN, rrThreshold, lastRRvalue);
+            } catch (Exception e) {
+
+            }
+
+            try {
+                MyMapActivity.getInstance().updateTheTextView(heartRate);
+            } catch (Exception e) {
+
+            }
+
             String sessionId = tokens.nextToken();
+
             Log.w(this.getClass().getName(), "####Received heartRate: " +heartRate+" pnnPercentage: "+pnnPercentage+" pnnCount: "+pnnCount+" rrThreshold: "+rrThreshold+" totalNN: "+totalNN+" lastRRvalue: "+lastRRvalue+" sessionId: "+sessionId);
         }
     }

@@ -13,6 +13,12 @@
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="blind">#00000000</color>
-    <color name="disabled">#9E9E9E</color>
+    <color name="AQI_0">#00E400</color>
+    <color name="AQI_51">#FFFF00</color>
+    <color name="AQI_101">#FF7E00</color>
+    <color name="AQI_151">#FF0000</color>
+    <color name="AQI_201">#99004C</color>
+    <color name="AQI_301">#4C0026</color>
+
 
 </resources>

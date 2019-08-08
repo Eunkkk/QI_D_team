@@ -1,13 +1,10 @@
 package com.example.design;
 
-import android.widget.Button;
-
 public class Sensor_List {
     private String list_SSN;
     private String listMAC;
     private String sensorname;
     private String timestamp;
-    private Button deregist;
 
     public String getList_SSN() {
         return list_SSN;
@@ -39,13 +36,5 @@ public class Sensor_List {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
-    }
-
-    public Button getDeregist() {
-        return deregist;
-    }
-
-    public void setDeregist(Button deregist) {
-        this.deregist = deregist;
     }
 }

@@ -55,6 +55,8 @@ public class ID_CancellationActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.id_cancellation_layout);
 
+        final EditText pass_Edit = (EditText)findViewById(R.id.W_pass_Edit);
+        final EditText confirmpass_Edit = (EditText)findViewById(R.id.W_confirmpass_Edit);
         Button complete_button = (Button)findViewById(R.id.W_complete_button);
         Button cancel_button = (Button)findViewById(R.id.W_cancel_button);
 
@@ -134,7 +136,7 @@ public class ID_CancellationActivity extends FragmentActivity {
                         e.printStackTrace();
                     }
                     try {
-                        new PostJSON().execute("http://teamd-iot.calit2.net/app/idcancellation", json.toString()).get();
+                        result = new PostJSON().execute("http://teamd-iot.calit2.net/app/idcancellation", json.toString()).get();
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {
