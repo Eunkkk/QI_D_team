@@ -1,7 +1,12 @@
 package com.example.design;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -14,6 +19,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import com.google.android.gms.maps.model.LatLng;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
 
     boolean email_Check = false;
     boolean password_Check = false;
+
+    private static final int REQUEST_CODE_LOCATION = 2;
+
+    private LocationManager locationManager;
 
     public String getInput_email() {
         return input_email;
@@ -60,6 +72,21 @@ public class MainActivity extends AppCompatActivity {
         Button sign_up_button = (Button) findViewById(R.id.A_signup_button);
         Button forgot_button = (Button) findViewById(R.id.A_forgot_button);
         final Button sign_in_button = (Button) findViewById(R.id.A_signin_button);
+
+        locationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+
+        Location userLocation = getMyLocation();
+        User_data user_data = (User_data)getApplicationContext();
+        if( userLocation != null ) {
+            double latitude = userLocation.getLatitude();
+            double longitude = userLocation.getLongitude();
+            LatLng latlng = new LatLng(latitude, longitude);
+            user_data.setLat(String.valueOf(latlng.latitude));
+            user_data.setLng(String.valueOf(latlng.longitude));
+
+            Log.d("asdf", user_data.getLat() + " / " + user_data.getLng());
+        }
+        Log.d("asdf", user_data.getLat() + " / " + user_data.getLng());
 
         email_Edit.addTextChangedListener(new TextWatcher() {
             @Override
@@ -98,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
                 if (!isValidPassword(temp)) {
                     pass_Edit.setTextColor(Color.RED);
                     password_Check = false;
-                    Toast.makeText(MainActivity.this, " Must contain 1 letters, 1 number, 1 special character, between 8-16 long", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Enter the password and it must contain 1 letters, 1 number, 1 special character, between 8-16 long", Toast.LENGTH_SHORT).show();
                 } else {
                     pass_Edit.setTextColor(Color.BLACK);
                     password_Check = true;
@@ -205,5 +232,22 @@ public class MainActivity extends AppCompatActivity {
     public static boolean isValidPassword(CharSequence target) {
         Pattern pass_pattern = Pattern.compile("^(?=.*[A-Za-z])(?=.*\\d)(?=.*[$@$!%*#?&])[A-Za-z\\d$@$!%*#?&]{8,16}$");
         return (!TextUtils.isEmpty(target) && pass_pattern.matcher(target).matches());
+    }
+
+    private Location getMyLocation() {
+        Location currentLocation = null;
+        // Register the listener with the Location Manager to receive location updates
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getApplication(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            getMyLocation();
+        }
+        else {
+            String locationProvider = LocationManager.GPS_PROVIDER;
+            currentLocation = locationManager.getLastKnownLocation(locationProvider);
+            if (currentLocation != null) {
+                double lng = currentLocation.getLongitude();
+                double lat = currentLocation.getLatitude();
+            }
+        }
+        return currentLocation;
     }
 }

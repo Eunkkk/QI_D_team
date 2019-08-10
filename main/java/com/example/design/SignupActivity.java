@@ -140,7 +140,7 @@ public class SignupActivity extends Activity {
                 if(!isValidPassword(temp)) {
                     pass_Edit.setTextColor(Color.RED);
                     password_Check = false;
-                    Toast.makeText(SignupActivity.this, " Must contain 1 letters, 1 number, 1 special character, between 8-16 long", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignupActivity.this, "Enter the password and it must contain 1 letters, 1 number, 1 special character, between 8-16 long", Toast.LENGTH_SHORT).show();
                 }
                 else{
                     pass_Edit.setTextColor(Color.BLACK);

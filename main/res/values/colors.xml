@@ -19,6 +19,6 @@
     <color name="AQI_151">#FF0000</color>
     <color name="AQI_201">#99004C</color>
     <color name="AQI_301">#4C0026</color>
-
+    <color name="heart">#ff0707</color>
 
 </resources>

@@ -7,32 +7,27 @@
         <item
             android:id="@+id/myMap"
             android:title="MyMap"
-            android:icon="@drawable/icon_nu"
+            android:icon="@drawable/mymap"
             />
         <item
             android:id="@+id/sensor_List"
             android:title="MySensorList"
-            android:icon="@drawable/icon_nu"
+            android:icon="@drawable/mysensorlist"
             />
         <item
             android:id="@+id/Heart_rate"
             android:title="My_Heart_rate"
-            android:icon="@drawable/icon_nu"
-            />
-        <item
-            android:id="@+id/My_chart"
-            android:title="My_Chart"
-            android:icon="@drawable/icon_nu"
+            android:icon="@drawable/myheartrate"
             />
         <item
             android:id="@+id/Password_change"
             android:title="Password_change"
-            android:icon="@drawable/icon_nu"
+            android:icon="@drawable/menu_logout"
             />
         <item
             android:id="@+id/ID_cancellation"
             android:title="ID_cancellation"
-            android:icon="@drawable/icon_nu"
+            android:icon="@drawable/id_cancellation"
             />
 
         <item

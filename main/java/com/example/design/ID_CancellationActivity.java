@@ -72,7 +72,7 @@ public class ID_CancellationActivity extends FragmentActivity {
                 if(!isValidPassword(temp)) {
                     pass_Edit.setTextColor(Color.RED);
                     password_Check = false;
-                    Toast.makeText(ID_CancellationActivity.this, " Must contain 1 letters, 1 number, 1 special character, between 8-16 long", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ID_CancellationActivity.this, "Enter the password and it must contain 1 letters, 1 number, 1 special character, between 8-16 long", Toast.LENGTH_SHORT).show();
                 }
                 else{
                     pass_Edit.setTextColor(Color.BLACK);

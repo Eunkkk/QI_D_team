@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/main_background_color">
 
@@ -14,28 +15,38 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="5dp"
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/map_all_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:layout_weight="1"
+                android:background="@drawable/round3"
                 android:text="All" />
 
             <Button
-                android:id="@+id/button3"
+                android:id="@+id/map_co_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:layout_weight="1"
+                android:background="@drawable/round1"
                 android:text="CO" />
 
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/map_coaqi_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:layout_weight="1"
+                android:background="@drawable/round2"
                 android:text="CO_AQI" />
 
         </LinearLayout>
@@ -43,34 +54,47 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/button4"
+                android:id="@+id/map_no_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:layout_weight="1"
+                android:background="@drawable/round1"
                 android:text="NO2" />
 
             <Button
-                android:id="@+id/button10"
+                android:id="@+id/map_noaqi_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:layout_weight="1"
+                android:background="@drawable/round2"
                 android:text="NO2_AQI" />
 
             <Button
-                android:id="@+id/button5"
+                android:id="@+id/map_o3_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:layout_weight="1"
+                android:background="@drawable/round1"
                 android:text="O3" />
 
             <Button
-                android:id="@+id/button8"
+                android:id="@+id/map_o3aqi_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:layout_weight="1"
+                android:background="@drawable/round2"
                 android:text="O3_AQI" />
 
         </LinearLayout>
@@ -78,34 +102,47 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/button7"
+                android:id="@+id/map_so_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:layout_weight="1"
+                android:background="@drawable/round1"
                 android:text="SO2" />
 
             <Button
-                android:id="@+id/button6"
+                android:id="@+id/map_soaqi_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:layout_weight="1"
+                android:background="@drawable/round2"
                 android:text="SO2_AQI" />
 
             <Button
-                android:id="@+id/button11"
+                android:id="@+id/map_pm_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:layout_weight="1"
+                android:background="@drawable/round1"
                 android:text="PM2.5" />
 
             <Button
-                android:id="@+id/button12"
+                android:id="@+id/map_pmaqi_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
                 android:layout_weight="1"
+                android:background="@drawable/round2"
                 android:text="PM2.5_AQI" />
         </LinearLayout>
 
@@ -121,34 +158,47 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-        <TextView
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/map_lng"
+                android:layout_width="160dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="20dp"
+                android:gravity="center|left"
+                android:text="lng:"
+                android:textColor="@color/main_text_color"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/map_lat"
+                android:layout_width="160dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="20dp"
+                android:gravity="center|left"
+                android:text="lat:"
+                android:textColor="@color/main_text_color"
+                android:textSize="18dp" />
+
+        </LinearLayout>
+
+        <EditText
             android:id="@+id/map_heart_view"
-            android:layout_width="200dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="20dp"
+            android:layout_width="160dp"
+            android:layout_height="120dp"
+            android:layout_marginLeft="10dp"
             android:layout_marginTop="20dp"
-            android:gravity="left"
-            android:text="heart_rate:"
-            android:textSize="22dp" />
-
-        <TextView
-            android:id="@+id/map_lat"
-            android:layout_width="200dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="20dp"
-            android:gravity="left"
-            android:text="lat:"
-            android:textSize="22dp" />
-
-        <TextView
-            android:id="@+id/map_lng"
-            android:layout_width="200dp"
-            android:layout_height="30dp"
-            android:layout_marginLeft="20dp"
-            android:gravity="left"
-            android:text="lng:"
+            android:background="@drawable/redcolor"
+            android:gravity="center"
+            android:enabled="false"
+            android:text="0"
+            android:textColor="@color/main_text_color"
             android:textSize="22dp" />
     </LinearLayout>
 

@@ -4,6 +4,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -24,6 +25,11 @@ public class MyPolarActivity extends FragmentActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.polar_activity);
+        TextView textView1 = (TextView)findViewById(R.id.HR_Min);
+        TextView textView2 = (TextView)findViewById(R.id.beats);
+
+        textView1.bringToFront();
+        textView2.bringToFront();
 
         ins = this;
 
@@ -68,13 +74,13 @@ public class MyPolarActivity extends FragmentActivity{
                 EditText NN_Edit = findViewById(R.id.NN50_Value);
                 EditText pNN_Edit = findViewById(R.id.pNN50_value);
                 HR_Edit.setText(String.valueOf(hr));
-                MISC_Edit.setText("69");
+                MISC_Edit.setText("89");
                 if(nn!=0)
                     NN_Edit.setText(String.valueOf(nn));
                 if(misc!=0)
-                     pNN_Edit.setText(String.valueOf(misc)+ "%");
+                    pNN_Edit.setText(String.valueOf(misc)+ "%");
 
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String format = simpleDateFormat.format(new Date());
                 User_data user_data = (User_data) getApplication();
                 JSONObject json = new JSONObject();

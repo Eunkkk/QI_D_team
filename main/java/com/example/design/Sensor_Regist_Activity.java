@@ -27,10 +27,12 @@ public class Sensor_Regist_Activity extends FragmentActivity {
     EditText Mac_Edit;
     EditText Sensor_Edit;
     ListView listView;
+
     @Override
     protected void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sensor_regist);
+
         final EditText Mac_Edit = (EditText)findViewById(R.id.Se_Mac_Edit);
         final EditText Sensor_Edit = (EditText)findViewById(R.id.Se_Sensor_name);
 
@@ -40,8 +42,6 @@ public class Sensor_Regist_Activity extends FragmentActivity {
         Button list_button = (Button)findViewById(R.id.Se_Load_button);
 
         listView = (ListView)findViewById(R.id.Se_sensor_list);
-
-        dataSetting();
 
         load_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,13 +57,14 @@ public class Sensor_Regist_Activity extends FragmentActivity {
             public void onClick(View view){
                 JSONObject json = new JSONObject();
                 User_data user_data = (User_data) getApplication();
+                listView.setAdapter(null);
                 try {
                     json.put("USN", user_data.getUSN());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
                 try {
-                    result = new PostJSON().execute("http://teamd-iot.calit2.net/sensor/userlistview/request", json.toString()).get();
+                    result = new PostJSON().execute("http://teamd-iot.calit2.net/sensor/app/userlistview/request", json.toString()).get();
                     Log.d("asdf", "here result: " + result);
                 } catch (ExecutionException e) {
                     e.printStackTrace();
@@ -72,12 +73,18 @@ public class Sensor_Regist_Activity extends FragmentActivity {
                 }
                 try {
                     JSONArray json_array = new JSONArray(result);
+                    listView.setAdapter(null);
                     Sensor_Adapter sensor_adapter = new Sensor_Adapter();
+
                     for (int i = 0 ; i< json_array.length(); i++){
                         JSONObject json_data = json_array.getJSONObject(i);
                         Log.d("asdf", "receive json: " + json_data.toString());
-                        String ssn = json_data.optString("SSN");
-                        String mac_address = json_data.optString("MAC_address");
+                        String temp_ssn = json_data.optString("SSN");
+                        String ssn = temp_ssn;
+                        String temp_mac = json_data.optString("MAC_address");
+                        String mac_address = temp_mac;
+                        if(mac_address == user_data.getMACaddress())
+                            user_data.setSSN(temp_ssn);
                         String sensor_name = json_data.optString("sensor_name");
                         String timestamp = json_data.optString("timestamp");
                         sensor_adapter.addItem(ssn, mac_address, sensor_name, timestamp);
@@ -107,12 +114,13 @@ public class Sensor_Regist_Activity extends FragmentActivity {
                 }
             }
         });
+
         save_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(!Mac_Edit.getText().equals("")){
                     JSONObject json = new JSONObject();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                     String format = simpleDateFormat.format(new Date());
                     User_data user_data = (User_data) getApplication();
                     try {
@@ -163,9 +171,5 @@ public class Sensor_Regist_Activity extends FragmentActivity {
                 finish();
             }
         });
-    }
-
-    private void dataSetting(){
-
     }
 }

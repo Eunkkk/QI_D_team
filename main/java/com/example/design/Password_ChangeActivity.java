@@ -80,7 +80,7 @@ public class Password_ChangeActivity extends FragmentActivity {
                 if(!isValidPassword(temp)) {
                     current_pass_Edit.setTextColor(Color.RED);
                     current_password_check = false;
-                    Toast.makeText(Password_ChangeActivity.this, " Must contain 1 letters, 1 number, 1 special character, between 8-16 long", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Password_ChangeActivity.this, "Enter the password and it must contain 1 letters, 1 number, 1 special character, between 8-16 long", Toast.LENGTH_SHORT).show();
                 }
                 else{
                     current_pass_Edit.setTextColor(Color.BLACK);
@@ -106,7 +106,7 @@ public class Password_ChangeActivity extends FragmentActivity {
                 if(!isValidPassword(temp)) {
                     new_pass_Edit.setTextColor(Color.RED);
                     new_password_Check = false;
-                    Toast.makeText(Password_ChangeActivity.this, " Must contain 1 letters, 1 number, 1 special character, between 8-16 long", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Password_ChangeActivity.this, "Enter the password and it must contain 1 letters, 1 number, 1 special character, between 8-16 long", Toast.LENGTH_SHORT).show();
                 }
                 else{
                     new_pass_Edit.setTextColor(Color.BLACK);

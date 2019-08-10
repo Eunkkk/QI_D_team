@@ -149,13 +149,6 @@ public class LoginActivity extends AppCompatActivity
             startActivity(intent);
             return true;
         }
-        else if(id == R.id.My_chart) {
-            Intent intent = new Intent(
-                    getApplicationContext(),
-                    chart_activity.class);
-            startActivity(intent);
-            return true;
-        }
         else if(id == R.id.logout) {
             JSONObject json = new JSONObject();
             User_data user_data = (User_data) getApplication();

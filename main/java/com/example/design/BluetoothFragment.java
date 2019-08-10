@@ -96,6 +96,12 @@ public class BluetoothFragment extends Fragment {
     String success_message = "";
     String error_message = "";
     String input_MAC = "";
+    String temperature = "";
+    String O3 = "";
+    String NO2 = "";
+    String CO = "";
+    String SO2 = "";
+    String PM = "";
     String O3_value = "";
     String NO2_value = "";
     String CO_value = "";
@@ -260,7 +266,7 @@ public class BluetoothFragment extends Fragment {
                     switch (msg.arg1) {
                         case BluetoothService.STATE_CONNECTED:
                             setStatus(getString(R.string.title_connected_to, mConnectedDeviceName));
-                            name_Edit.setText(mConnectedDeviceName); //////////////////// instance data
+                            name_Edit.setText(mConnectedDeviceName);
                             mac_Edit.setText(getInput_MAC());
                             User_data user_data = (User_data) getActivity().getApplication();
                             user_data.setMACaddress(getInput_MAC());
@@ -285,20 +291,26 @@ public class BluetoothFragment extends Fragment {
                         try {
                             JSONObject json_data = new JSONObject(readMessage);
                             Log.d("asdf", "receive json: " + json_data.toString());
-                            temperature_Edit.setText(json_data.optString("temperature"));
-                            CO_Edit.setText(json_data.optString("CO"));
+                            temperature = json_data.optString("temperature");
+                            temperature_Edit.setText(temperature + "'C");
+                            CO = json_data.optString("CO");
+                            CO_Edit.setText(CO + "[ppm]");
                             CO_value = json_data.optString("CO_AQI");
                             COAQI_Edit.setText(CO_value);
-                            PM_Edit.setText(json_data.optString("PM2_5"));
+                            PM = json_data.optString("PM2_5");
+                            PM_Edit.setText(PM + "[ug/m^3]");
                             PM_value = json_data.optString("PM2_5_AQI");
                             PMAQI_Edit.setText(PM_value);
-                            NO2_Edit.setText(json_data.optString("NO2"));
+                            NO2 = json_data.optString("NO2");
+                            NO2_Edit.setText(NO2 + "[ppb]");
                             NO2_value = json_data.optString("NO2_AQI");
                             NO2AQI_Edit.setText(NO2_value);
-                            SO2_Edit.setText(json_data.optString("SO2"));
+                            SO2 = json_data.optString("SO2");
+                            SO2_Edit.setText(SO2 + "[ppb]");
                             SO2_value = json_data.optString("SO2_AQI");
                             SO2AQI_Edit.setText(SO2_value);
-                            O3_Edit.setText(json_data.optString("O3"));
+                            O3 = json_data.optString("O3");
+                            O3_Edit.setText(O3 + "[ppb]");
                             O3_value = json_data.optString("O3_AQI");
                             O3AQI_Edit.setText(O3_value);
                             final_result = json_data.optString("final_result");
@@ -333,19 +345,19 @@ public class BluetoothFragment extends Fragment {
                         }
 
                         User_data user_data = (User_data)getActivity().getApplication();
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                         String format = simpleDateFormat.format(new Date());
                         Log.d("asdf", "Current Timestamp: " + format);
 
                         JSONObject json = new JSONObject();
                         try {
-                            json.put("SSN", "1");
-                            json.put("O3", O3_Edit.getText().toString());
-                            json.put("NO2", NO2_Edit.getText().toString());
-                            json.put("CO", CO_Edit.getText().toString());
-                            json.put("SO2", SO2_Edit.getText().toString());
-                            json.put("temperature", temperature_Edit.getText().toString());
-                            json.put("PM2_5", PM_Edit.getText().toString());
+                            json.put("SSN", user_data.getSSN());
+                            json.put("O3", O3);
+                            json.put("NO2", NO2);
+                            json.put("CO", CO);
+                            json.put("SO2", SO2);
+                            json.put("temperature", temperature);
+                            json.put("PM2_5", PM);
                             json.put("O3_AQI", O3AQI_Edit.getText().toString());
                             json.put("NO2_AQI", NO2AQI_Edit.getText().toString());
                             json.put("CO_AQI", COAQI_Edit.getText().toString());

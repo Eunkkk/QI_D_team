@@ -4,6 +4,7 @@ import android.app.Application;
 
 public class User_data extends Application {
     private String USN = "";
+    private String SSN = "12";
     private String MACaddress = "";
     private String lat = "";
     private String lng = "";
@@ -47,5 +48,13 @@ public class User_data extends Application {
 
     public void setLng(String lng) {
         this.lng = lng;
+    }
+
+    public String getSSN() {
+        return SSN;
+    }
+
+    public void setSSN(String SSN) {
+        this.SSN = SSN;
     }
 }

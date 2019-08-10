@@ -1,6 +1,7 @@
 package com.example.design;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,7 +41,7 @@ public class Sensor_Adapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Context context = parent.getContext();
+        final Context context = parent.getContext();
 
         if(convertView == null){
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -52,12 +53,24 @@ public class Sensor_Adapter extends BaseAdapter {
         TextView list_sensorname = (TextView)convertView.findViewById(R.id.list_Sensorname);
         TextView list_timestamp = (TextView)convertView.findViewById(R.id.list_timestamp);
 
-        Sensor_List sensor_list = getItem(position);
+        final Sensor_List sensor_list = getItem(position);
 
         list_SSN.setText(sensor_list.getList_SSN());
         list_MAC.setText(sensor_list.getListMAC());
         list_sensorname.setText(sensor_list.getSensorname());
         list_timestamp.setText(sensor_list.getTimestamp());
+
+        Button chart_button = (Button)convertView.findViewById(R.id.list_chart);
+        chart_button.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, chart_activity.class);
+                intent.putExtra("SSN", sensor_list.getList_SSN());
+                intent.putExtra("Sensor", sensor_list.getSensorname());
+                Log.d("asdf", "message: " + sensor_list.getSensorname());
+                context.startActivity(intent);
+            }
+        });
 
         Button delete_button = (Button)convertView.findViewById(R.id.list_deregist);
         delete_button.setOnClickListener(new Button.OnClickListener(){
@@ -110,5 +123,4 @@ public class Sensor_Adapter extends BaseAdapter {
 
         Sensor_Item.add(sensor_list);
     }
-
 }

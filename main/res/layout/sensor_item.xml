@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="240dp"
+        android:layout_width="160dp"
         android:layout_height="80dp"
         android:orientation="vertical">
 
@@ -35,7 +35,15 @@
             android:layout_height="20dp"
             android:gravity="left"
             android:text="TextView" />
+
     </LinearLayout>
+
+    <Button
+        android:id="@+id/list_chart"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:gravity="center"
+        android:text="Chart" />
 
     <Button
         android:id="@+id/list_deregist"
@@ -43,4 +51,5 @@
         android:layout_height="80dp"
         android:gravity="center"
         android:text="delete" />
+
 </LinearLayout>
