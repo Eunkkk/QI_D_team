@@ -12,27 +12,61 @@
     <link href="/assets/plugins/pace/pace-theme-big-counter.css" rel="stylesheet" />
     <link href="/assets//css/style.css" rel="stylesheet" />
     <link href="/assets//css/main-style.css" rel="stylesheet" />
+
     <!-- Page-Level CSS -->
     <link href="/assets/plugins/morris/morris-0.4.3.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+
+    <script  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRV05v2G9jSn4y5VowB22Sz__fgaYPzGE">
+    </script>
+    <link rel="stylesheet" href="/assets/jquery-ui-themes-1.12.1/themes/ui-lightness/jquery-ui.css">
+    <link rel="stylesheet" href="/assets/jquery-ui-themes-1.12.1/jquery-ui-timepicker-addon.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="/assets/jquery-ui-themes-1.12.1/jquery-ui-timepicker-addon.js"></script>
     <script>
         var getUSN = localStorage.getItem('USN');
         if (getUSN === null)
             window.location.replace("http://teamd-iot.calit2.net/");
     </script>
-    
 
 </head>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-
-<script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBRV05v2G9jSn4y5VowB22Sz__fgaYPzGE&callback=initialize">
     
-</script>
 <script type="text/javascript">
+google.load("visualization", "1", {packages:["corechart"]});
 var request;
+var request2;
+var request3;
+var request4;
 var map;
+var map2;
 var markers = [];
+var markers2 = [];
+var circles = [];
+var ibLabels = [];
+
+
+
+var AQIColor = '';
+var labelText ='';
+
+  $(function () {
+      $("#datepicker").datetimepicker({
+          dateFormat: 'yy-mm-dd',
+          timeFormat: 'HH:mm:ss',
+         onSelect: function() {
+          $(this).change();
+    }
+
+      }).on("change", function () {
+        getTime();
+      });
+  });
+
+
 
 function deleteMarkers(markers) {
     clearMarkers(markers);
@@ -54,6 +88,15 @@ function showMarkers(map) {
     setMapOnAll(map);
 }
 
+function CheckAQI(AQI_value){
+    if(AQI_value>=0 && AQI_value <= 50) AQIColor='green'
+    else if(AQI_value>=51 && AQI_value <= 100) AQIColor='yellow'
+    if(AQI_value>=101 && AQI_value <= 150) AQIColor='orange'
+    else if(AQI_value>=151 && AQI_value <= 200) AQIColor='red'
+    if(AQI_value>=201 && AQI_value <= 300) AQIColor='purple'
+    else if(AQI_value>=301 && AQI_value <= 500) AQIColor='#800000' //maroon color
+    labelText = AQI_value;
+}
 function initialize() {
     var mapOptions = {
         center: new google.maps.LatLng(32.882632, -117.234817),
@@ -63,130 +106,457 @@ function initialize() {
     map = new google.maps.Map(document.getElementById("map"),
         mapOptions);
 
+    map2 = new google.maps.Map(document.getElementById("map2"),
+    mapOptions);
 
     google.maps.event.addListener(map, 'idle', function () {
         console.log('location is changed');
         getJSON($('#selectedvalue').val());
     });
 
-    
+       google.maps.event.addListener(map2, 'idle', function () {
+        console.log('location is changed 2');
+       // getJSON($('#selectedvalue').val());
+    });
 
 }
 
-function getJSON(selected) {
 
+function getTime(){
+  var d = new Date();
+        var currentDate =  ( d.getMonth() + 1 )+"  /  "+ d.getDate() + "  /  "+ d.getFullYear() ;
+        var currentTime = d.getHours() + "  :   " + d.getMinutes() + "  :  " + d.getSeconds() +"  ";
+        var result = document.getElementById("time-result");
+        result.innerHTML = "  ~  " + currentDate + "  " + currentTime ;
+}
+
+function formCheck(frm) {   
+    if (frm.datepicker.value == "") {
+            $("#message").html("Please enter date");
+            $('#myModal').modal("show");
+            frm.e_mail.focus();
+            return false;
+}
+            
+}
+
+function getJSON(selected) {
+    
     if (request) {
         request.abort();
     }
-    var aNorth  =   map.getBounds().getNorthEast().lat();   
-    var aEast   =   map.getBounds().getNorthEast().lng();
-    var aSouth  =   map.getBounds().getSouthWest().lat();   
-    var aWest   =   map.getBounds().getSouthWest().lng();
-  
-    request = $.post('/data/get/airquality', {
+    var aNorth = map.getBounds().getNorthEast().lat();
+    var aEast = map.getBounds().getNorthEast().lng();
+    var aSouth = map.getBounds().getSouthWest().lat();
+    var aWest = map.getBounds().getSouthWest().lng();
+    $("#showmessage").html('<mark> Please, give me a monet for getting air quality data</makr>');
+
+    request = $.post('/data/get/real/airquality', {
         value: selected,
         north: aNorth,
-        east : aEast,
-        south : aSouth,
-        west : aWest 
+        east: aEast,
+        south: aSouth,
+        west: aWest
     }, function (returnedData) {
         console.log(returnedData);
     });
 
     // Callback handler that will be called on success
     request.done(function (response, textStatus, jqXHR) { // Log a message to the console
-        if(response.result_code==1){
-            $("#showmessage").html('<mark>'+response.error_message+'</mark>');
- 
-        }
-        else if (response.length == 0) {
+        if (response.result_code == 1) {
+            $("#showmessage").html('<mark>' + response.error_message + '</mark>');
+
+        } else if (response.length == 0) {
             $("#message").html(response.error_message);
             $('#myModal').modal("show");
 
         } else {
-            $("#showmessage").html('Click the marker');
+            $("#showmessage").html('Drawing the Markre on the map ');
             deleteMarkers(markers);
+            deleteMarkers(circles);
+            deleteMarkers(ibLabels);
+
             var infowindow = new google.maps.InfoWindow();
             var contentString = null;
 
             for (person of response) {
 
                 var temp = JSON.parse(JSON.stringify(person));
-  
-                if(selected==="All") {
- 
-                    contentString = "<span>senseor name : " + temp['sensor_name'] + "</a></span><br/> "+
-                    "CO : " + temp['CO'] + "<br />NO2 : "+temp['NO2']+"<br/>"+
-                    "O3 : " + temp['O3'] + "<br />SO2 : "+temp['SO2']+"<br/>"+
-                    "PM2.5 : " + temp['PM2_5'] + "<br />O3_AQI : "+temp['O3_AQI']+"<br/>"+
-                    "NO2_AQI : " + temp['NO2_AQI'] + "<br />CO_AQI : "+temp['CO_AQI']+"<br/>"+
-                    "SO2_AQI : " + temp['SO2_AQI'] + "<br />PM2.5_AQI : "+temp['PM2_5_AQI']+"<br/>"+
-                    "temperature : " + temp['temperature'] +"<br />"+
-                    "Location : " + temp['lat'] + " ," + temp['lng'] + "<br /><br />" + temp['air_timestamp'];
-                }else{
-                     contentString ="<span>senseor name : " + temp['sensor_name'] + "</a></span><br/> " 
-                      + selected +" : "+ temp[selected] + "<br />" + 
-                      "temperature : " + temp['temperature'] + "<br/>"+
-                      "Location : "+ temp['lat'] + " ," + temp['lng'] + "<br /><br />" + temp['air_timestamp'];
-                }
-   
+                AQIColor = '';
+                labelText = '';
+                if (selected === "All") {
+                     contentString='<table class="table table-bordered"><thead><tr><th scope="col">#</th><th scope="col">Sensor name</th><th scope="col">CO[ppb]</th><th scope="col">NO2[ppb]</th><th scope="col">O3[ppb]</th><th scope="col">SO2[ppb]</th><th scope="col">PM2.5[ug/m^3]</th><th scope="col">CO_AQI</th><th scope="col">NO2_AQI</th><th scope="col">O3_AQI</th><th scope="col">SO2_AQI</th><th scope="col">PM2.5_AQI</th><th scope="col">Temperature[\'c]</th><th scope="col">lat</th><th scope="col">lng</th><th scope="col">total_AQI_name</th><th scope="col">total_AQI_value</th></tr></thead><tbody><tr><th scope="row">1</th><td>'+temp["sensor_name"]+'</td><td>'+temp["CO"]+'</td><td>'+ temp["NO2"]+'</td><td>'+temp["O3"]+'</td><td>'+temp["SO2"]+'</td><td>'+ temp["PM2_5"]+'</td><td> '+temp["CO_AQI"]+'</td><td>'+temp["NO2_AQI"]+'</td><td>'+temp["O3_AQI"]+'</td><td>'+temp["SO2_AQI"]+'</td><td>'+ temp["PM2_5_AQI"]+'</td><td>'+temp["temperature"]+'</td> <td> '+temp["lat"]+'</td><td>'+ temp["lng"]+ ' </td><td>'+temp["total_AQI_name"]+'</td><td>'+temp["total_AQI_value"]+'</td></tr></tbody></table>';
+                     CheckAQI(temp['total_AQI_value']);
 
-                var marker = new google.maps.Marker({
+                } else {
+                    var unit;
+                    if(selected==="CO") unit = '[ppm]';
+                    else if (selected==="NO2") unit = '[ppb]';
+                    else if (selected==="O3") unit = '[ppb]';
+                    else if (selected==="SO2") unit = '[ppb]';
+                    else if (selected==="PM2_5") unit = '[ug/m^3]';
+                    
+                    contentString='<table class="table table-bordered"><thead><tr><th scope="col">#</th><th scope="col">Sensor name</th><th scope="col">'+selected+unit+'<th scope="col">Temperature[\'c]</th><th scope="col">Location</th></tr></thead><tbody><tr><th scope="row">1</th><td>'+temp["sensor_name"]+'</td><td>'+temp[selected]+'</td><td>'+temp["temperature"]+'</td><td colspan="2">'+temp["lat"]+", "+temp["lng"]+ ' </td></tr></tbody></table>';
+                    CheckAQI(temp[selected]);
+                }
+                var icon = {
+                    url: "/assets/img/marker.png", // url
+                    scaledSize: new google.maps.Size(45, 45), // scaled size
+                    origin: new google.maps.Point(0, 0), // origin
+                    anchor: new google.maps.Point(0, 0) // anchor
+                };
+
+                var marker = new google.maps.Marker({ //draw the marker
                     map: map,
-                    position: new google.maps.LatLng(temp.lat,temp.lng),
-                   
-                })
+                    position: new google.maps.LatLng(temp['lat'], temp['lng']),
+                    icon: icon
+                });
 
                 markers.push(marker);
+
                 google.maps.event.addListener(marker, 'click', function (content) {
                     return function () {
                         infowindow.setContent(content); //set the content
                         infowindow.open(map, this);
                     }
                 }(contentString));
-            } // end of for statement
-  
-            setMapOnAll(map);
-   
 
+
+                var regex = /AQI$/g;
+                if (regex.exec(selected) || selected === "All") {
+                    var circle = new google.maps.Circle({ //draw the circle
+                        strokeColor: 'white',
+                        strokeOpacity: 0.8,
+                        strokeWeight: 1,
+                        fillColor: AQIColor,
+                        fillOpacity: 0.65,
+                        map: map,
+                        center: new google.maps.LatLng(temp['lat'], temp['lng']),
+                        radius: 100.45454,
+                        draggable: false
+                    });
+                    circles.push(circle);
+
+                    circle.bindTo('center', marker, 'position');
+                    marker.setVisible(false);
+                    var boxText = '<span style = "color: white ; border:1px">' + labelText + '</span>';
+                    var myOptions = {
+                        content: boxText,
+                        boxStyle: {
+                            border: "none",
+                            textAlign: "center",
+                            fontSize: "15pt",
+                            fontColor: '#FFFFFFFF',
+                            width: "50px"
+                        },
+                        disableAutoPan: true,
+                        pixelOffset: new google.maps.Size(-25, -5),
+                        position: new google.maps.LatLng(temp['lat'], temp['lng']),
+                        closeBoxURL: "",
+                        isHidden: false,
+                        pane: "floatPane",
+                        enableEventPropagation: true
+                    };
+                    var ibLabel = new InfoBox(myOptions);
+                    ibLabel.open(map);
+                    ibLabels.push(ibLabel);
+
+                    google.maps.event.addListener(circle, 'click', function (content) {
+                        return function () {
+                            infowindow.setContent(content); //set the content
+                            infowindow.open(map, this);
+                            infowindow.setPosition(circle.getCenter());
+                        }
+                    }(contentString));
+
+                } //end of finding AQI if statement
+                else {
+                    google.maps.event.addListener(marker, 'click', function (content) {
+                        return function () {
+                            infowindow.setContent(content); //set the content
+                            infowindow.open(map, this);
+
+                        }
+                    }(contentString)); {
+                    }
+                }
+            } // end of for statement
+
+            setMapOnAll(map);
+        $("#showmessage").html('Click the sensor and Check the data.');
         } // end of done
     });
     // Callback handler that will be called on failure
     request.fail(function (jqXHR, textStatus, errorThrown) { // Log the error to the console
 
-        $("#message").html("The following error occurred :  " + textStatus,
-            errorThrown);
-            $('#myModal').modal("show");
+        //$("#message").html("The following error occurred :  " + textStatus,
+        //    errorThrown);
+        //$('#myModal').modal("show");
 
     });
     request = "";
+
+    }
+
+function getHistoricalJSON(getSSN,selected_interval){
+  if (request4) {
+        request4.abort();
+    }
+
+    request4 = $.post('/data/get/historical/airquality/marker', {
+        SSN: getSSN,
+        historical_interval : selected_interval
+    }, function (returnedData) {
+        console.log('historical map '+returnedData);
+    });
+
+    // Callback handler that will be called on success
+    request4.done(function (response, textStatus, jqXHR) { // Log a message to the console
+        if (response.result_code == 1) {
+            //$("#showmessage").html('<mark>' + response.error_message + '</mark>');
+
+        } else if (response.length == 0) {
+            //$("#message").html(response.error_message);
+            //$('#myModal').modal("show");
+
+        } else {
+            //$("#showmessage").html('Drawing the Markre on the map ');
+            deleteMarkers(markers2);
+            
+            if(poly){
+                poly.setMap(null);
+            }
+            var poly = new google.maps.Polyline({
+            strokeColor: '#00CC00',
+            strokeOpacity: 1.0,
+            strokeWeight: 3
+              });
+            poly.setMap(map2);
     
+            var infowindow = new google.maps.InfoWindow();
+            var contentString = null;
+           
+            // var flightPlanCoordinates = new Array();
+            
+             for (person of response) {
+                 
+                var temp = JSON.parse(JSON.stringify(person));
+                //var flightInfo = new Object();
+                AQIColor = '';
+                labelText = '';
+
+                //flightPlanCoordinates.push(new google.maps.LatLng(temp['lat'], temp['lng']))
+                
+                //console.log(flightPlanCoordinates);
+                contentString='<table class="table table-bordered"><thead><tr><th scope="col">#</th><th scope="col">CO[ppb]</th><th scope="col">NO2[ppb]</th><th scope="col">O3[ppb]</th><th scope="col">SO2[ppb]</th><th scope="col">PM2.5[ug/m^3]</th><th scope="col">CO_AQI</th><th scope="col">NO2_AQI</th><th scope="col">O3_AQI</th><th scope="col">SO2_AQI</th><th scope="col">PM2.5_AQI</th><th scope="col">Temperature[\'c]</th><th scope="col">lat</th><th scope="col">lng</th><th scope="col">total_AQI_name</th><th scope="col">total_AQI_value</th></tr></thead><tbody><tr><th scope="row">1</th><td>'+temp["CO"]+'</td><td>'+ temp["NO2"]+'</td><td>'+temp["O3"]+'</td><td>'+temp["SO2"]+'</td><td>'+ temp["PM2_5"]+'</td><td> '+temp["CO_AQI"]+'</td><td>'+temp["NO2_AQI"]+'</td><td>'+temp["O3_AQI"]+'</td><td>'+temp["SO2_AQI"]+'</td><td>'+ temp["PM2_5_AQI"]+'</td><td>'+temp["temperature"]+'</td> <td> '+temp["lat"]+'</td><td>'+ temp["lng"]+ ' </td><td>'+temp["total_AQI_name"]+'</td><td>'+temp["total_AQI_value"]+'</td></tr></tbody></table>';
+
+
+                var path = poly.getPath();
+                path.push(new google.maps.LatLng(temp['lat'], temp['lng']));
+
+                         
+                var icon = {
+                    url: "/assets/img/marker.png", // url
+                    scaledSize: new google.maps.Size(45, 45), // scaled size
+                    origin: new google.maps.Point(0, 0), // origin
+                    anchor: new google.maps.Point(0, 0) // anchor
+                };
+
+                var marker = new google.maps.Marker({ //draw the marker
+                    map: map2,
+                    position: new google.maps.LatLng(temp['lat'], temp['lng']),
+                    title: '#' + path.getLength(),
+                    icon: icon
+                });
+
+                markers2.push(marker);
+
+                google.maps.event.addListener(marker, 'click', function (content) {
+                    return function () {
+                        infowindow.setContent(content); //set the content
+                        infowindow.open(map2, this);
+                    }
+                }(contentString));
+
+
+                } // end of for statement
+
+                    /*var flightPath = new google.maps.Polyline({
+                    path: flightPlanCoordinates,
+                    geodesic: true,
+                    strokeColor: '#FF0000',
+                    strokeOpacity: 1.0,
+                    strokeWeight: 2
+                    });
+                    flightPaths.push(flightPath);
+                    flightPath.setMap(map2);*/
+
+                 
+                  
+
+                setMapOnAll(map2);
+
+        }
+    });
+    request4.fail(function (response, textStatus, jqXHR){
+        console.log(textStatus);
+    });
+
+ }
+
+function getList(getUSN){
+
+    if(request2 || request3){
+        request2.abort();
+        request3.abort();
+    }
+   $('#waitingMessage').html("<mark>  Please, give me a moment for getting your sensor list<mark><br/>");
+     request2 = $.post('/sensor/userlistview/request', {
+            USN: getUSN,
+        }, function (returnedData) {
+            console.log(returnedData);
+        });
+
+        request2.done(function (response, textStatus, jqXHR) { // Log a message to the console
+            if(response.result_code==1){
+                
+                $("#message").html("There is no User\'s sensor list .");
+                $('#myModal').modal("show");
+            }
+            if (response.length == 0) {
+                $("#message").html("There is no User\'s sensor list .");
+                $('#myModal').modal("show");
+            } else {
+                $('#waitingMessage').html("<mark>Enter the date and Click the Searching Historical data button.<mark>");
+                buildHtmlTable(response, '#Sensor_list_table');
+
+                $("[id^=row]").click(function () {
+
+                        $('#waitingMessage').html("");
+                        var getSSN = this.value;
+                        var selected_interval = $("#datepicker").val();
+                        if(selected_interval===""){
+                            $("#message").html("Please enter the date");
+                            $('#myModal').modal("show");;
+                            return false;
+                        }
+                        $('#waitingMessage').html("<mark>  Please, give me a moment for drawing charts<mark><br/>");
+                        getHistoricalJSON(getSSN,selected_interval);
+                        
+                        request3 = $.post('/data/get/historical/airquality', {
+                            SSN: getSSN,
+                            historical_interval: selected_interval
+                        }, function (returnedData) {
+                            console.log(returnedData);
+                        });
+
+                        request3.done(function (response, textStatus, jqXHR) {
+                            var Colors = new Array(6); 
+                            var Units = new Array(6);
+                        
+                            for(var i=0; i<6;i++)
+                                   Colors[i] = new Array(1); 
+                       
+                           Colors[0][0] = 'red';
+                           Colors[1][0] = 'orange';
+                           Colors[2][0] = 'CornflowerBlue';
+                           Colors[3][0] = 'green';
+                           Colors[4][0] = 'blue';
+                           Colors[5][0] = 'purple';
+
+                           Units[0] = '[ppb]';
+                           Units[1] = '[ug/m^3]';
+                           Units[2] = '[ppm]';
+                           Units[3] = '[ppb]';
+                           Units[4] = '[ppb]';
+                           Units[5] = '\'C';
+
+
+                            if (response.result_code == 1) {
+                                        $("#message").html(response.error_message);
+                                        $('#myModal').modal("show");
+                                } else if (response.length == 0) {
+                                         $("#message").html(response.error_message);
+                                        $('#myModal').modal("show");
+                                
+                                } else {
+                                      $('#waitingMessage').html(" Drawing Charts");
+                                    var oobj = response;
+                                    var s_array = ["s1", "s2", "s3", "s4", "s5", "s6"];
+                                    var title_array = ["CO Chart", "NO2 Chart", "O3 Chart", "SO2 Chart", "PM2.5 Chart", "Temperature Chart"];
+
+                                    for (i = 0; i < s_array.length; i++) {
+                                        // want to grab set of data for single sensor
+                                        var newData = JSON.stringify(oobj[s_array[i]][0]);
+                                        // Create our data table out of reduced json
+                                        var data = new google.visualization.DataTable(newData);
+                                        var options = {
+                                            width: 1000,
+                                            height: 480,
+                                            title: title_array[i],
+                                            lineWidth: 1,
+                                            colors: Colors[i],
+                                            hAxis: {
+                                                title: 'Time',
+                                                slantedText: true
+                                            },
+                                            vAxis:{
+                                                title: Units[i],
+                                                slantedText: true
+                                            }
+                                        };
+
+                                        chart = new google.visualization.LineChart(document.getElementById('chart_div_' + s_array[i]));
+                                        chart.draw(data, options);
+                                          $('#waitingMessage').html(" All charts are drawn!!");
+                                    }
+
+                                               
+                                } // end of else statement 
+                        });
+
+                        request3.fail(function (response, textStatus, jqXHR) {
+                             $('#waitingMessage').html("Oh, no. There is no historical air quality data.");
+                            $("#message").html("The following error occurred :  " + textStatus, errorThrown);
+                            $('#myModal').modal("show");
+                        });
+                });
+            }
+        }); //end of request.done
+
+        // Callback handler that will be called on failure
+        request2.fail(function (jqXHR, textStatus, errorThrown) { // Log the error to the console
+
+            //$("#message").html("The following error occurred :  " + textStatus, errorThrown);
+           // $('#myModal').modal("show");
+        });
 }
 
-
 $(window).load(function () {
-    getJSON( $('#selectedvalue').val());
+    google.maps.event.addDomListener(window, 'load', initialize);     
       
+     
 });
 
-
 $(document).ready(function () {
-
 
     var getUSN = localStorage.getItem('USN');
     var getemail = localStorage.getItem('e_mail');
     $('#Hello').text(getemail);
 
+    getTime();
+    getList(getUSN);
+    
     $("[id$=button]").click(function () {
         var value = this.value;
-        $('#selectedvalue').val(value); 
-        getJSON(value);
+        $('#selectedvalue').val(value);
+        getJSON(value); // map 
     });
 
     $('#signoutButton').click(function () {
         event.preventDefault();
         if (request) {
-            request.abort();
+            request = "";
         }
 
         request = $.post('/user/signout/request', {
@@ -201,24 +571,26 @@ $(document).ready(function () {
             localStorage.removeItem('USN');
             localStorage.removeItem('e_mail');
             if (response.success_message)
-                $("#message").html(response.error_message);
+                $("#message").html(response.success_message);
             else if (response.error_message)
                 $("#message").html(response.error_message);
 
             $('#myModal').modal("show");
 
-            setTimeout(function() { 
-                        window.location.replace("http://teamd-iot.calit2.net/");
-                        }, 3000);            
+            setTimeout(function () {
+                window.location.replace("http://teamd-iot.calit2.net/");
+            }, 3000);
         });
 
         // Callback handler that will be called on failure
         request.fail(function (jqXHR, textStatus, errorThrown) { // Log the error to the console
 
-            $("#message").html("The following error occurred :  " + textStatus,
-                errorThrown);
-           $('#myModal').modal("show");
+           // $("#message").html("The following error occurred :  " + textStatus,
+            //    errorThrown);
+            //$('#myModal').modal("show");
         });
+
+        
     });
 
     $('#idcancellationButton').click(function () {
@@ -237,11 +609,56 @@ $(document).ready(function () {
         window.location.replace("http://teamd-iot.calit2.net/user/pwchange");
 
     });
+
+        
 });
 </script>
+<script>
 
+ // Builds the HTML Table out of myList.
+function buildHtmlTable(myList,selector) {
+  var columns = addAllColumnHeaders(myList, selector);
+ 
+  for (var i = 0; i < myList.length; i++) {
+    var row$ = $('<tr/>');
+    for (var colIndex = 0; colIndex < columns.length; colIndex++) {
+      var cellValue = myList[i][columns[colIndex]];
+      if (cellValue == null) cellValue = "";
+      row$.append($('<td/>').html(cellValue));
+      
+    } 
+    row$.append($('<button type="button" id=row"'+i+'" style ="background-color:#00994c;  border:1px solid;"class="btn btn-sm btn-info btn-block" value="'+myList[i]['SSN']+'" />').html('Historical data'));
+ 
+    $(selector).append(row$);
+  } 
+}
 
-{# ==================================================================== #}
+// Adds a header row to the table and returns the set of columns.
+// Need to do union of keys from all records as some records may not contain
+// all records.
+function addAllColumnHeaders(myList, selector) {
+  var columnSet = [];
+  var headerTr$ = $('<tr/>');
+
+  for (var i = 0; i < myList.length; i++) {
+    var rowHash = myList[i];
+    for (var key in rowHash) {
+      if ($.inArray(key, columnSet) == -1) {
+        columnSet.push(key);
+        headerTr$.append($('<th/>').html(key));
+      
+      }
+    }
+    
+  }
+   headerTr$.append($('<th/>').html(''));
+  $(selector).append(headerTr$);
+
+  return columnSet;
+}
+    
+</script>
+
 <div class="modal fade" id="myModal">
     <div class="modal-dialog modal-lg modal-dialog-centered " role="document">
         <div class="modal-content ">
@@ -261,180 +678,204 @@ $(document).ready(function () {
     </div>
 </div>
 
-{# ==================================================================== #}
 <input type="hidden" value="All" id="selectedvalue" />
 
 <body onload="initialize()">
-
-    <!--  wrapper -->
-    <div id="wrapper">
-        <!-- navbar top -->
-        <nav class="navbar navbar-default navbar-fixed-top" role="navigation" id="navbar">
-            <!-- navbar-header -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="index.html">
+<!--  wrapper -->
+<div id="wrapper">
+    <!-- navbar top -->
+    <nav class="navbar navbar-default navbar-fixed-top" role="navigation" id="navbar">
+        <!-- navbar-header -->
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".sidebar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.html">
+            </a>
+        </div>
+        <!-- end navbar-header -->
+        <!-- navbar-top-links -->
+        <ul class="nav navbar-top-links navbar-right">
+            <!-- main dropdown -->
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown">
+                    <i class="fa fa-user fa-3x"></i>
                 </a>
-            </div>
-            <!-- end navbar-header -->
-            <!-- navbar-top-links -->
-            <ul class="nav navbar-top-links navbar-right">
-                <!-- main dropdown -->
-                <li class="dropdown">
-                    <a class="dropdown-toggle" data-toggle="dropdown">
-                        <i class="fa fa-user fa-3x"></i>
-                    </a>
-                    <!-- dropdown user-->
-                    <ul class="dropdown-menu dropdown-user">
-                        <li>
-                            <form>
-                                <input class="btn btn-link navbar-btn navbar-link" id="idcancellationButton"
-                                    type="submit" value="ID CANCELLATION">
-                                </input>
-                            </form>
-                        </li>
-                        <li class="divider"></li>
-                        <li>
-                            <form>
-                                <input class="btn btn-link navbar-btn navbar-link" id="passwordchangeButton"
-                                    type="submit" value="PASSWORD CHANGE">
-                                </input>
-                            </form>
-                        </li>
-
-                        <li class="divider"></li>
-                        <li>
-                            <form>
-                                <input class="btn btn-link navbar-btn navbar-link" id="signoutButton" type="submit"
-                                    value="SIGN-OUT">
-                                </input>
-                            </form>
-                        </li>
-
-                    </ul>
-                    <!-- end dropdown-user -->
-                </li>
-                <!-- end main dropdown -->
-            </ul>
-            <!-- end navbar-top-links -->
-
-        </nav>
-        <!-- end navbar top -->
-        <!-- navbar side -->
-        <nav class="navbar-default navbar-static-side" role="navigation">
-            <!-- sidebar-collapse -->
-            <div class="sidebar-collapse">
-                <!-- side-menu -->
-                <ul class="nav" id="side-menu">
+                <!-- dropdown user-->
+                <ul class="dropdown-menu dropdown-user">
                     <li>
-                        <!-- user image section-->
-                        <div class="user-section">
-                            <div class="user-info">
-                                <div>
-                                    <small id="Hello"></small>
-                                </div>
-                                <div class="user-text-online">
-                                    <span class="user-circle-online btn btn-success btn-circle "></span>&nbsp;Online
-                                </div>
+                        <form>
+                            <input class="btn btn-link navbar-btn navbar-link" id="idcancellationButton" type="submit"
+                                value="ID CANCELLATION">
+                            </input>
+                        </form>
+                    </li>
+                    <li class="divider"></li>
+                    <li>
+                        <form>
+                            <input class="btn btn-link navbar-btn navbar-link" id="passwordchangeButton" type="submit"
+                                value="PASSWORD CHANGE">
+                            </input>
+                        </form>
+                    </li>
+
+                    <li class="divider"></li>
+                    <li>
+                        <form>
+                            <input class="btn btn-link navbar-btn navbar-link" id="signoutButton" type="submit"
+                                value="SIGN-OUT">
+                            </input>
+                        </form>
+                    </li>
+
+                </ul>
+                <!-- end dropdown-user -->
+            </li>
+            <!-- end main dropdown -->
+        </ul>
+        <!-- end navbar-top-links -->
+
+    </nav>
+    <!-- end navbar top -->
+    <!-- navbar side -->
+    <nav class="navbar-default navbar-static-side" role="navigation">
+        <!-- sidebar-collapse -->
+        <div class="sidebar-collapse">
+            <!-- side-menu -->
+            <ul class="nav" id="side-menu">
+                <li>
+                    <!-- user image section-->
+                    <div class="user-section">
+                        <div class="user-info">
+                            <div>
+                                <small id="Hello"></small>
+                            </div>
+                            <div class="user-text-online">
+                                <span class="user-circle-online btn btn-success btn-circle "></span>&nbsp;Online
                             </div>
                         </div>
-                        <!--end user image section-->
-                    </li>
- 
-                    <li class="selected">
-                        <a href="/user/index"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>Airquality & Heart-Rate Charts<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a href="/data/airquality">Airquality Charts</a>
-                            </li>
-                            <li>
-                                <a href="/data/heart">Heart-Rate Charts</a>
-                            </li>
-                        </ul>
-                        <!-- second-level-items -->
-                    </li>
-                    <li>
-                        <a href="timeline.html"><i class="fa fa-flask fa-fw"></i>Timeline</a>
-                    </li>
-                    <li>
-                        <a href="/sensor/listview"><i class="fa fa-table fa-fw"></i>Sensor List</a>
-                    </li>
+                    </div>
+                    <!--end user image section-->
+                </li>
 
-                    <li>
-                        <a href="#"><i class="fa fa-files-o fa-fw"></i>Sample Pages<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a href="blank.html">Blank Page</a>
-                            </li>
-                            <li>
-                                <a href="login.html">Login Page</a>
-                            </li>
-                        </ul>
-                        <!-- second-level-items -->
-                    </li>
-                </ul>
-                <!-- end side-menu -->
+                <li class="selected">
+                    <a href="/user/index"><i class="fa fa-dashboard fa-fw"></i>Airquality data</a>
+                </li>
+                <li>
+                    <a href="/data/heart"><i class="fa fa-bar-chart-o fa-fw"></i> Heart rate data<span></a>
+                   
+                    <!-- second-level-items -->
+                </li>
+                
+                <li>
+                    <a href="/sensor/listview"><i class="fa fa-table fa-fw"></i>Sensor List</a>
+                </li>
+
+                <li>
+                    <a href="#"><i class="fa fa-files-o fa-fw"></i>Sample Pages<span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="blank.html">Blank Page</a>
+                        </li>
+                        <li>
+                            <a href="login.html">Login Page</a>
+                        </li>
+                    </ul>
+                    <!-- second-level-items -->
+                </li>
+            </ul>
+            <!-- end side-menu -->
+        </div>
+        <!-- end sidebar-collapse -->
+    </nav>
+    <!-- end navbar side -->
+    <!--  page-wrapper -->
+    <div id="page-wrapper">
+
+        <div class="row">
+            <!-- Page Header -->
+            <div class="col-lg-12">
+                <h1 class="page-header">Airquality Data View Page</h1>
             </div>
-            <!-- end sidebar-collapse -->
-        </nav>
-        <!-- end navbar side -->
-        <!--  page-wrapper -->
-        <div id="page-wrapper">
+            <!--End Page Header -->
+        </div>
 
-            <div class="row">
-                <!-- Page Header -->
-                <div class="col-lg-12">
-                    <h1 class="page-header">Dashboard</h1>
+        <div class="row">
+            <!-- Welcome -->
+            <div class="col-lg-12">
+                <div class="alert alert-info">
+                    <i class="fa fa-folder-open"></i><b>&nbsp;Welcome to 'Fresh Your Route' !!
                 </div>
-                <!--End Page Header -->
             </div>
+            <!--end  Welcome -->
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <big class="text-dark  font-weight-bold">Click the value you want to see on the googlemap
+                </big><br /><br />
+                <button id="All_button" class="btn btn-success" value="All">All</button>
+                <button id="CO_button" class="btn btn-danger " value="CO">CO</button>
+                <button id="CO_AQI_button" class="btn btn-info " value="CO_AQI">CO_AQI</button>
+                <button id="NO2_button" class="btn btn-danger " value="NO2">NO2</button>
+                <button id="NO2_AQI_button" class="btn btn-info " value="NO2_AQI">NO2_AQI</button>
+                <button id="O3_button" class="btn btn-danger " value="O3">O3</button>
+                <button id="O3_AQI_button" class="btn btn-info " value="O3_AQI">O3_AQI</button>
+                <button id="SO2_button" class="btn btn-danger btn-" value="SO2">SO2</button>
+                <button id="SO2_AQI_button" class="btn btn-info " value="SO2_AQI">SO2_AQI</button>
+                <button id="PM2_5_button" class="btn btn-danger " value="PM2_5">PM2.5</button>
+                <button id="PM2_5_AQI_button" class="btn btn-info " value="PM2_5_AQI">PM2.5_AQI</button>
 
-            <div class="row">
-                <!-- Welcome -->
-                <div class="col-lg-12">
-                    <div class="alert alert-info">
-                        <i class="fa fa-folder-open"></i><b>&nbsp;Welcome to 'Fresh Your Route' !!
+
+                <div id="map" style="height:480px;width:100%;margin:0 auto;"></div>
+
+                <big class="text-justify font-weight-bold" id="showmessage"><big />
+            </div>
+        </div>
+
+        <br /><br />
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        User's sensor list
+                    </div>
+                    <div class="form-group col-lg-12">
+                        <br />
+                        <p>Enter the Date:
+                            <input type="text" id="datepicker" class="form" ><span id="time-result"></span>
+                        </p>
+
+                    </div>
+                    <div class="panel-body overflow:scroll;">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-bordered table-hover"
+                                sytle="margin: auto; text-align: center" id="Sensor_list_table">
+
+                            </table>
+                        </div>
+
+                    </div>
+
+                    <div id="waitingMessage" value=""></div>
+                    <div id="map2" style="height:480px;width:100%;margin:0 auto;"></div>
+                    <span>Historical data</span>
+                    <div >
+                        <div id="chart_div_s1"></div>
+                        <div id="chart_div_s2"></div>
+                        <div id="chart_div_s3"></div>
+                        <div id="chart_div_s4"></div>
+                        <div id="chart_div_s5"></div>
+                        <div id="chart_div_s6"></div>
                     </div>
                 </div>
-                <!--end  Welcome -->
-            </div>
-            <div class="row">
-                <div class="col-lg-12">
-                    <big class ="text-dark  font-weight-bold">Click the value you want to see on the googlemap </big><br/><br/>
-                    <button id="All_button" class="btn btn-waring btn-success" value="All">All</button>
-                    <button id="CO_button" class="btn btn-danger btn-success" value="CO">CO</button>
-                    <button id="CO_AQI_button" class="btn btn-info btn-success" value="CO_AQI">CO_AQI</button>
-                    <button id="NO2_button" class="btn btn-danger btn-success" value="NO2">NO2</button>
-                    <button id="NO2_AQI_button" class="btn btn-info btn-success" value="NO2_AQI">NO2_AQI</button>
-                    <button id="O3_button" class="btn btn-danger btn-success" value="O3">O3</button>
-                    <button id="O3_AQI_button" class="btn btn-info btn-success" value="O3_AQI">O3_AQI</button>
-                    <button id="SO2_button" class="btn btn-danger btn-success" value="SO2">SO2</button>
-                    <button id="SO2_AQI_button" class="btn btn-info btn-success" value="SO2_AQI">SO2_AQI</button>
-                    <button id="PM2_5_button" class="btn btn-danger btn-success" value="PM2_5">PM2.5</button>
-                    <button id="PM2_5_AQI_button" class="btn btn-info btn-success" value="PM2_5_AQI">PM2.5_AQI</button>
-
-
-                    <div id="map" style="height:480px;width:100%;margin:0 auto;"></div>
-                    <big class="text-justify font-weight-bold" id="showmessage"></>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-lg-8">
-
-                </div>
-
+                
             </div>
 
         </div>
+     
 
         <div class="row">
             <div class="col-lg-4">
@@ -450,20 +891,22 @@ $(document).ready(function () {
     </div>
     <!-- end page-wrapper -->
 
-    </div>
+</div>
     <!-- end wrapper -->
 
     <!-- Core Scripts - Include with every page -->
-    <script src="/assets/plugins/jquery-1.10.2.js"></script>
+    {# <script src="/assets/plugins/jquery-1.10.2.js"></script> #}
     <script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
     <script src="/assets/plugins/metisMenu/jquery.metisMenu.js"></script>
     <script src="/assets/plugins/pace/pace.js"></script>
     <script src="/assets/scripts/siminta.js"></script>
+
     <!-- Page-Level Plugin Scripts-->
     <script src="/assets/plugins/morris/raphael-2.1.0.min.js"></script>
-    <script src="/assets/plugins/morris/morris.js"></script>
-    <script src="/assets/scripts/dashboard-demo.js"></script>
+    <script src="/js/infobox.js"></script>
+    <script src="/js/infobox_packed.js"></script>
 
+    
 </body>
 
 </html>

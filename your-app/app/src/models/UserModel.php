@@ -119,7 +119,7 @@ final class UserModel extends BaseModel
 
     public function update_user_set_loginStateFlag($user)
     {
-        $sql = "UPDATE User SET loginStateFlag = ?, isActive=? WHERE USN = ?";
+        $sql = "UPDATE User SET loginStateFlag = ?, isActive = ? WHERE USN = ?";
         $sth = $this->db->prepare($sql);
         $sth->execute(array($user['loginStateFlag'],$user['isActive'], $user['USN']));
         $results = $sth->rowCount();

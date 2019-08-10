@@ -183,6 +183,7 @@ final class AppController extends BaseController
         if (password_verify($user['password'], $results['hashed_pwd'])) {
           $user['USN'] = $results['USN'];
           $results['loginStateFlag'] = 1; //set login state flage to 1
+          $results['isActive'] = 1; //set login state flage to 1
 
           if ($this->UserModel->update_user_set_loginStateFlag($results) >= 0) {
             $user['permission'] = $this->UserModel->select_permission_from_user_table($results);

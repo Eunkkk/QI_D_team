@@ -23,15 +23,6 @@ final class SensorModel extends BaseModel
         return $results;
     }
 
-    public function update_sensor_info_set_regAtive_by_USN ($user)
-    {
-        $sql = "UPDATE Sensor_info SET regActive = ? where USN = ?";
-        $sth = $this->db->prepare($sql);
-        $sth->execute(array($user['regActive'],$user['USN']));
-        $results = $sth->rowCount();
-        return $results;
-    }
-
     public function select_sensor_info_by_USN_AND_MAC ($user)
     {
         $sql = "SELECT * FROM Sensor_info where USN = ? AND MAC_address = ?";

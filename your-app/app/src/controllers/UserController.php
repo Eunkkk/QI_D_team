@@ -27,6 +27,12 @@ final class UserController extends BaseController
   //  page rendering
   //============================================================================================
 
+  public function test(Request $request, Response $response, $args)
+  {
+    $this->view->render($response, 'test.html');
+    return $response;
+  }
+
   public function index(Request $request, Response $response, $args)
   {
     $this->view->render($response, 'index.twig');
@@ -145,9 +151,107 @@ final class UserController extends BaseController
               $mail->addAddress($user['e_mail'], 'Team D');          // Add a recipient
               $mail->isHTML(true);                                  // Set email format to HTML
               $mail->Subject = 'Authentication E-mail from "Fresh Your Route"!!';
-              $mail->Body    = 'This is an Authentication E-mail to activate your account.
-            <br>If you want to activate your acccount, Please,' . "<a href=\"$auth_url\">
-            Click Here !!</a><p>";
+              $mail->Body    = '<table class="wrapper" style="border-collapse: collapse;table-layout: fixed;min-width: 320px;width: 100%;background-color: #f2f2f2;" cellpadding="0" cellspacing="0" role="presentation"><tbody><tr><td>
+              <div role="banner">
+                <div class="preheader" style="Margin: 0 auto;max-width: 560px;min-width: 280px; width: 280px;width: calc(28000% - 167440px);">
+                  <div style="border-collapse: collapse;display: table;width: 100%;">
+                  <!--[if (mso)|(IE)]><table align="center" class="preheader" cellpadding="0" cellspacing="0" role="presentation"><tr><td style="width: 280px" valign="top"><![endif]-->
+                    <div class="snippet" style="display: table-cell;Float: left;font-size: 12px;line-height: 19px;max-width: 280px;min-width: 140px; width: 140px;width: calc(14000% - 78120px);padding: 10px 0 5px 0;color: #b8b8b8;font-family: Ubuntu,sans-serif;">
+        
+                    </div>
+                  <!--[if (mso)|(IE)]></td><td style="width: 280px" valign="top"><![endif]-->
+                    <div class="webversion" style="display: table-cell;Float: left;font-size: 12px;line-height: 19px;max-width: 280px;min-width: 139px; width: 139px;width: calc(14100% - 78680px);padding: 10px 0 5px 0;text-align: right;color: #b8b8b8;font-family: Ubuntu,sans-serif;">
+        
+                    </div>
+                  <!--[if (mso)|(IE)]></td></tr></table><![endif]-->
+                  </div>
+                </div>
+        
+              </div>
+              <div>
+              <div class="layout one-col fixed-width" style="Margin: 0 auto;max-width: 600px;min-width: 320px; width: 320px;width: calc(28000% - 167400px);overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;">
+                <div class="layout__inner" style="border-collapse: collapse;display: table;width: 100%;background-color: #ffffff;" emb-background-style>
+                <!--[if (mso)|(IE)]><table align="center" cellpadding="0" cellspacing="0" role="presentation"><tr class="layout-fixed-width" emb-background-style><td style="width: 600px" class="w560"><![endif]-->
+                  <div class="column" style="text-align: left;color: #60666d;font-size: 14px;line-height: 21px;font-family: sans-serif;max-width: 600px;min-width: 320px; width: 320px;width: calc(28000% - 167400px);">
+        
+                <div style="font-size: 12px;font-style: normal;font-weight: normal;line-height: 19px;" align="center">
+                  <img style="border: 0;display: block;height: auto;width: 100%;max-width: 600px;" alt="" width="600" src="https://i.imgur.com/lRQ93jn.jpg" />
+                </div>
+        
+                    <div style="Margin-left: 20px;Margin-right: 20px;Margin-top: 20px;">
+              <div style="mso-line-height-rule: exactly;line-height: 10px;font-size: 1px;">&nbsp;</div>
+            </div>
+        
+                    <div style="Margin-left: 20px;Margin-right: 20px;">
+              <div style="mso-line-height-rule: exactly;mso-text-raise: 4px;">
+                <h2 style="Margin-top: 0;Margin-bottom: 0;font-style: normal;font-weight: normal;color: #43464a;font-size: 17px;line-height: 26px;">Thanks for joining "Your Fresh Route"!!</h2><p style="Margin-top: 16px;Margin-bottom: 20px;">Please confirm your email address to activate your account.</p>
+              </div>
+            </div>
+        
+                    <div style="Margin-left: 20px;Margin-right: 20px;">
+              <div class="btn btn--flat btn--large" style="Margin-bottom: 20px;text-align: center;">
+                <![if !mso]><a href="http://teamd-iot.calit2.net/account/resetpasswd/'.$user['auth_code'].'">Confirm my address</a><![endif]>
+             </div>
+            </div>
+        
+                    <div style="Margin-left: 20px;Margin-right: 20px;">
+              <div style="mso-line-height-rule: exactly;line-height: 10px;font-size: 1px;">&nbsp;</div>
+            </div>
+        
+                    <div style="Margin-left: 20px;Margin-right: 20px;Margin-bottom: 24px;">
+              <div style="mso-line-height-rule: exactly;mso-text-raise: 4px;">
+                <p style="Margin-top: 0;Margin-bottom: 0;">Qualcomm Institute Summer Project<br />
+        <strong>Team D</strong></p>
+              </div>
+            </div>
+        
+                  </div>
+                <!--[if (mso)|(IE)]></td></tr></table><![endif]-->
+                </div>
+              </div>
+        
+        
+              <div role="contentinfo">
+                <div class="layout email-footer" style="Margin: 0 auto;max-width: 600px;min-width: 320px; width: 320px;width: calc(28000% - 167400px);overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;">
+                  <div class="layout__inner" style="border-collapse: collapse;display: table;width: 100%;">
+                  <!--[if (mso)|(IE)]><table align="center" cellpadding="0" cellspacing="0" role="presentation"><tr class="layout-email-footer"><td style="width: 400px;" valign="top" class="w360"><![endif]-->
+                    <div class="column wide" style="text-align: left;font-size: 12px;line-height: 19px;color: #b8b8b8;font-family: Ubuntu,sans-serif;Float: left;max-width: 400px;min-width: 320px; width: 320px;width: calc(8000% - 47600px);">
+                      <div style="Margin-left: 20px;Margin-right: 20px;Margin-top: 10px;Margin-bottom: 10px;">
+        
+                        <div style="font-size: 12px;line-height: 19px;">
+        
+                        </div>
+                        <div style="font-size: 12px;line-height: 19px;Margin-top: 18px;">
+        
+                        </div>
+                        <!--[if mso]>&nbsp;<![endif]-->
+                      </div>
+                    </div>
+                  <!--[if (mso)|(IE)]></td><td style="width: 200px;" valign="top" class="w160"><![endif]-->
+                    <div class="column narrow" style="text-align: left;font-size: 12px;line-height: 19px;color: #b8b8b8;font-family: Ubuntu,sans-serif;Float: left;max-width: 320px;min-width: 200px; width: 320px;width: calc(72200px - 12000%);">
+                      <div style="Margin-left: 20px;Margin-right: 20px;Margin-top: 10px;Margin-bottom: 10px;">
+        
+                      </div>
+                    </div>
+                  <!--[if (mso)|(IE)]></td></tr></table><![endif]-->
+                  </div>
+                </div>
+                <div class="layout one-col email-footer" style="Margin: 0 auto;max-width: 600px;min-width: 320px; width: 320px;width: calc(28000% - 167400px);overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;">
+                  <div class="layout__inner" style="border-collapse: collapse;display: table;width: 100%;">
+                  <!--[if (mso)|(IE)]><table align="center" cellpadding="0" cellspacing="0" role="presentation"><tr class="layout-email-footer"><td style="width: 600px;" class="w560"><![endif]-->
+                    <div class="column" style="text-align: left;font-size: 12px;line-height: 19px;color: #b8b8b8;font-family: Ubuntu,sans-serif;max-width: 600px;min-width: 320px; width: 320px;width: calc(28000% - 167400px);">
+                      <div style="Margin-left: 20px;Margin-right: 20px;Margin-top: 10px;Margin-bottom: 10px;">
+                        <div style="font-size: 12px;line-height: 19px;">
+                          <unsubscribe style="text-decoration: underline;">http://teamd-iot.calit2.net/</unsubscribe>
+                        </div>
+                      </div>
+                    </div>
+                  <!--[if (mso)|(IE)]></td></tr></table><![endif]-->
+                  </div>
+                </div>
+              </div>
+              <div style="line-height:40px;font-size:40px;">&nbsp;</div>
+            </div></td></tr></tbody></table>';
 
               $mail->send();
 
@@ -505,9 +609,108 @@ final class UserController extends BaseController
             $mail->addAddress($user['e_mail'], 'Team D');         // Add a recipient
             $mail->isHTML(true);                                  // Set email format to HTML
             $mail->Subject = 'Authentication E-mail from "Fresh Your Route"!!';
-            $mail->Body    = 'I’m sorry that you lost your password.
-            <br>If you want to reset your acccount password, Please,' . "<a href=\"$auth_url\">
-            Click Here </a><p>";
+     
+              $mail->Body    = '<table class="wrapper" style="border-collapse: collapse;table-layout: fixed;min-width: 320px;width: 100%;background-color: #f2f2f2;" cellpadding="0" cellspacing="0" role="presentation"><tbody><tr><td>
+              <div role="banner">
+                <div class="preheader" style="Margin: 0 auto;max-width: 560px;min-width: 280px; width: 280px;width: calc(28000% - 167440px);">
+                  <div style="border-collapse: collapse;display: table;width: 100%;">
+                  <!--[if (mso)|(IE)]><table align="center" class="preheader" cellpadding="0" cellspacing="0" role="presentation"><tr><td style="width: 280px" valign="top"><![endif]-->
+                    <div class="snippet" style="display: table-cell;Float: left;font-size: 12px;line-height: 19px;max-width: 280px;min-width: 140px; width: 140px;width: calc(14000% - 78120px);padding: 10px 0 5px 0;color: #b8b8b8;font-family: Ubuntu,sans-serif;">
+        
+                    </div>
+                  <!--[if (mso)|(IE)]></td><td style="width: 280px" valign="top"><![endif]-->
+                    <div class="webversion" style="display: table-cell;Float: left;font-size: 12px;line-height: 19px;max-width: 280px;min-width: 139px; width: 139px;width: calc(14100% - 78680px);padding: 10px 0 5px 0;text-align: right;color: #b8b8b8;font-family: Ubuntu,sans-serif;">
+        
+                    </div>
+                  <!--[if (mso)|(IE)]></td></tr></table><![endif]-->
+                  </div>
+                </div>
+        
+              </div>
+              <div>
+              <div class="layout one-col fixed-width" style="Margin: 0 auto;max-width: 600px;min-width: 320px; width: 320px;width: calc(28000% - 167400px);overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;">
+                <div class="layout__inner" style="border-collapse: collapse;display: table;width: 100%;background-color: #ffffff;" emb-background-style>
+                <!--[if (mso)|(IE)]><table align="center" cellpadding="0" cellspacing="0" role="presentation"><tr class="layout-fixed-width" emb-background-style><td style="width: 600px" class="w560"><![endif]-->
+                  <div class="column" style="text-align: left;color: #60666d;font-size: 14px;line-height: 21px;font-family: sans-serif;max-width: 600px;min-width: 320px; width: 320px;width: calc(28000% - 167400px);">
+        
+                <div style="font-size: 12px;font-style: normal;font-weight: normal;line-height: 19px;" align="center">
+                  <img style="border: 0;display: block;height: auto;width: 100%;max-width: 600px;" alt="" width="600" src="https://i.imgur.com/lRQ93jn.jpg" />
+                </div>
+        
+                    <div style="Margin-left: 20px;Margin-right: 20px;Margin-top: 20px;">
+              <div style="mso-line-height-rule: exactly;line-height: 10px;font-size: 1px;">&nbsp;</div>
+            </div>
+        
+                    <div style="Margin-left: 20px;Margin-right: 20px;">
+              <div style="mso-line-height-rule: exactly;mso-text-raise: 4px;">
+                <h2 style="Margin-top: 0;Margin-bottom: 0;font-style: normal;font-weight: normal;color: #43464a;font-size: 17px;line-height: 26px;">I’m sorry that you lost your password. </h2><p style="Margin-top: 16px;Margin-bottom: 20px;">If you want to reset your acccount password, Please</p>
+              </div>
+            </div>
+        
+                    <div style="Margin-left: 20px;Margin-right: 20px;">
+              <div class="btn btn--flat btn--large" style="Margin-bottom: 20px;text-align: center;"> 
+                <![if !mso]><a href="http://teamd-iot.calit2.net/account/resetpasswd/'.$user['auth_code'].'">Click Here.</a><![endif]>
+             </div>
+            </div>
+        
+                    <div style="Margin-left: 20px;Margin-right: 20px;">
+              <div style="mso-line-height-rule: exactly;line-height: 10px;font-size: 1px;">&nbsp;</div>
+            </div>
+        
+                    <div style="Margin-left: 20px;Margin-right: 20px;Margin-bottom: 24px;">
+              <div style="mso-line-height-rule: exactly;mso-text-raise: 4px;">
+                <p style="Margin-top: 0;Margin-bottom: 0;">Qualcomm Institute Summer Project<br />
+        <strong>Team D</strong></p>
+              </div>
+            </div>
+        
+                  </div>
+                <!--[if (mso)|(IE)]></td></tr></table><![endif]-->
+                </div>
+              </div>
+        
+        
+              <div role="contentinfo">
+                <div class="layout email-footer" style="Margin: 0 auto;max-width: 600px;min-width: 320px; width: 320px;width: calc(28000% - 167400px);overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;">
+                  <div class="layout__inner" style="border-collapse: collapse;display: table;width: 100%;">
+                  <!--[if (mso)|(IE)]><table align="center" cellpadding="0" cellspacing="0" role="presentation"><tr class="layout-email-footer"><td style="width: 400px;" valign="top" class="w360"><![endif]-->
+                    <div class="column wide" style="text-align: left;font-size: 12px;line-height: 19px;color: #b8b8b8;font-family: Ubuntu,sans-serif;Float: left;max-width: 400px;min-width: 320px; width: 320px;width: calc(8000% - 47600px);">
+                      <div style="Margin-left: 20px;Margin-right: 20px;Margin-top: 10px;Margin-bottom: 10px;">
+        
+                        <div style="font-size: 12px;line-height: 19px;">
+        
+                        </div>
+                        <div style="font-size: 12px;line-height: 19px;Margin-top: 18px;">
+        
+                        </div>
+                        <!--[if mso]>&nbsp;<![endif]-->
+                      </div>
+                    </div>
+                  <!--[if (mso)|(IE)]></td><td style="width: 200px;" valign="top" class="w160"><![endif]-->
+                    <div class="column narrow" style="text-align: left;font-size: 12px;line-height: 19px;color: #b8b8b8;font-family: Ubuntu,sans-serif;Float: left;max-width: 320px;min-width: 200px; width: 320px;width: calc(72200px - 12000%);">
+                      <div style="Margin-left: 20px;Margin-right: 20px;Margin-top: 10px;Margin-bottom: 10px;">
+        
+                      </div>
+                    </div>
+                  <!--[if (mso)|(IE)]></td></tr></table><![endif]-->
+                  </div>
+                </div>
+                <div class="layout one-col email-footer" style="Margin: 0 auto;max-width: 600px;min-width: 320px; width: 320px;width: calc(28000% - 167400px);overflow-wrap: break-word;word-wrap: break-word;word-break: break-word;">
+                  <div class="layout__inner" style="border-collapse: collapse;display: table;width: 100%;">
+                  <!--[if (mso)|(IE)]><table align="center" cellpadding="0" cellspacing="0" role="presentation"><tr class="layout-email-footer"><td style="width: 600px;" class="w560"><![endif]-->
+                    <div class="column" style="text-align: left;font-size: 12px;line-height: 19px;color: #b8b8b8;font-family: Ubuntu,sans-serif;max-width: 600px;min-width: 320px; width: 320px;width: calc(28000% - 167400px);">
+                      <div style="Margin-left: 20px;Margin-right: 20px;Margin-top: 10px;Margin-bottom: 10px;">
+                        <div style="font-size: 12px;line-height: 19px;">
+                          <unsubscribe style="text-decoration: underline;">http://teamd-iot.calit2.net/</unsubscribe>
+                        </div>
+                      </div>
+                    </div>
+                  <!--[if (mso)|(IE)]></td></tr></table><![endif]-->
+                  </div>
+                </div>
+              </div>
+              <div style="line-height:40px;font-size:40px;">&nbsp;</div>
+            </div></td></tr></tbody></table>';
 
             $mail->send();
 

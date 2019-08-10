@@ -5,173 +5,211 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QI Team D Heart-Rate</title>
+    <title>QI Team D Heart rate view page</title>
     <!-- Core CSS - Include with every page -->
     <link href="/assets/plugins/bootstrap/bootstrap.css" rel="stylesheet" />
     <link href="/assets/font-awesome//css/font-awesome.css" rel="stylesheet" />
     <link href="/assets/plugins/pace/pace-theme-big-counter.css" rel="stylesheet" />
     <link href="/assets//css/style.css" rel="stylesheet" />
     <link href="/assets//css/main-style.css" rel="stylesheet" />
-    <!-- Page-Level CSS -->
-    <link href="/assets/plugins/morris/morris-0.4.3.min.css" rel="stylesheet" />
 
+    <!-- Page-Level CSS -->
+
+    <link href="/assets/plugins/morris/morris-0.4.3.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+
+    <link rel="stylesheet" href="/assets/jquery-ui-themes-1.12.1/themes/ui-lightness/jquery-ui.css">
+    <link rel="stylesheet" href="/assets/jquery-ui-themes-1.12.1/jquery-ui-timepicker-addon.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="/assets/jquery-ui-themes-1.12.1/jquery-ui-timepicker-addon.js"></script>
     
+    <script type='text/javascript' src='/js/smoothie.js'></script>
     <script>
         var getUSN = localStorage.getItem('USN');
         if (getUSN === null)
             window.location.replace("http://teamd-iot.calit2.net/");
     </script>
     <style>
-body {
-	margin: 0;
-	padding: 0;
-	background: #262626;
-}
-.center {
-	position: absolute;
-	top : 50%;
-	left : 50%;
-	transform: translate(-50%,-30%); 
-    {# heart position #}
-	padding: 100px;
-	background-color: #262626;
-	border: 5px solid #fff;
-	border-radius: 50%;
-	box-shadow: 45px 45px 45px rgba(0,0,0,.8);
-	z-index: 1;
-	overflow: hidden;
-}
-.center:before {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: -50%;
-	width: 100%;
-	height: 100%;
-	background: rgba(0,0,0,.3);
-}
-.heart {
-	position: relative;
-	width: 100px;
-	height: 100px;
-	background: #f00;
-	transform: rotate(45deg) translate(10px,10px);
-	animation: animate 1s linear infinite;
-}
-.heart:before {
-	content: '';
-	width: 100%;
-	height: 100%;
-	background: #f00;
-	position: absolute;
-	top: -50%;
-	left: 0;
-	border-radius: 50%;
-}
-.heart:after {
-	content: '';
-	width: 100%;
-	height: 100%;
-	background: #f00;
-	position: absolute;
-	bottom: 0;
-	right: 50%;
-	border-radius: 50%;
-}
-.heartmessage{
-	position: absolute;
-	top : 50%;
-	left : 50%;
-	transform: translate(-50%,-100%); 
+            .line {
+        fill: none;
+        stroke: #000;
+        stroke-width: 1.5px;
+        }
 
-}
-
-@keyframes animate 
-{
-	0% 
-	{
-		transform: rotate(45deg) translate(10px,10px) scale(1);
-	}
-	25% 
-	{
-		transform: rotate(45deg) translate(10px,10px) scale(1);
-	}
-	30% 
-	{
-		transform: rotate(45deg) translate(10px,10px) scale(1.4);
-	}
-	50% 
-	{
-		transform: rotate(45deg) translate(10px,10px) scale(1.2);
-	}
-	70% 
-	{
-		transform: rotate(45deg) translate(10px,10px) scale(1.4);
-	}
-	90% 
-	{
-		transform: rotate(45deg) translate(10px,10px) scale(1);
-	}
-	100% 
-	{
-		transform: rotate(45deg) translate(10px,10px) scale(1);
-	}
-}
-</style>
+    </style>
 
 </head>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-
-
-</script>
 <script type="text/javascript">
-var request;
 
-function getJSON(USN){
-    if(request){
+var chart;
+var request;
+var request2;
+var heartBeat;
+
+
+google.load("visualization", "1", {packages:["corechart"]});
+  
+  $(function () {
+      $("#datepicker").datetimepicker({
+          dateFormat: 'yy-mm-dd',
+          timeFormat: 'HH:mm:ss',
+          onSelect: function() {
+          $(this).change();
+    }
+      }).on("change", function () {
+        getTime();
+      });
+  });
+
+function drawChart() {
+    if (chart) 
+        chart.clearChart();
+    
+    if(request2)
+        request2.abort();
+    
+    var selected_interval = $("#datepicker").val();
+     if(selected_interval===""){
+        $("#message").html("  Please enter the date");
+        $('#myModal').modal("show");;
+        return false;
+    }
+    $("#showmessage").html('<mark>Please, give me a moment for getting historical heart rate data.<mark>');
+    request2 = $.post('/data/get/historical/heartrate', {
+        USN: getUSN,
+        historical_interval: selected_interval
+    }, function (returnedData) {
+        console.log(returnedData);
+    });
+
+    // Callback handler that will be called on success
+    request2.done(function (response, textStatus, jqXHR) { // Log a message to the console
+
+        if (response.result_code == 1) {
+            $("#showmessage").html('<mark>'+response.error_message+'<mark>');
+        } else if (response.length == 0) {
+            $("#showmessage").html('<mark>'+response.error_message+'<mark>');
+           
+        } else {
+            $("#showmessage").html('<mark>Drawing the chart. <mark>');
+            var oobj = response;
+            var s_array = ["s1"];
+            var title_array = ["Heart-Rate"];
+            var colors = ['red'];
+
+            for (i = 0; i < s_array.length; i++) {
+                // want to grab set of data for single sensor
+                var newData = JSON.stringify(oobj[s_array[i]][0]);
+                // Create our data table out of reduced json
+                var data = new google.visualization.DataTable(newData);
+                var options = {
+                    width: 720,
+                    height: 480,
+                    title: title_array[i],
+                    colors: colors,
+                    hAxis: {
+                        title: 'Time',
+                        slantedText: true
+                    },
+                    vAxis: {
+                        title: '[beats per second]',
+                        slantedText: true
+                    }
+                };
+
+                chart = new google.visualization.LineChart(document.getElementById('chart_div_' + s_array[i]));
+                chart.draw(data, options);
+            }
+            $("#showmessage").html('<mark>The historical heart rate data is drawn. <mark>');
+        }
+    });
+
+
+    request2.fail(function (jqXHR, textStatus, errorThrown) { // Log the error to the console
+            $("#showmessage").html('<mark> Failed to get data. Please, Try again. <mark>');
+    });
+} // end of drawchart
+
+
+function getTime(){
+  var d = new Date();
+        var currentDate =  ( d.getMonth() + 1 )+" / "+ d.getDate() + " / "+ d.getFullYear() ;
+        var currentTime = d.getHours() + "  :  " + d.getMinutes() + "  :  " + d.getSeconds()+"        " ;
+        var result = document.getElementById("time-result");
+        result.innerHTML = "  ~  " + currentDate + "  " + currentTime ;
+}
+
+
+function realtimeGraph(){
+       var smoothie = new SmoothieChart();
+        smoothie.streamTo(document.getElementById('mycanvas'));
+        var line1 = new TimeSeries();
+
+        setInterval(function() {
+        line1.append(new Date().getTime(), heartBeat);
+        }, 1000);
+
+        smoothie.addTimeSeries(line1);
+        smoothie.streamTo(document.getElementById('mycanvas'), 1000 );
+        var smoothie = new SmoothieChart({ grid: { strokeStyle:'rgb(125, 0, 0)', 
+        fillStyle:'rgb(60, 0, 0)', lineWidth: 1, millisPerLine: 250, verticalSections: 6, }, 
+        labels: { fillStyle:'rgb(60, 0, 0)' }
+        });
+
+        smoothie.addTimeSeries(line1, { strokeStyle:'rgb(0, 255, 0)', fillStyle:'rgba(0, 255, 0, 0.4)', lineWidth:3 });
+}
+
+function getJSON(USN) {
+    if (request) {
         request.abort();
     }
 
-    request= $.post('/data/get/heartrate', {
-        USN:USN
-    }, function(returnedData){
+    request = $.post('/data/get/real/heartrate', {
+        USN: USN
+    }, function (returnedData) {
         console.log(returnedData)
     });
 
     request.done(function (response, textStatus, jqXHR) { // Log a message to the console
-        if(response.result_code==1){
-            $("#message").html(response.error_message);
-            $('#myModal').modal("show");
-        }
-        else  if (response.length == 0) {
-            $("#message").html(response.error_message);
-            $('#myModal').modal("show");
-        }
-        else {
-            //테이블 작성
-            $("#heartmessage").html(response.error_message);
-            /////////////////////////////////////
-            console.log(response);
+        if (response.result_code == 1) {
+
+            $("#heartmessage").html("No heart rate");
+            
+        } else if (response.length == 0) {
+            $("#heartmessage").html("No heart rate");
+            
+        } else {
+            
+            $("#heartmessage").html(response[0].heart_rate); 
+            heartBeat = response[0].heart_rate;
         }
     });
-       request.fail(function (jqXHR, textStatus, errorThrown) { // Log the error to the console
+    request.fail(function (jqXHR, textStatus, errorThrown) { // Log the error to the console
 
-            $("#message").html("The following error occurred :  " + textStatus,
-                errorThrown);
-           $('#myModal').modal("show");
-        });
+    });
 }
-
 $(document).ready(function () {
 
 
+    getTime();
+    realtimeGraph();
+
+     $("#showmessage").html(' &nbsp; <mark>Enter the date and Click the Search button.<mark>');
     var getUSN = localStorage.getItem('USN');
     var getemail = localStorage.getItem('e_mail');
-    getJSON(getUSN);
+
+    setInterval(function () {
+        getJSON(getUSN);
+    }, 1000);
+
     $('#Hello').text(getemail);
 
-
+    $('#searchButton').click(function(){
+        drawChart();
+    })
     $('#signoutButton').click(function () {
         event.preventDefault();
         if (request) {
@@ -190,12 +228,14 @@ $(document).ready(function () {
             localStorage.removeItem('USN');
             localStorage.removeItem('e_mail');
             if (response.success_message)
-                $("#message").html(response.error_message);
+                $("#message").html(response.success_message);
             else if (response.error_message)
                 $("#message").html(response.error_message);
 
             $('#myModal').modal("show");
-            window.location.replace("http://teamd-iot.calit2.net/");
+            setTimeout(function () {
+                window.location.replace("http://teamd-iot.calit2.net/");
+            }, 3000);
         });
 
         // Callback handler that will be called on failure
@@ -203,7 +243,7 @@ $(document).ready(function () {
 
             $("#message").html("The following error occurred :  " + textStatus,
                 errorThrown);
-           $('#myModal').modal("show");
+            $('#myModal').modal("show");
         });
     });
 
@@ -227,7 +267,6 @@ $(document).ready(function () {
 </script>
 
 
-{# ==================================================================== #}
 <div class="modal fade" id="myModal">
     <div class="modal-dialog modal-lg modal-dialog-centered " role="document">
         <div class="modal-content ">
@@ -247,13 +286,14 @@ $(document).ready(function () {
     </div>
 </div>
 
-{# ==================================================================== #}
+
 <input type="hidden" value="All" id="selectedvalue" />
 
-
 <body>
+
     <!--  wrapper -->
     <div id="wrapper">
+
         <!-- navbar top -->
         <nav class="navbar navbar-default navbar-fixed-top" role="navigation" id="navbar">
             <!-- navbar-header -->
@@ -331,25 +371,15 @@ $(document).ready(function () {
                         </div>
                         <!--end user image section-->
                     </li>
-           
-                    <li >
-                        <a href="/user/index"><i class="fa fa-dashboard fa-fw"></i>Dashboard</a>
-                    </li>
+
                     <li>
-                        <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Airquality & Heart-Rate Chart<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a href="/data/airquality">Airquality Charts</a>
-                            </li>
-                            <li class="selected">
-                                <a href="/data/heart">Heart-Rate Charts</a>
-                            </li>
-                        </ul>
-                        <!-- second-level-items -->
+                        <a href="/user/index"><i class="fa fa-dashboard fa-fw"></i>Airquality data</a>
                     </li>
-                    <li>
-                        <a href="timeline.html"><i class="fa fa-flask fa-fw"></i>Timeline</a>
-                    </li>
+                   <li class="selected">
+                    <a href="/data/heart"><i class="fa fa-bar-chart-o fa-fw"></i> Heart rate data<span></a>
+                   
+                    <!-- second-level-items -->
+                </li>
                     <li>
                         <a href="/sensor/listview"><i class="fa fa-table fa-fw"></i>Sensor List</a>
                     </li>
@@ -378,54 +408,57 @@ $(document).ready(function () {
             <div class="row">
                 <!-- Page Header -->
                 <div class="col-lg-12">
-                    <h1 class="page-header">Heart-Rate Data View</h1>
+                    <h1 class="page-header">Heart rate Data View</h1>
 
                 </div>
                 <!--End Page Header -->
             </div>
+                <div class="panel panel-default">
+                <div class="panel-body">Historical Heart rate data view </div>
+                <div class="form-group col-lg-16">
+                            <br><br><p>&nbsp; Enter the date: <input type="text" id="datepicker" class="form ">          
+                                <span id="time-result"></span>
+                                &nbsp; &nbsp; <input class="btn  btn-info" id="searchButton"type="submit" value="Search"/>
+                            </p>
+                            <p id ="showmessage" value=""></p>
+                        <div class="panel-footer">Historical heart rate data chart</div>
+                        <div id="chart_div_s1" ></div>
 
 
-        <div class="container">
+                </div>    {# penel default  #}  
+                     <div class="container" >
+                <div>
                 <div class="center">
-                    <div class="heart"></div>
-                    <div class="heartmessage" id="heartmessage"></div>
-                </div>
-        </div>
-         
-            
-            <div class="row">
-                <div class="col-lg-12">
-                
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col-lg-8">
+                        <div class="heart"></div>
+                        <font size="6" class="heartmessage " style="color:white" id="heartmessage"></font>
+                    </div>
                 </div>
 
-            </div>
+                <div>
+                    <div class = "below_center">
+                    <canvas id='mycanvas' width='400' height='100'></canvas> 
+                    </div>
+                </div>
+            </div>    
+             </div> 
+             {# penel default  #}
 
-        </div>
 
-        <div class="row">
-            <div class="col-lg-4">
+       
 
-            </div>
-            <div class="col-lg-4">
 
-            </div>
-            <div class="col-lg-4">
+        
 
-            </div>
-        </div>
     </div>
     <!-- end page-wrapper -->
 
     </div>
     <!-- end wrapper -->
+    
+
 
     <!-- Core Scripts - Include with every page -->
-    <script src="/assets/plugins/jquery-1.10.2.js"></script>
+ 
     <script src="/assets/plugins/bootstrap/bootstrap.min.js"></script>
     <script src="/assets/plugins/metisMenu/jquery.metisMenu.js"></script>
     <script src="/assets/plugins/pace/pace.js"></script>
@@ -434,6 +467,130 @@ $(document).ready(function () {
     <script src="/assets/plugins/morris/raphael-2.1.0.min.js"></script>
     <script src="/assets/plugins/morris/morris.js"></script>
     <script src="/assets/scripts/dashboard-demo.js"></script>
+
+
+ <style>
+    body {
+        margin: 0;
+        padding: 0;
+        background: #262626;
+    }
+    .center {
+        position: absolute;
+        top : 23%;
+        left : 60%;
+        transform: translate(-60%,-80%); 
+        {# heart position #}
+        padding: 40px;
+        background-color: #262626;
+        border: 5px solid #fff;
+        border-radius: 50%;
+        box-shadow: 45px 45px 45px rgba(0,0,0,.8);
+        z-index: 1;
+        overflow1: hidden;
+    }
+     .below_center {
+        position: absolute;
+        top : 13%;
+        left : 65%;
+
+
+    }
+     .showpenel {
+        position: absolute;
+        top : 50%;
+        left : 50%;
+        transform: translate(-50%,50%); 
+
+    }
+    .center:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -10%;
+        width: 100%;
+        height: 100%;
+        
+    }
+    .heart {
+        position: relative;
+        width: 40px;
+        height: 40px;
+        background: #f00;
+        transform: rotate(45deg) translate(10px,10px);
+        animation: animate 1s linear infinite;
+    }
+    .heart:before {
+        content: '';
+        width: 100%;
+        height: 100%;
+        background: #f00;
+        position: absolute;
+        top: -50%;
+        left: 0;
+        border-radius: 50%;
+    }
+    .heart:after {
+        content: '';
+        width: 100%;
+        height: 100%;
+        background: #f00;
+        position: absolute;
+        bottom: 0;
+        right: 50%;
+        border-radius: 50%;
+    }
+    .heartmessage{
+        position: absolute;
+        top : 50%;
+        left : 50%;
+        transform: translate(-60%,-50%); 
+
+    }
+
+    
+    .button.ui-datepicker-close {
+        display:none;
+    }​
+
+
+    @keyframes animate 
+    {
+        0% 
+        {
+            transform: rotate(45deg) translate(10px,10px) scale(1);
+        }
+        25% 
+        {
+            transform: rotate(45deg) translate(10px,10px) scale(1);
+        }
+        30% 
+        {
+            transform: rotate(45deg) translate(10px,10px) scale(1.4);
+        }
+        50% 
+        {
+            transform: rotate(45deg) translate(10px,10px) scale(1.2);
+        }
+        70% 
+        {
+            transform: rotate(45deg) translate(10px,10px) scale(1.4);
+        }
+        90% 
+        {
+            transform: rotate(45deg) translate(10px,10px) scale(1);
+        }
+        100% 
+        {
+            transform: rotate(45deg) translate(10px,10px) scale(1);
+        }
+    }
+
+    
+    </style>
+
+    
+        
 
 </body>
 

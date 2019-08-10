@@ -141,13 +141,35 @@ $app->post('/data/heartrate/transfer', 'App\Controller\DataController:data_heart
 
 
 
-
 //============================================================================================
 // Data Monitoring
 //============================================================================================
 
-$app->post('/data/get/airquality', 'App\Controller\DataController:get_airquality_request')
-    ->setName('getairquality');
+$app->post('/data/get/real/airquality', 'App\Controller\DataController:select_realtime_data_from_airquality_table')
+    ->setName('getrealairquality');
 
-$app->post('/data/get/heartrate', 'App\Controller\DataController:get_heartrate_request')
-    ->setName('getairquality');
+    
+$app->post('/app/data/get/real/airquality', 'App\Controller\DataController:app_select_realtime_data_from_airquality_table')
+->setName('getrealairquality'); // app
+
+$app->post('/data/get/real/heartrate', 'App\Controller\DataController:select_realtime_data_from_heartrate_table')
+    ->setName('getrealheart');
+
+$app->post('/data/get/historical/airquality', 'App\Controller\DataController:select_historical_data_from_airquality_table')
+->setName('gethistoricalairquality'); // This data is  for chart
+
+$app->post('/data/get/historical/airquality/marker', 'App\Controller\DataController:marker_select_historical_data_from_airquality_table')
+->setName('markerthistoricalairquality'); // This data is  for map
+
+$app->post('/app/data/get/historical/airquality', 'App\Controller\DataController:app_select_historical_data_from_airquality_table')
+->setName('apphistoricalairquality'); 
+
+
+$app->post('/data/get/historical/heartrate', 'App\Controller\DataController:select_historical_heartrate_data_from_heartrate_table')
+    ->setName('gethistoricalairquality'); 
+
+    
+    
+
+$app->get('/test', 'App\Controller\UserController:test')
+->setName('gethistoricalairquality');

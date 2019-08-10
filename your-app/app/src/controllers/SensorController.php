@@ -90,7 +90,7 @@ final class SensorController extends BaseController
     public function sensor_deregistration_request(Request $request, Response $response, $args)
     {
       try{
-        if (isset($_POST['USN'])) {
+        if (isset($_POST['USN'])||isset($_POST['SSN'])) {
           $user['USN'] =  $_POST['USN'];
           $user['SSN'] =  $_POST['SSN'];
           $user['regActive'] = 0;
