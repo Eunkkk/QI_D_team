@@ -21,25 +21,21 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script type="text/javascript">
     function CheckLoginState() {
-        
-          var getUSN = localStorage.getItem('USN');
-            console.log(getUSN);
-            if (getUSN === null){
-              var link = document.getElementById('link_1');
-              link.setAttribute('href', "/user/signin");
-              link.innerHTML = "Sign-In"
+      var getUSN = localStorage.getItem('USN');
+        if (getUSN === null){
+          var link = document.getElementById('link_1');
+          link.setAttribute('href', "/user/signin");
+          link.innerHTML = "Sign-In";
+          var link2 = document.getElementById('link_2');
+          link2.setAttribute('href', "/user/signup");
+          link2.innerHTML = "Sign-Up";
 
-               var link2 = document.getElementById('link_2');
-              link2.setAttribute('href', "/user/signup");
-              link2.innerHTML = "Sign-Up"
-
-            } else{
-              var link = document.getElementById('link_1');
-               link.setAttribute('href', "/user/index");
-               link.innerHTML =  "User Page"
-            }
+        } else{
+          var link = document.getElementById('link_1');
+           link.setAttribute('href', "/user/index");
+           link.innerHTML =  "User Page"
+        }
     }
- 
     </script>
 
     <body onload="CheckLoginState();">

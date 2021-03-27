@@ -151,7 +151,8 @@ final class UserController extends BaseController
               $mail->addAddress($user['e_mail'], 'Team D');          // Add a recipient
               $mail->isHTML(true);                                  // Set email format to HTML
               $mail->Subject = 'Authentication E-mail from "Fresh Your Route"!!';
-              $mail->Body    = '<table class="wrapper" style="border-collapse: collapse;table-layout: fixed;min-width: 320px;width: 100%;background-color: #f2f2f2;" cellpadding="0" cellspacing="0" role="presentation"><tbody><tr><td>
+              $mail->Body    = '
+            <table class="wrapper" style="border-collapse: collapse;table-layout: fixed;min-width: 320px;width: 100%;background-color: #f2f2f2;" cellpadding="0" cellspacing="0" role="presentation"><tbody><tr><td>
               <div role="banner">
                 <div class="preheader" style="Margin: 0 auto;max-width: 560px;min-width: 280px; width: 280px;width: calc(28000% - 167440px);">
                   <div style="border-collapse: collapse;display: table;width: 100%;">
