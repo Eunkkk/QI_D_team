@@ -11,9 +11,9 @@ if ($_SERVER['HTTP_HOST'] == 'teamd-iot.calit2.net') {
 } else {
     $db_array = array(
         'host' => '127.0.0.1',
-        'user' => 'root',
-        'pass' => '',
-        'dbname' => 'pogo'
+        'user' => 'eunkyu',
+        'pass' => 'super123!@#',
+        'dbname' => 'mydb'
     );
 }
 
@@ -49,10 +49,10 @@ return [
             'connection' => [
                 'driver'   => 'pdo_mysql',
                 'host'     => '127.0.0.1',
-                'port'     => 8889,
-                'dbname'   => 'blog',
-                'user'     => 'root',
-                'password' => 'root',
+                'port'     => 3306,
+                'dbname'   => 'mydb',
+                'user'     => 'eunkyu',
+                'password' => 'super123!@#',
             ]
         ],
 
