@@ -99,12 +99,12 @@ final class AppController extends BaseController
               $mail->Host = 'smtp.gmail.com';                       // Specify main and backup SMTP servers
               $mail->SMTPAuth = true;                               // Enable SMTP authentication
               $mail->Username = 'dmsrb1595@gmail.com';                 // SMTP username
-              $mail->Password = 'znjfzja1!';                           // SMTP password
+              $mail->Password = 'P@ssw0rd123!@';                           // SMTP password
               $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
               $mail->Port = 587;                                    // TCP port to connect to
 
               //Recipients
-              $auth_url =  'http://teamd-iot.calit2.net/user/signin/activate/' . $user['auth_code'];
+              $auth_url =  'http://localhost:8888/user/signin/activate/' . $user['auth_code'];
               $mail->setFrom('dmsrb1595@gmail.com', 'Team D');
               $mail->addAddress($user['e_mail'], 'Team D');          // Add a recipient
               $mail->isHTML(true);                                  // Set email format to HTML
@@ -386,12 +386,12 @@ final class AppController extends BaseController
             $mail->Host = 'smtp.gmail.com';                         // Specify main and backup SMTP servers
             $mail->SMTPAuth = true;                                 // Enable SMTP authentication
             $mail->Username = 'dmsrb1595@gmail.com';                 // SMTP username
-            $mail->Password = 'znjfzja1!';                           // SMTP password
+            $mail->Password = 'P@ssw0rd123!@';                           // SMTP password
             $mail->SMTPSecure = 'tls';                              // Enable TLS encryption, `ssl` also accepted
             $mail->Port = 587;                                      // TCP port to connect to
 
             //Recipients
-            $auth_url =  'http://teamd-iot.calit2.net/account/resetpasswd/' . $user['auth_code'];
+            $auth_url =  'http://localhost:8888/account/resetpasswd/' . $user['auth_code'];
             $mail->setFrom('dmsrb1595@gmail.com', 'Team D');
             $mail->addAddress($user['e_mail'], 'Team D');         // Add a recipient
             $mail->isHTML(true);                                  // Set email format to HTML

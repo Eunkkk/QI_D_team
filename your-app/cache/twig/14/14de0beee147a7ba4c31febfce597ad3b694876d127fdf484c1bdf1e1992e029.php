@@ -97,7 +97,8 @@ var request;
                             \$(\"#message\").html(response.success_message);
                              \$('#myModal').modal(\"show\");
                                setTimeout(function() { 
-                                   window.location.replace(\"http://teamd-iot.calit2.net/user/signin\");
+                                   // window.location.replace(\"http://teamd-iot.calit2.net/user/signin\");
+                                   window.location.replace(\"http://0.0.0.0:8888/user/signin\");
                                    }, 3000);
              
                     } else {
@@ -238,7 +239,7 @@ var request;
     </script>
 
     ";
-        // line 203
+        // line 204
         echo "       <div class=\"modal fade\" id=\"myModal\">
             <div class=\"modal-dialog modal-lg modal-dialog-centered \" role=\"document\">
                 <div class=\"modal-content \">
@@ -259,7 +260,7 @@ var request;
         </div>
         
     ";
-        // line 223
+        // line 224
         echo "
     <body class=\"body-Login-back\">
         <div class=\"container\">
@@ -322,7 +323,7 @@ var request;
 
     public function getDebugInfo()
     {
-        return array (  263 => 223,  242 => 203,  58 => 20,  53 => 16,  37 => 1,);
+        return array (  264 => 224,  243 => 204,  58 => 20,  53 => 16,  37 => 1,);
     }
 
     public function getSourceContext()
@@ -388,7 +389,8 @@ var request;
                             \$(\"#message\").html(response.success_message);
                              \$('#myModal').modal(\"show\");
                                setTimeout(function() { 
-                                   window.location.replace(\"http://teamd-iot.calit2.net/user/signin\");
+                                   // window.location.replace(\"http://teamd-iot.calit2.net/user/signin\");
+                                   window.location.replace(\"http://0.0.0.0:8888/user/signin\");
                                    }, 3000);
              
                     } else {

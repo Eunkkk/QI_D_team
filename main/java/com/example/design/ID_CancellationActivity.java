@@ -136,7 +136,7 @@ public class ID_CancellationActivity extends FragmentActivity {
                         e.printStackTrace();
                     }
                     try {
-                        result = new PostJSON().execute("http://teamd-iot.calit2.net/app/idcancellation", json.toString()).get();
+                        result = new PostJSON().execute("http://localhost:8888/app/idcancellation", json.toString()).get();
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {

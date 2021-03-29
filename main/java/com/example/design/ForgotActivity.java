@@ -95,7 +95,7 @@ public class ForgotActivity extends Activity {
                     Log.d("asdf", "json: " + json.toString());
                     if (getInput_email().length() > 0) {
                         try {
-                            result = new PostJSON().execute("http://teamd-iot.calit2.net/app/fpwchange", json.toString()).get();
+                            result = new PostJSON().execute("http://localhost:8888/app/fpwchange", json.toString()).get();
                         } catch (ExecutionException e) {
                             e.printStackTrace();
                         } catch (InterruptedException e) {

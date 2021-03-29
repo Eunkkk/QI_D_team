@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Controller;
 
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -7,6 +6,9 @@ use Psr\Http\Message\ResponseInterface as Response;
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use PHPMailer\PHPMailer\SMTP;
+
+require '/Users/eunkkk/IdeaProjects/QI_D_team/your-app/vendor/autoload.php';
 
 final class UserController extends BaseController
 {
@@ -87,6 +89,8 @@ final class UserController extends BaseController
 
   public function sign_up_request(Request $request, Response $response, $args)
   {
+
+
     $user=[];
     try {
 
@@ -132,7 +136,8 @@ final class UserController extends BaseController
         } else {    //User doesn't exist in "User" and "Temp_user" table
 
           $query_results =  $this->UserModel->insert_user_into_temp_table($user);
-          
+          $query_results = 1;
+
           if ($query_results>0) { // if insert query is successful, 0 is fail
             $mail = new PHPMailer(true);                              // Passing `true` enables exceptions
             try {
@@ -141,12 +146,13 @@ final class UserController extends BaseController
               $mail->Host = 'smtp.gmail.com';                       // Specify main and backup SMTP servers
               $mail->SMTPAuth = true;                               // Enable SMTP authentication
               $mail->Username = 'dmsrb1595@gmail.com';                 // SMTP username
-              $mail->Password = 'znjfzja1!';                           // SMTP password
+              $mail->Password = 'P@ssw0rd123!@';                           // SMTP password
               $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
               $mail->Port = 587;                                    // TCP port to connect to
 
               //Recipients
-              $auth_url =  'http://teamd-iot.calit2.net/user/signin/activate/' . $user['auth_code'];
+//              $auth_url =  'localhost:8888/user/signin/activate/' . $user['auth_code'];
+              $auth_url =  '0.0.0.0:8888/user/signin/activate/' . $user['auth_code'];
               $mail->setFrom('dmsrb1595@gmail.com', 'Team D');
               $mail->addAddress($user['e_mail'], 'Team D');          // Add a recipient
               $mail->isHTML(true);                                  // Set email format to HTML
@@ -191,7 +197,7 @@ final class UserController extends BaseController
         
                     <div style="Margin-left: 20px;Margin-right: 20px;">
               <div class="btn btn--flat btn--large" style="Margin-bottom: 20px;text-align: center;">
-                <![if !mso]><a href="http://teamd-iot.calit2.net/account/resetpasswd/'.$user['auth_code'].'">Confirm my address</a><![endif]>
+                <![if !mso]><a href="http://localhost:8888/user/signin/activate/'.$user['auth_code'].'">Confirm my address</a><![endif]>
              </div>
             </div>
         
@@ -243,7 +249,7 @@ final class UserController extends BaseController
                     <div class="column" style="text-align: left;font-size: 12px;line-height: 19px;color: #b8b8b8;font-family: Ubuntu,sans-serif;max-width: 600px;min-width: 320px; width: 320px;width: calc(28000% - 167400px);">
                       <div style="Margin-left: 20px;Margin-right: 20px;Margin-top: 10px;Margin-bottom: 10px;">
                         <div style="font-size: 12px;line-height: 19px;">
-                          <unsubscribe style="text-decoration: underline;">http://teamd-iot.calit2.net/</unsubscribe>
+                          <unsubscribe style="text-decoration: underline;">http://localhost:8888/</unsubscribe>
                         </div>
                       </div>
                     </div>
@@ -263,6 +269,7 @@ final class UserController extends BaseController
            
             } catch (Exception $e) {
               $json = ['error_message' => 'Authentication-mail could not be sent. Try again.', 'result_code' => 1];
+              error_log(var_export($e,1));
               return $response->withHeader('Content-type', 'application/json')
                 ->write(json_encode($json));
             }
@@ -600,12 +607,12 @@ final class UserController extends BaseController
             $mail->Host = 'smtp.gmail.com';                         // Specify main and backup SMTP servers
             $mail->SMTPAuth = true;                                 // Enable SMTP authentication
             $mail->Username = 'dmsrb1595@gmail.com';                 // SMTP username
-            $mail->Password = 'znjfzja1!';                           // SMTP password
+            $mail->Password = 'P@ssw0rd123!@';                           // SMTP password
             $mail->SMTPSecure = 'tls';                              // Enable TLS encryption, `ssl` also accepted
             $mail->Port = 587;                                      // TCP port to connect to
 
             //Recipients
-            $auth_url =  'http://teamd-iot.calit2.net/account/resetpasswd/' . $user['auth_code'];
+            $auth_url =  'http://localhost:8888/account/resetpasswd/' . $user['auth_code'];
             $mail->setFrom('dmsrb1595@gmail.com', 'Team D');
             $mail->addAddress($user['e_mail'], 'Team D');         // Add a recipient
             $mail->isHTML(true);                                  // Set email format to HTML
@@ -650,7 +657,7 @@ final class UserController extends BaseController
         
                     <div style="Margin-left: 20px;Margin-right: 20px;">
               <div class="btn btn--flat btn--large" style="Margin-bottom: 20px;text-align: center;"> 
-                <![if !mso]><a href="http://teamd-iot.calit2.net/account/resetpasswd/'.$user['auth_code'].'">Click Here.</a><![endif]>
+                <![if !mso]><a href="http://localhost:8888/account/resetpasswd/'.$user['auth_code'].'">Click Here.</a><![endif]>
              </div>
             </div>
         
@@ -702,7 +709,7 @@ final class UserController extends BaseController
                     <div class="column" style="text-align: left;font-size: 12px;line-height: 19px;color: #b8b8b8;font-family: Ubuntu,sans-serif;max-width: 600px;min-width: 320px; width: 320px;width: calc(28000% - 167400px);">
                       <div style="Margin-left: 20px;Margin-right: 20px;Margin-top: 10px;Margin-bottom: 10px;">
                         <div style="font-size: 12px;line-height: 19px;">
-                          <unsubscribe style="text-decoration: underline;">http://teamd-iot.calit2.net/</unsubscribe>
+                          <unsubscribe style="text-decoration: underline;">http://localhost:8888/</unsubscribe>
                         </div>
                       </div>
                     </div>

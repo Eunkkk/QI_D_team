@@ -661,7 +661,7 @@ public class MyMapActivity extends AppCompatActivity implements OnMapReadyCallba
         }
         Log.d("asdf", "json: " + json.toString());
         try {
-            result = new PostJSON().execute("http://teamd-iot.calit2.net/app/data/get/real/airquality", json.toString()).get();
+            result = new PostJSON().execute("http://localhost:8888/app/data/get/real/airquality", json.toString()).get();
             Log.d("asdf", "IN:" + result);
         } catch (ExecutionException e) {
             e.printStackTrace();

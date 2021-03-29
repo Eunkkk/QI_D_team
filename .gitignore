@@ -6,6 +6,10 @@ misc.xml
 modules.xml
 vcs.xml
 vendor/
+your-app/vendor/
 log/*
 cache/*
 app/src/models/
+.DS_Store
+your-app/.DS_Store
+your-app/cache/twig/44/

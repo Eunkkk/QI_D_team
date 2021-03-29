@@ -23,7 +23,7 @@
         "slim/flash": "^0.1.0",
         "monolog/monolog": "^1.17",
         "doctrine/orm": "2.5.*",
-        "phpmailer/phpmailer": "^6.0",
+        "phpmailer/phpmailer": "*",
         "slim/php-view": "^2.2",
         "twig/extensions": "*"
     }

@@ -135,7 +135,7 @@ public class chart_activity extends AppCompatActivity implements OnChartGestureL
                 }
                 Log.d("asdf", "json: " + json.toString());
                 try {
-                    result = new PostJSON().execute("http://teamd-iot.calit2.net/app/data/get/historical/airquality", json.toString()).get();
+                    result = new PostJSON().execute("http://localhost:8888/app/data/get/historical/airquality", json.toString()).get();
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 } catch (InterruptedException e) {

@@ -68,7 +68,7 @@ public class LoginActivity extends AppCompatActivity
         }
         Log.d("asdf", "json: " + json.toString());
         try {
-            result = new PostJSON().execute("http://teamd-iot.calit2.net/app/signout", json.toString()).get();
+            result = new PostJSON().execute("http://localhost:8888/app/signout", json.toString()).get();
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -159,7 +159,7 @@ public class LoginActivity extends AppCompatActivity
             }
             Log.d("asdf", "json: " + json.toString());
             try {
-                result = new PostJSON().execute("http://teamd-iot.calit2.net/app/signout", json.toString()).get();
+                result = new PostJSON().execute("http://localhost:8888/app/signout", json.toString()).get();
             } catch (ExecutionException e) {
                 e.printStackTrace();
             } catch (InterruptedException e) {

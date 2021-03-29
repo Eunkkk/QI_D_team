@@ -175,7 +175,7 @@ public class Password_ChangeActivity extends FragmentActivity {
                         e.printStackTrace();
                     }
                     try {
-                        result = new PostJSON().execute("http://teamd-iot.calit2.net/app/pwchange", json.toString()).get();
+                        result = new PostJSON().execute("http://localhost:8888/app/pwchange", json.toString()).get();
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {

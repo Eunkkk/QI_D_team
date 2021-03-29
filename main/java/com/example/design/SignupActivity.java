@@ -343,7 +343,7 @@ public class SignupActivity extends Activity {
                         e.printStackTrace();
                     }
                     try {
-                        result = new PostJSON().execute("http://teamd-iot.calit2.net/app/signup", json.toString()).get();
+                        result = new PostJSON().execute("http://localhost:8888/app/signup", json.toString()).get();
                     } catch (ExecutionException e) {
                         e.printStackTrace();
                     } catch (InterruptedException e) {

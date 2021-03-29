@@ -29,7 +29,7 @@
     <script>
         var getUSN = localStorage.getItem('USN');
         if (getUSN === null)
-            window.location.replace("http://teamd-iot.calit2.net/");
+            window.location.replace("http://localhost:8888/");
     </script>
 
 </head>
@@ -578,7 +578,7 @@ $(document).ready(function () {
             $('#myModal').modal("show");
 
             setTimeout(function () {
-                window.location.replace("http://teamd-iot.calit2.net/");
+                window.location.replace("http://localhost:8888/");
             }, 3000);
         });
 
@@ -598,7 +598,7 @@ $(document).ready(function () {
         if (request) {
             request.abort();
         }
-        window.location.replace("http://teamd-iot.calit2.net/user/idcancellation");
+        window.location.replace("http://localhost:8888/user/idcancellation");
 
     });
     $('#passwordchangeButton').click(function () {
@@ -606,7 +606,7 @@ $(document).ready(function () {
         if (request) {
             request.abort();
         }
-        window.location.replace("http://teamd-iot.calit2.net/user/pwchange");
+        window.location.replace("http://localhost:8888/user/pwchange");
 
     });
 

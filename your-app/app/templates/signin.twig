@@ -72,9 +72,9 @@
                         localStorage.setItem('e_mail', response.e_mail);
                         
                         if (response.permission.permission == 1) { // Admin
-                            window.location.replace("http://teamd-iot.calit2.net/admin/index");
+                            window.location.replace("http://localhost:8888/admin/index");
                         } else { // user
-                            window.location.replace("http://teamd-iot.calit2.net/user/index");
+                            window.location.replace("http://localhost:8888/user/index");
                         }
                     } else {
                           $("#message").html(response.error_message);
@@ -191,10 +191,10 @@
                                         <input class="form-control" id="password" name="password" placeholder="Password" type="password" value="">
                                     </div>
                                     <div>
-                                        <a href="http://teamd-iot.calit2.net/user/fpwchange">
+                                        <a href="http://localhost:8888/user/fpwchange">
                                             Forgot Your Password?</a>
                                     </br>
-                                    <a href="http://teamd-iot.calit2.net/user/signup">New here? Sign up!</a>
+                                    <a href="http://localhost:8888/user/signup">New here? Sign up!</a>
                                 </br>
                             </br>
                         </div>

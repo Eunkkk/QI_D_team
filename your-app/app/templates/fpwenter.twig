@@ -63,13 +63,13 @@
                         $("#message").html(response.success_message);
                         $('#myModal').modal("show");
                                                 setTimeout(function() { 
-                        window.location.replace("http://teamd-iot.calit2.net/user/signin");
+                        window.location.replace("http://localhost:8888/user/signin");
                         }, 3000);
                     } else {
                         $("#message").html(response.error_message);
                         $('#myModal').modal("show");
                         setTimeout(function() { 
-                        window.location.replace("http://teamd-iot.calit2.net/user/fpwchange");
+                        window.location.replace("http://localhost:8888/user/fpwchange");
                         }, 3000);
                        
                     }
